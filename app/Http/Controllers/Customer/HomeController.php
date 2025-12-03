@@ -1,20 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\User; // Perhatikan namespace baru Anda
+namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Medicine; // Menggunakan Model Drug yang sudah kita buat
 use Illuminate\Http\Request;
+use App\Models\Medicine;
 
-class MedicineController extends Controller
+class HomeController extends Controller
 {
-    /**
-     * Menampilkan daftar obat, termasuk fungsi pencarian dan filter.
-     * Diasumsikan ini digunakan untuk halaman utama (index/home).
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
-     */
     public function index(Request $request)
     {
         // 1. Ambil semua kategori unik dari database untuk dropdown filter
@@ -31,8 +24,8 @@ class MedicineController extends Controller
         // 3. Logika Pencarian (Search)
         if ($request->filled('search')) {
             $searchTerm = $request->input('search');
-            $query->where('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orWhere('indication', 'LIKE', '%' . $searchTerm . '%');
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%');
+            // ->orWhere('indication', 'LIKE', '%' . $searchTerm . '%');
         }
 
         // 4. Logika Filter Kategori
@@ -57,6 +50,16 @@ class MedicineController extends Controller
         });
 
         // 6. WAJIB: Mengembalikan view dengan data yang diperlukan
-        return view('user.index', compact('medicines', 'categories'));
+        return view('customer.index', compact('medicines', 'categories'));
+    }
+
+    public function about()
+    {
+        return view('customer.about');
+    }
+
+    public function services()
+    {
+        return view('customer.services');
     }
 }

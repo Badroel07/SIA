@@ -1,6 +1,6 @@
 <?php
-$active = 'font-bold text-lg text-blue-600 border-b-3 border-blue-600';
-$inactive = 'text-lg hover:text-blue-600 transition hover:font-bold';
+$active = 'font-bold text-lg text-blue-600 border-b-4 border-blue-600';
+$inactive = 'text-lg hover:text-blue-600 hover:border-b-4 border-transparent border-blue-600 transition duration-500';
 ?>
 
 <!DOCTYPE html>
@@ -72,47 +72,50 @@ $inactive = 'text-lg hover:text-blue-600 transition hover:font-bold';
 
     <!-- NAVBAR -->
     <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100">
-        <div class="container mx-auto px-4 flex items-center justify-between">
+        <!-- PERBAIKAN 1: Hapus justify-between dari container utama -->
+        <div class="container mx-auto px-4 flex items-center">
 
-            <!-- Logo -->
+            <!-- Logo (KIRI) -->
             <a href="{{ route('home') }}" class="flex items-center gap-2 text-2xl font-heading font-bold text-gray-900">
-                <div class="w-8 h-8 bg-blue-500 rounded-tr-xl rounded-bl-xl rounded-tl-sm rounded-br-sm flex items-center justify-center text-white text-xs">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <div class="w-16 h-16 flex items-center justify-center text-white text-xs">
+                    <img src="{{ asset('img/logo.png') }}" alt="Logo ePharma">
+                    <!-- <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                    </svg>
+                    </svg> -->
                 </div>
                 ePharma
             </a>
 
             <!-- Menu Links -->
-            <div class="hidden md:flex items-center space-x-8 font-medium text-gray-600">
+            <!-- PERBAIKAN 2: Tambahkan ml-auto untuk mendorong menu ke kanan -->
+            <div class="hidden md:flex items-center space-x-8 font-medium text-gray-600 ml-auto">
                 <a href="{{ route('home') }}" class="@if(request()->is('/')) 
-                  {{$active}} 
-              @else 
-                  {{$inactive}}
-              @endif 
-              py-4 -mb-1">Beranda</a>
+                    {{$active}} 
+                @else 
+                    {{$inactive}}
+                @endif 
+                py-4 -mb-1">Beranda</a>
                 <a href="#" class="@if(request()->is('services')) 
                 {{$active}} 
             @else 
                 {{$inactive}}
             @endif 
             py-4 -mb-1">Layanan</a>
-                <a href="{{ route('about') }}" class="@if(request()->is('about')) 
-                  {{$active}} 
-              @else 
-                  {{$inactive}}
-              @endif 
-              py-4 -mb-1">Tentang Kami</a>
                 <a href="#" class="@if(request()->is('contact')) 
-                  {{$active}} 
-              @else 
-                  {{$inactive}}
-              @endif 
-              py-4 -mb-1">Hubungi Kami</a>
+                {{$active}} 
+            @else 
+                {{$inactive}}
+            @endif 
+            py-4 -mb-1">Hubungi Kami</a>
+                <a href="{{ route('about') }}" class="@if(request()->is('about')) 
+                    {{$active}} 
+                @else 
+                    {{$inactive}}
+                @endif 
+                py-4 -mb-1">Tentang Kami</a>
             </div>
 
-            <!-- Right Button -->
+            <!-- Right Button (Ini akan berada tepat di sebelah menu links, atau di kanan sendiri jika menu linksnya di kanan) -->
             <div>
                 <button class="md:hidden text-gray-600 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

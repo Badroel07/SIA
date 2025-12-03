@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\User\MedicineController;
-use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\Customer\MedicineController;
+use App\Http\Controllers\Customer\HomeController;
 
 // Halaman Katalog Utama
-Route::get('/', [MedicineController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Halaman Detail Obat
 Route::get('/obat/{slug}', [MedicineController::class, 'show'])->name('show');
