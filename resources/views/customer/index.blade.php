@@ -82,7 +82,7 @@
     @if($medicines->count() > 0)
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         @foreach($medicines as $item)
-        <div class="group bg-white rounded-2xl p-4 transition hover:shadow-xl border border-gray-100 hover:border-blue-100">
+        <div class="group bg-white rounded-2xl p-4 transition hover:shadow-xl border border-gray-100 hover:border-blue-100 flex flex-col">
             <!-- Image Wrapper -->
             <div class="relative bg-blue-50 rounded-xl h-48 overflow-hidden mb-4 flex items-center justify-center">
                 <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-brand-blue text-xs font-bold px-2 py-1 rounded">
@@ -100,13 +100,33 @@
             <h3 class="font-heading font-bold text-lg text-gray-900 mb-1 group-hover:text-brand-blue transition">{{ $item->name }}</h3>
             <p class="text-sm text-gray-500 mb-4 line-clamp-2 h-10">{{ $item->description }}</p>
 
-            <div class="flex items-center justify-between mt-auto">
-                <span class="text-brand-teal font-bold text-lg">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
-                <a href="{{ route('show', $item->slug) }}" class="w-8 h-8 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center hover:bg-brand-blue hover:text-white transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </a>
+            <div class="flex flex-col gap-2 justify-between mt-auto pt-2 border-t border-gray-100">
+
+                {{-- BARIS 1: Harga dan Status Stok --}}
+                <div class="flex items-center justify-between">
+                    <span class="text-brand-teal font-bold text-lg">Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+
+                    {{-- LOGIKA BARU: STATUS STOK --}}
+                    @if($item->stock > 0)
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700">
+                        Tersedia ({{ $item->stock }})
+                    </span>
+                    @else
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-red-100 text-red-700">
+                        Stok Habis
+                    </span>
+                    @endif
+                </div>
+
+                {{-- BARIS 2: Tombol Detail --}}
+                <div class="flex justify-end">
+                    <a href="{{ route('show', $item->slug) }}" class="w-8 h-8 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Lihat Detail">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                </div>
+
             </div>
         </div>
         @endforeach
