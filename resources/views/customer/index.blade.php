@@ -189,7 +189,7 @@
                         {{-- LOGIKA STOK --}}
                         @if($item->stock > 0)
                         <span class="text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700">
-                            Tersedia ({{ $item->stock }})
+                            Tersedia
                         </span>
                         @else
                         <span class="text-xs font-semibold px-2 py-1 rounded-full bg-red-100 text-red-700">
