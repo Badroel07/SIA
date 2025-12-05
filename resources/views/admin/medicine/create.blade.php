@@ -1,6 +1,6 @@
 {{-- Modal Overlay untuk Form Tambah Obat --}}
 {{-- Class backdrop-blur dan bg-opacity-30 memberikan efek blur transparan modern --}}
-<div id="medicineModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-30 backdrop-blur-sm overflow-y-auto h-full w-full z-50 p-4 sm:p-6">
+<div id="medicineModal" class="hidden fixed inset-0 backdrop-blur-sm backdrop-brightness-50 overflow-y-auto h-full w-full z-50 p-4 sm:p-6">
 
     {{-- Container konten modal dengan animasi CSS kustom --}}
     <div id="modalContent"
@@ -16,13 +16,6 @@
             {{-- Form Content --}}
             <form action="{{ route('admin.medicines.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
                 @csrf
-
-                {{-- Notifikasi Sukses --}}
-                @if(session('success'))
-                <div class="bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded-lg shadow-sm" role="alert">
-                    <span class="block sm:inline font-semibold">{{ session('success') }}</span>
-                </div>
-                @endif
 
                 {{-- Error Validasi --}}
                 @if ($errors->any())
@@ -184,8 +177,6 @@
 </style>
 
 <script>
-    const baseUrl = "{{ url('/') }}";
-
     $(document).ready(function() {
         initCreateSelect2(); // Pastikan Select2 modal Create ter-init saat halaman dimuat
     });

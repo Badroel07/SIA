@@ -6,9 +6,12 @@
 
 <div class="bg-white p-6 rounded-xl shadow-md">
 
-    {{-- Notifikasi (Misalnya setelah Tambah/Edit/Hapus Data) --}}
+    {{-- Notifikasi dengan Class Transisi Awal --}}
     @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+    <div id="notification-alert"
+        class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 
+            **transition-opacity duration-500 ease-in-out opacity-0**"
+        role="alert">
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
     @endif
@@ -154,6 +157,34 @@
         {{ $medicines->links() }}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const notification = document.getElementById('notification-alert');
+
+        if (notification) {
+            // --- 1. Animasi Masuk (Fade-in) ---
+            // Tambahkan sedikit penundaan (misalnya 10ms) agar transisi CSS bekerja
+            setTimeout(function() {
+                notification.classList.remove('opacity-0');
+                notification.classList.add('opacity-100');
+            }, 10);
+
+            // --- 2. Animasi Keluar (Fade-out) setelah 5 detik ---
+            setTimeout(function() {
+                // Mulai Animasi Fade-out (500ms)
+                notification.classList.remove('opacity-100');
+                notification.classList.add('opacity-0');
+
+                // Hapus elemen dari DOM setelah animasi Fade-out selesai (500ms)
+                setTimeout(function() {
+                    notification.remove();
+                }, 500); // 500ms = Durasi transisi yang kita tetapkan (duration-500)
+
+            }, 5000); // <-- Total waktu tunggu (5 detik)
+        }
+    });
+</script>
 
 {{-- MODAL INCLUDES --}}
 {{-- PENTING: Pastikan variabel $existingCategories tersedia untuk modal create --}}

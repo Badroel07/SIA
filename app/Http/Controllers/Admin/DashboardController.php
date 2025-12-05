@@ -14,7 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $totalInitialStock = 1200;
+        $totalInitialStock = 5000;
         // 1. Total Stok Obat (Jumlah semua unit)
         $totalStock = Medicine::sum('stock');
 
