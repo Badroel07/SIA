@@ -4,6 +4,7 @@
 
 @section('content')
 
+<!-- Tambahkan Judul, Notifikasi, dan Tombol di atas tabel -->
 <div class="bg-white p-6 rounded-xl shadow-md">
 
     {{-- Notifikasi (Misalnya setelah Tambah/Edit/Hapus Data) --}}
@@ -17,7 +18,7 @@
         <h3 class="text-2xl font-bold text-gray-800">Daftar Obat ({{ $medicines->total() ?? 0 }} Jenis)</h3>
 
         <!-- Tombol Tambah Obat Baru -->
-        <button onclick="openMedicineModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 shadow-md">
+        <button type="button" onclick="openMedicineModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 shadow-md">
             <i class="fas fa-plus"></i> Tambah Obat Baru
         </button>
     </div>
@@ -87,6 +88,11 @@
                         {{ $item->total_sold ?? 0 }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
+
+                        <button onclick="openMedicineDetailModal({{ $item->id }})" class="text-indigo-600 hover:text-indigo-900 font-medium">
+                            <i class="fas fa-eye"></i> Detail
+                        </button>
+
                         <!-- Tombol Edit (Aksi Kelola Stok/Detail) -->
                         <a href="{{ route('admin.medicines.edit', $item) }}" class="text-blue-600 hover:text-blue-900 font-medium">
                             Edit
@@ -111,7 +117,4 @@
         {{ $medicines->links() }}
     </div>
 </div>
-
-
-
 @endsection

@@ -27,6 +27,8 @@ Route::prefix('admin')
 
         // Rute Dasar Admin (admin.dashboard) -> Menampilkan Statistik
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('medicines/{id}/detail', [CrudMedicineController::class, 'detail'])
+            ->name('medicines.detail');
 
         Route::resource('medicines', CrudMedicineController::class)->except(['show']);
     });

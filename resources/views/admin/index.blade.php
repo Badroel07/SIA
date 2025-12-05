@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Dashboard Inventaris & Statistik')
+@section('title', 'Dashboard')
 
 @section('content')
 
@@ -10,7 +10,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {{-- Kartu 1: Total Stok (Weekly Sales style) --}}
-        <div class="p-6 rounded-xl shadow-lg text-white bg-gradient-to-r from-pink-500 to-red-500 relative overflow-hidden transition duration-300 hover:shadow-2xl">
+        <div class="bg-blue-600 p-6 rounded-xl shadow-lg text-white relative overflow-hidden transition duration-300 hover:shadow-2xl">
             <i class="fas fa-cubes absolute top-[-10px] right-[-10px] text-5xl opacity-20 transform rotate-12"></i>
             <div>
                 <p class="text-lg font-medium uppercase opacity-80">Stok Tersedia</p>
@@ -22,7 +22,7 @@
         </div>
 
         {{-- Kartu 2: Produk Tersedia (Weekly Orders style) --}}
-        <div class="p-6 rounded-xl shadow-lg text-white bg-gradient-to-r from-blue-500 to-indigo-600 relative overflow-hidden transition duration-300 hover:shadow-2xl">
+        <div class="bg-blue-600 p-6 rounded-xl shadow-lg text-white relative overflow-hidden transition duration-300 hover:shadow-2xl">
             <i class="fas fa-capsules absolute top-[-10px] right-[-10px] text-5xl opacity-20 transform -rotate-12"></i>
             <div>
                 <p class="text-lg font-medium uppercase opacity-80">Jenis Produk Tersedia</p>
@@ -34,7 +34,7 @@
         </div>
 
         {{-- Kartu 3: Total Terjual (Visitors Online style) --}}
-        <div class="p-6 rounded-xl shadow-lg text-white bg-gradient-to-r from-teal-500 to-green-600 relative overflow-hidden transition duration-300 hover:shadow-2xl">
+        <div class="bg-blue-600 p-6 rounded-xl shadow-lg text-white relative overflow-hidden transition duration-300 hover:shadow-2xl">
             <i class="fas fa-shipping-fast absolute top-[-10px] right-[-10px] text-5xl opacity-20 transform rotate-6"></i>
             <div>
                 <p class="text-lg font-medium uppercase opacity-80">Obat Terjual</p>
@@ -53,15 +53,15 @@
         <div class="md:col-span-2 bg-white p-6 rounded-xl shadow-lg">
             <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Kapasitas Stok Gudang</h3>
 
-            <p class="text-sm text-gray-500 mb-4">Persentase stok terisi: **{{ $stats['stockPercentage'] }}%**</p>
+            <p class="text-sm text-gray-500 mb-4">Persentase stok terisi: {{ $stats['stockPercentage'] }}%</p>
 
             <div class="flex items-center gap-6 py-4">
-                <span class="text-5xl font-extrabold text-purple-600 w-32">{{ $stats['stockPercentage'] }}%</span>
+                <span class="text-5xl font-extrabold text-blue-600 w-32">{{ $stats['stockPercentage'] }}%</span>
                 <div class="flex-grow">
                     <div class="bg-gray-200 rounded-full h-4">
                         {{-- Progress Bar Dinamis --}}
                         <div class="h-4 rounded-full transition-all duration-700 ease-in-out"
-                            style="width: {{ $stats['stockPercentage'] }}%; background-color: {{ $stats['stockPercentage'] > 80 ? '#ef4444' : ($stats['stockPercentage'] < 30 ? '#8b5cf6' : '#f59e0b') }}">
+                            style="width: {{ $stats['stockPercentage'] }}%; background-color: {{ $stats['stockPercentage'] > 80 ? '#00ff80ff' : ($stats['stockPercentage'] < 30 ? '#ff0000ff' : '#f59e0b') }}">
                         </div>
                     </div>
                 </div>

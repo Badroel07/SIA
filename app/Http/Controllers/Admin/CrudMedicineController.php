@@ -45,11 +45,6 @@ class CrudMedicineController extends Controller
      * Menampilkan formulir untuk membuat data obat baru (CREATE).
      * Dipanggil oleh route admin.medicines.create
      */
-    public function create()
-    {
-        // Perbaikan: Mengganti view path
-        return view('admin.create');
-    }
 
     /**
      * Menyimpan data obat baru (termasuk upload gambar) (STORE).
@@ -102,7 +97,7 @@ class CrudMedicineController extends Controller
     public function edit(Medicine $medicine)
     {
         // PERBAIKAN: Mengganti view path
-        return view('admin.medicines.edit', compact('medicine'));
+        return view('admin.medicine.edit', compact('medicine'));
     }
 
     /**
@@ -166,5 +161,25 @@ class CrudMedicineController extends Controller
 
         // PERBAIKAN: Menggunakan route admin.medicines.index
         return redirect()->route('admin.medicines.index')->with('success', 'Data obat berhasil dihapus!');
+    }
+
+    public function detail($id)
+    {
+        $medicine = Medicine::findOrFail($id);
+
+        return response()->json([
+            'id' => $medicine->id,
+            'name' => $medicine->name,
+            'category' => $medicine->category,
+            'price' => $medicine->price,
+            'stock' => $medicine->stock,
+            'total_sold' => $medicine->total_sold ?? 0,
+            'image' => $medicine->image,
+            'description' => $medicine->description,
+            'full_indication' => $medicine->full_indication,
+            'usage_detail' => $medicine->usage_detail,
+            'side_effects' => $medicine->side_effects,
+            'contraindications' => $medicine->contraindications,
+        ]);
     }
 }
