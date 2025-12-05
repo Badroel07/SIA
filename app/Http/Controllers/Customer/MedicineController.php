@@ -57,6 +57,6 @@ class MedicineController extends Controller
         });
 
         // 6. WAJIB: Mengembalikan view dengan data yang diperlukan
-        return view('user.index', compact('medicines', 'categories'));
+        return view('customer.index', compact('medicines', 'categories'));
     }
 }

@@ -1,13 +1,45 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Customer\MedicineController;
+
+// =========================================================================================
+// 1. IMPORTS (Pastikan Anda mengimpor Controller ini)
+// =========================================================================================
 use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Admin\CrudMedicineController; // Controller CRUD Obat
+use App\Http\Controllers\Admin\DashboardController; // Controller Dashboard
 
-// Halaman Katalog Utama
+// =========================================================================================
+// 2. PUBLIC / CUSTOMER ROUTES
+// =========================================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Halaman Detail Obat
 Route::get('/obat/{slug}', [HomeController::class, 'show'])->name('show');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 
-Route::get('/about', [HomeController::class, 'about'])->name('about')->middleware('about');
+
+// =========================================================================================
+// 3. ADMIN ROUTES (Prefix: /admin)
+// =========================================================================================
+Route::prefix('admin')
+    // Hapus middleware(['auth', 'admin']) sementara untuk development cepat
+    ->name('admin.')
+    ->group(function () {
+
+        // Rute Dasar Admin (admin.dashboard) -> Menampilkan Statistik
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('medicines', CrudMedicineController::class)->except(['show']);
+    });
+
+
+// =========================================================================================
+// 4. CASHIER ROUTES
+// =========================================================================================
+Route::prefix('cashier')
+    // Hapus middleware(['auth', 'cashier']) sementara
+    ->name('cashier.')
+    ->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    });
+
+// require __DIR__.'/auth.php';

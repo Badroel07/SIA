@@ -51,7 +51,7 @@
                 @if($medicine->stock > 0)
                 <button type="button" @click="addToCart({ id: {{ $medicine->id }}, name: '{{ $medicine->name }}', price: {{ $medicine->price }} })"
                     class="w-full md:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition transform hover:scale-105">
-                    <i class="fas fa-shopping-cart mr-2"></i> Tambah ke Keranjang Simulasi
+                    <i class="fas fa-shopping-cart mr-2"></i> Tambah ke Keranjang
                 </button>
                 @else
                 <button disabled class="w-full md:w-auto px-8 py-3 bg-gray-300 text-gray-600 font-bold rounded-lg cursor-not-allowed">
@@ -135,7 +135,7 @@
         this.saveCart();
         this.showCart = true;
         // Gunakan notifikasi modal yang lebih bagus, tapi pakai alert untuk sementara
-        alert(`${item.name} berhasil ditambahkan ke keranjang simulasi!`); 
+        alert(`${item.name} berhasil ditambahkan ke keranjang!`); 
     },
     
     removeItem(id) {
@@ -144,7 +144,7 @@
     },
 
     clearCart() {
-        if(confirm('Yakin ingin mengosongkan keranjang simulasi?')) {
+        if(confirm('Yakin ingin mengosongkan keranjang?')) {
             this.cart = [];
             this.saveCart();
         }

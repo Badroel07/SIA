@@ -10,8 +10,8 @@ $inactive = 'text-lg hover:text-blue-600 hover:border-b-4 border-transparent bor
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ePharma - Sistem Informasi Apotek Terpercaya</title>
-    @vite('resources/css/app.css')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @vite('resources/css/app.css')
 
     <!-- 1. FONT DARI GOOGLE (Inter & Poppins) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

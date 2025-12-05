@@ -15,11 +15,17 @@ class Medicine extends Model
     // Kolom yang boleh diisi (fillable)
     protected $fillable = [
         'name',
+        'slug',
         'category',
-        'strength',
-        'indication',
-        'side_effects',
         'price',
+        'stock',
+        'description',
+        'full_indication',
+        'usage_detail',
+        'side_effects',
+        'contraindications',
+        'image',
+        'total_sold'
     ];
 
     // Menambahkan kolom 'slug' ke fillable (diasumsikan Anda akan menambahkannya nanti untuk URL)
