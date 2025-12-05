@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
     {{-- Memuat Font Awesome untuk ikon --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <!-- 1. FONT DARI GOOGLE (Inter & Poppins) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,13 +84,13 @@ use Illuminate\Support\Facades\Auth;
             :class="{ '-translate-x-full': !isSidebarOpen, 'translate-x-0': isSidebarOpen }">
 
             <!-- Brand & Tombol Tutup di dalam Sidebar (Diperbaiki strukturnya) -->
-            <div class="h-16 flex items-center px-4 border-b border-gray-100 **justify-between**">
+            <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-end">
 
 
 
                 {{-- Tombol Tutup (Di dalam Sidebar) --}}
                 <button @click="toggleSidebar()"
-                    class="text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition p-1.5 flex-shrink-0 **ml-2**">
+                    class="text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition p-1.5 flex-shrink-0 ml-2">
                     <i class="fas fa-times w-5 h-5"></i>
                 </button>
             </div>
@@ -104,16 +108,17 @@ use Illuminate\Support\Facades\Auth;
                 <ul class="space-y-1 px-3 mt-5">
 
                     {{-- Menu Dasar --}}
+
                     <li class="mb-4">
                         <a href="{{ route('admin.dashboard') }}"
                             class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
                             <i class="fas fa-home w-5 text-center flex-shrink-0"></i>
-                            <span class="font-medium overflow-hidden whitespace-nowrap">Dashboard</span>
+                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.dashboard') ? 'font-bold' : 'font-medium'}}">Dashboard</span>
                         </a>
                         <a href="{{ route('admin.medicines.index') }}"
                             class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.medicines.index') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
                             <i class="fas fa-capsules w-5 text-center flex-shrink-0"></i>
-                            <span class="font-medium overflow-hidden whitespace-nowrap">Manajemen Obat</span>
+                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.medicines.index') ? 'font-bold' : 'font-medium'}}">Manajemen Obat</span>
                         </a>
                     </li>
 
@@ -169,7 +174,7 @@ use Illuminate\Support\Facades\Auth;
         </aside>
 
         {{-- Backdrop untuk menutup sidebar saat overlay terbuka --}}
-        <div x-show="isSidebarOpen" @click="isSidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-gray-900 bg-opacity-50 z-40 lg:hidden" x-cloak></div>
+        <div x-show="isSidebarOpen" @click="isSidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-transparent z-40" x-cloak></div>
 
         <!-- KONTEN KANAN (Tidak ada margin dinamis, selalu 100% lebar) -->
         <div class="flex-1 flex flex-col min-h-screen">
@@ -200,7 +205,7 @@ use Illuminate\Support\Facades\Auth;
 
             <!-- Footer Kecil -->
             <footer class="p-4 text-center text-xs text-gray-400 border-t border-gray-200">
-                &copy; {{ date('Y') }} ePharma Staff Panel. IT Garut.
+                &copy; {{ date('Y') }} CHKL. All Rights Reserved.
             </footer>
         </div>
 

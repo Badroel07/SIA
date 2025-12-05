@@ -50,20 +50,15 @@ class HomeController extends Controller
     /**
      * Menampilkan halaman detail obat berdasarkan slug.
      */
-    public function show($slug)
+    public function show($id)
     {
         // Cari obat berdasarkan slug, jika tidak ditemukan, tampilkan 404
-        $medicine = Medicine::where('slug', $slug)->firstOrFail();
+        $medicine = Medicine::where('id', $id)->firstOrFail();
 
         // Di sini kita bisa menambahkan logika untuk mengisi informasi detail yang lebih lengkap
         // (Contoh: cara penggunaan, efek samping, dll) yang mungkin tidak ada di kolom description.
         // Karena di seeder kita tidak punya kolom spesifik untuk 'cara_penggunaan',
         // kita buat mock data sederhana. Jika Anda punya kolom di DB, gunakan kolom itu.
-
-        $medicine->usage = "Minum 1 tablet/kapsul setiap 4-6 jam, maksimal 4 kali sehari. Jangan melebihi dosis yang dianjurkan.";
-        $medicine->side_effects_detail = "Mual, muntah, sakit kepala ringan, atau gangguan pencernaan. Hentikan penggunaan jika terjadi reaksi alergi serius.";
-        $medicine->contraindications = "Tidak disarankan untuk pasien dengan riwayat alergi terhadap kandungan obat atau penderita gagal hati berat.";
-
         return view('customer.show', compact('medicine'));
     }
 

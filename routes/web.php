@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\DashboardController; // Controller Dashboard
 // 2. PUBLIC / CUSTOMER ROUTES
 // =========================================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/obat/{slug}', [HomeController::class, 'show'])->name('show');
+Route::get('/medicine_detail/{slug}', [HomeController::class, 'show'])->name('show');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 
 
@@ -27,10 +27,12 @@ Route::prefix('admin')
 
         // Rute Dasar Admin (admin.dashboard) -> Menampilkan Statistik
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-        Route::get('medicines/{id}/detail', [CrudMedicineController::class, 'detail'])
-            ->name('medicines.detail');
+        Route::get('medicines/{id}/detail', [CrudMedicineController::class, 'detail']);
+        // Route::get('medicines/create', [CrudMedicineController::class, 'create'])->name('medicines.create');
+        // Route::get('medicines/{id}/edit', [CrudMedicineController::class, 'edit'])->name('medicines.edit');
 
-        Route::resource('medicines', CrudMedicineController::class)->except(['show']);
+
+        Route::resource('medicines', CrudMedicineController::class)->except(['show', 'edit']);
     });
 
 

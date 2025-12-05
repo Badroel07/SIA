@@ -141,7 +141,7 @@ $inactive = 'text-lg hover:text-blue-600 hover:border-b-4 border-transparent bor
             </div>
         </div>
         <div class="text-center text-gray-500 text-sm mt-12 pt-8 border-t border-gray-800">
-            &copy; 2025 ePharma ITG. All rights reserved.
+            &copy; {{ date('Y') }} CHKL. All Rights Reserved.
         </div>
     </footer>
 

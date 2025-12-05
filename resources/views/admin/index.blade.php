@@ -77,7 +77,7 @@
             <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Peringatan Stok Rendah</h3>
 
             @if($lowStockMedicines->isEmpty())
-            <p class="text-gray-500 py-4 text-center">🎉 Semua stok dalam kondisi aman.</p>
+            <p class="text-gray-500 py-4 text-center">Semua stok dalam kondisi aman.</p>
             @else
             <ul class="space-y-3 pt-2">
                 @foreach($lowStockMedicines as $medicine)

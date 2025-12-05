@@ -18,18 +18,21 @@ return new class extends Migration
 
             // Kolom Dasar
             $table->string('name', 100);
-            $table->string('slug', 150)->unique(); // Untuk URL SEO friendly
+            $table->string('slug', 150)->unique();
+
+            // Kolom category dikembalikan ke tipe STRING
             $table->string('category', 100); // Contoh: Sirup, Tablet, Kapsul
+
             $table->integer('price')->unsigned();
             $table->integer('stock')->default(0)->unsigned();
             $table->string('image')->nullable(); // Path gambar
 
-            // Kolom Detail Produk (Baru)
-            $table->text('description'); // Ringkasan (digunakan di katalog)
-            $table->text('full_indication'); // Indikasi dan Manfaat Lengkap
-            $table->text('usage_detail'); // Cara Penggunaan/Dosis
-            $table->text('side_effects'); // Efek Samping
-            $table->text('contraindications'); // Larangan/Kontraindikasi
+            // Kolom Detail Produk
+            $table->text('description');
+            $table->text('full_indication');
+            $table->text('usage_detail');
+            $table->text('side_effects');
+            $table->text('contraindications');
 
             $table->timestamps();
         });

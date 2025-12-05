@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL; // Import Facade URL
 use Illuminate\Support\Facades\Route;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
             // (Termasuk yang dibuat oleh @vite)
             URL::forceScheme('https');
         }
+
+        Paginator::useTailwind();
 
         // Anda juga bisa mencoba ini, terutama jika Anda menggunakan Load Balancer/Proxy
         /*

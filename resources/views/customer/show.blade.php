@@ -4,7 +4,7 @@
 
 {{-- Menampilkan tombol kembali ke katalog --}}
 <div class="container mx-auto px-4 pt-10 pb-4">
-    <a href="{{ route('home') }}" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300 flex items-center gap-1">
+    <a href="javascript:history.back()" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300 flex items-center gap-1">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
@@ -70,16 +70,18 @@
 
                 <!-- 1. Indikasi dan Cara Penggunaan -->
                 <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
-                    <h3 class="text-xl font-bold text-blue-700 mb-3 flex items-center gap-2">
+                    <h3 class="text-xl font-bold text-blue-700 mb-3 text-center">
                         <i class="fas fa-prescription-bottle-alt"></i> Indikasi & Dosis
                     </h3>
                     <p class="text-gray-700 mb-4">
                         {{-- Karena di DB belum ada kolom indikasi, kita gunakan description atau mock data --}}
-                        **Indikasi Utama:** {{ $medicine->description }}
+                        <span class="font-bold">Indikasi Utama<br></span>
+                        {{ $medicine->full_indication }}
                     </p>
                     <p class="text-gray-700 border-t pt-3">
-                        **Cara Penggunaan:** @if(isset($medicine->usage))
-                        {{ $medicine->usage }}
+                        <span class="font-bold">Cara Penggunaan<br></span>
+                        @if(isset($medicine->usage_detail))
+                        {{ $medicine->usage_detail }}
                         @else
                         Konsultasikan dengan apoteker atau dokter Anda.
                         @endif
@@ -88,18 +90,18 @@
 
                 <!-- 2. Efek Samping dan Larangan -->
                 <div class="bg-red-50 p-6 rounded-xl border border-red-200">
-                    <h3 class="text-xl font-bold text-red-700 mb-3 flex items-center gap-2">
+                    <h3 class="text-xl font-bold text-red-700 mb-3 text-center">
                         <i class="fas fa-exclamation-triangle"></i> Efek Samping & Larangan
                     </h3>
                     <p class="text-gray-700 mb-4">
-                        **Efek Samping Umum:** @if(isset($medicine->side_effects_detail))
-                        {{ $medicine->side_effects_detail }}
+                        Efek Samping :@if(isset($medicine->side_effects))
+                        {{ $medicine->side_effects }}
                         @else
                         Belum ada data efek samping yang dicatat.
                         @endif
                     </p>
                     <p class="text-gray-700 border-t pt-3">
-                        **Kontraindikasi (Larangan):** @if(isset($medicine->contraindications))
+                        Kontraindikasi (Larangan) :@if(isset($medicine->contraindications))
                         {{ $medicine->contraindications }}
                         @else
                         Hati-hati pada pasien dengan gangguan fungsi ginjal/hati.

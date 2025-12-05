@@ -4,7 +4,6 @@
 
 @section('content')
 
-<!-- Tambahkan Judul, Notifikasi, dan Tombol di atas tabel -->
 <div class="bg-white p-6 rounded-xl shadow-md">
 
     {{-- Notifikasi (Misalnya setelah Tambah/Edit/Hapus Data) --}}
@@ -17,32 +16,72 @@
     <div class="flex justify-between items-center mb-6">
         <h3 class="text-2xl font-bold text-gray-800">Daftar Obat ({{ $medicines->total() ?? 0 }} Jenis)</h3>
 
-        <!-- Tombol Tambah Obat Baru -->
-        <button type="button" onclick="openMedicineModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 shadow-md">
-            <i class="fas fa-plus"></i> Tambah Obat Baru
-        </button>
+        <a onclick="openMedicineModal()"
+            class="inline-flex items-center 
+          bg-blue-600 hover:bg-blue-700 
+          text-white 
+          font-bold 
+          py-2 px-4 
+          rounded-lg 
+          shadow-md 
+          transition duration-150 ease-in-out cursor-pointer">
+            <i class="fas fa-plus mr-2"></i> Tambah Obat
+        </a>
     </div>
 
-    <!-- Search & Filter Form -->
     <form action="{{ route('admin.medicines.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 mb-8">
 
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Obat, Indikasi..."
-            class="flex-grow border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+        {{-- Input Cari Nama Obat DENGAN IKON SEARCH --}}
+        <div class="w-full relative">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Obat..."
+                class="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 placeholder-gray-400 focus:ring-2 transition">
 
-        <select name="category" class="border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full md:w-48">
-            <option value="">Semua Kategori</option>
-            {{-- Asumsi $categories dikirim dari Controller --}}
-            @foreach($categories as $cat)
-            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-            @endforeach
-        </select>
+            {{-- Ikon Search (Absolut) --}}
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+        </div>
+
+        <div class="w-full md:w-56 relative"
+            x-data="{ open: false, selectedLabel: '{{ request('category') == 'all' ? 'Semua Kategori' : (request('category') ?: 'Semua Kategori') }}', selectedValue: '{{ request('category') ?: 'all' }}' }"
+            @click.outside="open = false">
+
+            <input type="hidden" name="category" x-model="selectedValue">
+
+            <button type="button" @click="open = !open"
+                class="w-full px-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 flex justify-between items-center focus:outline-none focus:ring-2 transition">
+                <span class="truncate" x-text="selectedLabel"></span>
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+
+            <div x-show="open"
+                x-transition:enter="transition ease-out duration-100"
+                x-transition:enter-start="transform opacity-0 scale-95"
+                x-transition:enter-end="transform opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75"
+                x-transition:leave-start="transform opacity-100 scale-100"
+                x-transition:leave-end="transform opacity-0 scale-95"
+                class="absolute z-30 w-full mt-2 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 overflow-hidden max-h-60 overflow-y-auto">
+
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
+                    @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false; $root.submit()">
+                    Semua Kategori
+                </a>
+
+                @foreach($categories as $cat)
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
+                    @click.prevent="selectedLabel = '{{ $cat }}'; selectedValue = '{{ $cat }}'; open = false; $root.submit()">
+                    {{ $cat }}
+                </a>
+                @endforeach
+            </div>
+        </div>
 
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition w-full md:w-auto">
             Cari
         </button>
     </form>
 
-    <!-- Tabel Data Obat -->
     <div class="overflow-x-auto border border-gray-200 rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -93,12 +132,10 @@
                             <i class="fas fa-eye"></i> Detail
                         </button>
 
-                        <!-- Tombol Edit (Aksi Kelola Stok/Detail) -->
-                        <a href="{{ route('admin.medicines.edit', $item) }}" class="text-blue-600 hover:text-blue-900 font-medium">
+                        <button onclick="openMedicineEditModal({{ $item->id }})" class="text-blue-600 hover:text-blue-900 font-medium">
                             Edit
-                        </a>
+                        </button>
 
-                        <!-- Tombol Hapus -->
                         <form action="{{ route('admin.medicines.destroy', $item) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus {{ $item->name }}? Stok: {{ $item->stock }}');">
                             @csrf
                             @method('DELETE')
@@ -117,4 +154,11 @@
         {{ $medicines->links() }}
     </div>
 </div>
+
+{{-- MODAL INCLUDES --}}
+{{-- PENTING: Pastikan variabel $existingCategories tersedia untuk modal create --}}
+@include('admin.medicine.detail')
+@include('admin.medicine.create')
+@include('admin.medicine.edit')
+
 @endsection

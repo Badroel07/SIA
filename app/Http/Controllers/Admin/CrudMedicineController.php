@@ -28,8 +28,14 @@ class CrudMedicineController extends Controller
 
         // Logika Filter Kategori
         if ($request->filled('category')) {
-            $query->where('category', $request->input('category'));
+            $categoryFilter = $request->input('category');
+
+            // Hanya terapkan filter jika nilainya BUKAN 'all'
+            if ($categoryFilter !== 'all') {
+                $query->where('category', $categoryFilter);
+            }
         }
+        // --- AKHIR PERUBAHAN ---
 
         // Ambil data (15 item per halaman)
         $medicines = $query->orderBy('name', 'asc')->paginate(15)->withQueryString();
@@ -37,8 +43,28 @@ class CrudMedicineController extends Controller
         // Ambil semua kategori unik untuk filter dropdown
         $categories = Medicine::select('category')->distinct()->pluck('category');
 
+        $existingCategories = Medicine::select('category')
+            ->distinct()
+            ->pluck('category')
+            ->filter()
+            ->values()
+            ->toArray();
+
         // Pastikan view CRUD index dipanggil
-        return view('admin.medicine.index', compact('medicines', 'categories'));
+        return view('admin.medicine.index', compact('medicines', 'categories', 'existingCategories'));
+    }
+
+    public function create()
+    {
+        // Ambil semua kategori unik, sama seperti di index
+        $existingCategories = Medicine::distinct()
+            ->pluck('category')
+            ->filter()
+            ->values()
+            ->toArray();
+
+        // Render view create.blade.php dengan variabel yang dibutuhkan
+        return view('admin.medicine.create', compact('existingCategories'));
     }
 
     /**
@@ -94,11 +120,16 @@ class CrudMedicineController extends Controller
     /**
      * Menampilkan formulir untuk mengedit data obat dan mengelola stok (EDIT).
      */
-    public function edit(Medicine $medicine)
-    {
-        // PERBAIKAN: Mengganti view path
-        return view('admin.medicine.edit', compact('medicine'));
-    }
+    // public function edit(Medicine $medicine)
+    // {
+    //     $existingCategories = Medicine::select('category')
+    //         ->distinct()
+    //         ->pluck('category')
+    //         ->filter()
+    //         ->values()
+    //         ->toArray();
+    //     return view('admin.medicine.edit', compact('medicine', 'existingCategories'));
+    // }
 
     /**
      * Memperbarui data obat dan stok (UPDATE).

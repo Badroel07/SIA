@@ -1,6 +1,6 @@
 {{-- Modal Detail Obat --}}
-<div id="medicineDetailModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-    <div class="relative top-10 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-xl bg-white mb-10">
+<div id="medicineDetailModal" class="hidden fixed inset-0 backdrop-blur-sm backdrop-brightness-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-5 w-full max-w-4xl shadow-lg rounded-xl bg-white mb-10">
         {{-- Header Modal --}}
         <div class="flex justify-between items-center border-b pb-3 mb-6">
             <h3 class="text-2xl font-bold text-gray-800">Detail Informasi Obat</h3>

@@ -159,7 +159,7 @@
                     <input type="hidden" name="category" x-model="selectedValue">
 
                     <button type="button" @click="open = !open"
-                        class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-700 flex justify-between items-center focus:outline-none focus:ring-2 focus:ring-blue-600 transition">
+                        class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-700 flex justify-between items-center focus:outline-none focus:ring-2 transition">
                         <span class="truncate" x-text="selectedLabel"></span>
                         <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -243,7 +243,7 @@
                         </button>
                         @endif
 
-                        <a href="{{ route('show', $item->slug) }}" class="w-8 h-8 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Lihat Detail">
+                        <a href="{{ route('show', $item->id ) }}" class="w-8 h-8 rounded-full bg-blue-50 text-brand-blue flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Lihat Detail">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                             </svg>
