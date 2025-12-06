@@ -66,8 +66,6 @@ use Illuminate\Support\Facades\Auth;
 </head>
 
 <body class="bg-gray-100 font-sans antialiased">
-
-    {{-- WRAPPER UTAMA: x-data untuk menyimpan state sidebar --}}
     <div class="min-h-screen flex"
         x-data="{ 
             isSidebarOpen: false, {{-- DEFAULT TERTUTUP --}}
@@ -79,8 +77,9 @@ use Illuminate\Support\Facades\Auth;
         }">
 
         <!-- SIDEBAR (Kiri) - Lebar Ditetapkan (OVERLAY) -->
-        <aside class="bg-white shadow-xl shadow-gray-200 flex flex-col fixed h-full z-50 transition-transform duration-300 w-60"
-            {{-- Menggunakan transform untuk slide in/out --}}
+        <!-- SIDEBAR (Kiri) - Tambahkan x-cloak -->
+        <aside x-cloak
+            class="bg-white shadow-xl shadow-gray-200 flex flex-col fixed h-full z-50 transition-transform duration-300 w-60"
             :class="{ '-translate-x-full': !isSidebarOpen, 'translate-x-0': isSidebarOpen }">
 
             <!-- Brand & Tombol Tutup di dalam Sidebar (Diperbaiki strukturnya) -->
@@ -115,47 +114,20 @@ use Illuminate\Support\Facades\Auth;
                             <i class="fas fa-home w-5 text-center flex-shrink-0"></i>
                             <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.dashboard') ? 'font-bold' : 'font-medium'}}">Dashboard</span>
                         </a>
+
                         <a href="{{ route('admin.medicines.index') }}"
                             class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.medicines.index') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
                             <i class="fas fa-capsules w-5 text-center flex-shrink-0"></i>
                             <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.medicines.index') ? 'font-bold' : 'font-medium'}}">Manajemen Obat</span>
                         </a>
-                    </li>
 
-                    @if(Auth::check() && Auth::user()->isAdmin())
-                    {{-- Judul Menu --}}
-                    <li class="px-4 pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider overflow-hidden whitespace-nowrap">Management</li>
-
-                    {{-- Link Manajemen Obat --}}
-                    <li>
-                        <a href="{{ route('admin.medicines.index') }}"
-                            class="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.medicines.*') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
-                            <i class="fas fa-capsules w-5 text-center flex-shrink-0"></i>
-                            <span class="font-medium overflow-hidden whitespace-nowrap">Manajemen Obat</span>
-                        </a>
-                    </li>
-
-                    {{-- Link Kelola Staff --}}
-                    <li>
                         <a href="{{ route('admin.users.index') }}"
-                            class="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.users.*') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
-                            <i class="fas fa-users-cog w-5 text-center flex-shrink-0"></i>
-                            <span class="font-medium overflow-hidden whitespace-nowrap">Kelola Staff/Kasir</span>
+                            class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.users.index') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
+                            <i class="fa-solid fa-circle-user w-5 text-center flex-shrink-0"></i>
+                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.users.index') ? 'font-bold' : 'font-medium'}}">Manajemen User</span>
                         </a>
-                    </li>
-                    @endif
 
-                    {{-- Menu Khusus Kasir --}}
-                    @if(Auth::check() && Auth::user()->isCashier())
-                    <li class="px-4 pt-4 pb-2 text-xs font-bold text-gray-400 uppercase tracking-wider overflow-hidden whitespace-nowrap">Kasir</li>
-                    <li>
-                        <a href="{{ route('cashier.dashboard') }}"
-                            class="flex items-center gap-3 px-3 py-3 rounded-xl text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition duration-150">
-                            <i class="fas fa-cash-register w-5 text-center flex-shrink-0"></i>
-                            <span class="font-medium overflow-hidden whitespace-nowrap">Halaman Kasir</span>
-                        </a>
                     </li>
-                    @endif
                 </ul>
             </nav>
 

@@ -1,9 +1,11 @@
 <?php
 
-use App\Http\Middleware\AboutMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+
+use App\Http\Middleware\IsCashier;
+use App\Http\Middleware\IsAdmin;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'about' => AboutMiddleware::class
+            // TAMBAHKAN ALIAS MIDDLEWARE KASIR DI SINI:
+            'is_cashier' => IsCashier::class,
+            'is_admin' => IsAdmin::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

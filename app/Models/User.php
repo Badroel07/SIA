@@ -9,6 +9,11 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    public static function getAvailableRoles(): array
+    {
+        // Langsung definisikan array sesuai ENUM di migration Anda
+        return ['admin', 'cashier', 'customer'];
+    }
 
     /**
      * Cek apakah user adalah seorang Admin.
@@ -46,6 +51,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**

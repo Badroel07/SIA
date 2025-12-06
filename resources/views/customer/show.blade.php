@@ -2,6 +2,8 @@
 
 @section('content')
 
+@include('components.cart.cartLogic')
+
 {{-- Menampilkan tombol kembali ke katalog --}}
 <div class="container mx-auto px-4 pt-10 pb-4">
     <a href="javascript:history.back()" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300 flex items-center gap-1">
@@ -20,6 +22,7 @@
             <!-- Kiri: Gambar Obat -->
             <div class="md:w-1/3 flex-shrink-0 bg-gray-50 rounded-lg p-6 flex items-center justify-center">
                 @if($medicine->image)
+                <!-- <img src="{{ Storage::url($medicine->image) }}" alt="{{ $medicine->name }}" class="w-full max-h-96 object-contain rounded-md shadow-lg"> -->
                 <img src="{{ asset('storage/' . $medicine->image) }}" alt="{{ $medicine->name }}" class="w-full max-h-96 object-contain rounded-md shadow-lg">
                 @else
                 <svg class="w-40 h-40 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
@@ -115,6 +118,9 @@
     </div>
 </section>
 
+
+
+
 {{-- Pastikan Alpine.js x-data block (untuk cart) tetap ada, 
      karena kita memanggil addToCart di view ini --}}
 <div x-data="{ 
@@ -154,4 +160,9 @@
 }" x-init="saveCart()">
     {{-- Floating Cart UI akan berada di sini (disembunyikan di view show ini, atau ditaruh di layout app) --}}
 </div>
+
+@include('components.cart.floatingCart')
+@include('components.cart.cartModal')
+@include('components.cart.toast')
+@include('components.cart.confirmDelete')
 @endsection

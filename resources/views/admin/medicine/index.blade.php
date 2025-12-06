@@ -103,6 +103,7 @@
                 <tr>
                     <td class="px-6 py-4">
                         @if($item->image)
+                        <!-- <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 object-cover rounded-full"> -->
                         <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 object-cover rounded-full">
                         @else
                         <i class="fas fa-capsules text-xl text-gray-400"></i>
@@ -188,7 +189,7 @@
 
 {{-- MODAL INCLUDES --}}
 {{-- PENTING: Pastikan variabel $existingCategories tersedia untuk modal create --}}
-@include('admin.medicine.detail')
+@include('components.detail_obat')
 @include('admin.medicine.create')
 @include('admin.medicine.edit')
 

@@ -35,19 +35,33 @@
             </div>
         `;
 
-        // Fetch detail data via AJAX
+        // Coba URL pertama, jika gagal coba URL kedua
         fetch(`/admin/medicines/${medicineId}/detail`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('URL 1 gagal');
+                return response.json();
+            })
             .then(data => {
                 content.innerHTML = generateDetailHTML(data);
             })
             .catch(error => {
+                console.log('URL 1 gagal, mencoba URL 2...', error);
+
+                // Coba URL kedua
+                return fetch(`/cashier/transaction/medicines/${medicineId}/detail`)
+                    .then(response => response.json())
+                    .then(data => {
+                        content.innerHTML = generateDetailHTML(data);
+                    });
+            })
+            .catch(error => {
+                // Jika kedua URL gagal
                 content.innerHTML = `
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        <p class="font-bold">Error memuat data!</p>
-                        <p class="text-sm">${error.message}</p>
-                    </div>
-                `;
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <p class="font-bold">Error memuat data!</p>
+                <p class="text-sm">Kedua sumber data gagal dimuat</p>
+            </div>
+        `;
             });
     }
 
@@ -58,6 +72,7 @@
                 <div class="md:col-span-1 space-y-4">
                     <div class="bg-gray-50 rounded-lg p-4 text-center">
                         ${medicine.image 
+                            // ? `<img src="${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
                             ? `<img src="/storage/${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
                             : `<div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
                                 <i class="fas fa-capsules text-6xl text-gray-400"></i>

@@ -93,7 +93,7 @@ class CrudMedicineController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('medicines', 'public');
+            $imagePath = $request->file('image')->store('medicines', 's3');
         }
 
         $slug = Str::slug($request->name);
@@ -167,9 +167,9 @@ class CrudMedicineController extends Controller
 
         if ($request->hasFile('image')) {
             if ($medicine->image) {
-                Storage::disk('public')->delete($medicine->image);
+                Storage::disk('s3')->delete($medicine->image);
             }
-            $data['image'] = $request->file('image')->store('medicines', 'public');
+            $data['image'] = $request->file('image')->store('medicines', 's3');
         }
 
         $medicine->update($data);
@@ -185,7 +185,7 @@ class CrudMedicineController extends Controller
     {
         // Hapus file gambar lama jika ada
         if ($medicine->image) {
-            Storage::disk('public')->delete($medicine->image);
+            Storage::disk('s3')->delete($medicine->image);
         }
 
         $medicine->delete();
@@ -198,6 +198,11 @@ class CrudMedicineController extends Controller
     {
         $medicine = Medicine::findOrFail($id);
 
+        // // 1. Hitung URL S3 di sisi server (PHP)
+        // $imageUrl = $medicine->image
+        //     ? Storage::url($medicine->image)
+        //     : null;
+
         return response()->json([
             'id' => $medicine->id,
             'name' => $medicine->name,
@@ -205,6 +210,7 @@ class CrudMedicineController extends Controller
             'price' => $medicine->price,
             'stock' => $medicine->stock,
             'total_sold' => $medicine->total_sold ?? 0,
+            // 'image' => $imageUrl,
             'image' => $medicine->image,
             'description' => $medicine->description,
             'full_indication' => $medicine->full_indication,

@@ -81,7 +81,7 @@
 </section>
 
 <!-- 3. STATS COUNTER -->
-<section class="bg-brand-blue py-16 text-white">
+<section class="bg-blue-500 py-16 text-white">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
