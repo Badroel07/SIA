@@ -56,9 +56,8 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
 
     <div x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
 
-
-        <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100">
-            <div class="container mx-auto px-4 flex justify-between items-center">
+        <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100 w-full">
+            <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
                 <div class="flex items-center gap-2">
                     <button @click="sidebarOpen = true" type="button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition">
@@ -82,6 +81,10 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
 
                     <a href="{{ route('cashier.transaction.index') }}" class="{{ request()->routeIs('cashier.transaction.index') ? $active : $inactive}} py-4 -mb-1">
                         Transaksi
+                    </a>
+
+                    <a href="{{ route('cashier.transaction.history') }}" class="{{ request()->routeIs('cashier.transaction.history') ? $active : $inactive}} py-4 -mb-1">
+                        Riwayat Transaksi
                     </a>
 
                     {{-- MODIFIKASI: Tombol Logout Desktop --}}

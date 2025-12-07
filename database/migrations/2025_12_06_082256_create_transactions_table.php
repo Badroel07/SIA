@@ -15,13 +15,10 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number')->unique();
-            $table->foreignId('user_id')->constrained('users')->onDelete('restrict')->comment('Kasir yang memproses');
-            $table->unsignedBigInteger('total_price'); // Total sebelum diskon
-            $table->unsignedBigInteger('discount')->default(0);
-            $table->unsignedBigInteger('final_total'); // Total akhir setelah diskon
-            $table->unsignedBigInteger('amount_paid'); // Uang yang dibayarkan customer
-            $table->unsignedBigInteger('change_amount'); // Kembalian
-            $table->enum('status', ['paid', 'canceled'])->default('paid');
+            $table->decimal('total_amount', 10, 2);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->timestamp('transaction_date');
+            $table->string('status')->default('pending'); // pending, completed, cancelled
             $table->timestamps();
         });
 
@@ -29,11 +26,10 @@ return new class extends Migration
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
-            $table->foreignId('medicine_id')->constrained('medicines')->onDelete('restrict');
-            $table->string('medicine_name');
+            $table->foreignId('medicine_id')->constrained('medicines')->onDelete('cascade');
             $table->integer('quantity');
-            $table->unsignedBigInteger('unit_price');
-            $table->unsignedBigInteger('subtotal');
+            $table->decimal('price', 10, 2);
+            $table->decimal('subtotal', 10, 2);
             $table->timestamps();
         });
     }

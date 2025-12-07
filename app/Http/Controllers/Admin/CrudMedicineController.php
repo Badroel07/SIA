@@ -93,6 +93,7 @@ class CrudMedicineController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
+            // $imagePath = $request->file('image')->store('medicines', 'public');
             $imagePath = $request->file('image')->store('medicines', 's3');
         }
 
@@ -136,12 +137,12 @@ class CrudMedicineController extends Controller
      */
     public function update(Request $request, Medicine $medicine)
     {
-        // ... (Logika update tetap sama) ...
         $request->validate([
             'name' => 'required|string|max:100|unique:medicines,name,' . $medicine->id,
             'category' => 'required|string|max:100',
             'price' => 'required|integer|min:0',
             'stock_adjustment' => 'nullable|integer', // Kolom untuk menambah/mengurangi stok
+            'stock_reason' => 'required_if:stock_adjustment,<,0|string|in:sold,other', // Validasi untuk alasan pengurangan stok
             'description' => 'required|string',
             'full_indication' => 'required|string',
             'usage_detail' => 'required|string',
@@ -150,16 +151,22 @@ class CrudMedicineController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->except(['_token', '_method', 'stock_adjustment', 'image']);
+        $data = $request->except(['_token', '_method', 'stock_adjustment', 'image', 'stock_reason']);
         $originalStock = $medicine->stock;
 
         if ($request->filled('stock_adjustment')) {
             $adjustment = (int) $request->stock_adjustment;
             $data['stock'] = $originalStock + $adjustment;
+
+            // Logika baru untuk pengurangan stok
             if ($adjustment < 0) {
-                $soldUnits = abs($adjustment);
-                $data['total_sold'] = $medicine->total_sold + $soldUnits;
+                // Hanya tambahkan total_sold jika alasan adalah "terjual"
+                if ($request->stock_reason === 'sold') {
+                    $soldUnits = abs($adjustment);
+                    $data['total_sold'] = $medicine->total_sold + $soldUnits;
+                }
             }
+
             if ($data['stock'] < 0) {
                 return redirect()->back()->with('error', 'Stok yang dikurangi melebihi stok tersedia!');
             }
@@ -169,15 +176,13 @@ class CrudMedicineController extends Controller
             if ($medicine->image) {
                 Storage::disk('s3')->delete($medicine->image);
             }
-            $data['image'] = $request->file('image')->store('medicines', 's3');
+            $data['image'] = $request->file('image')->store('medicines', 'public');
         }
 
         $medicine->update($data);
 
-        // PERBAIKAN: Menggunakan route admin.medicines.index
         return redirect()->route('admin.medicines.index')->with('success', 'Data obat berhasil diperbarui!');
     }
-
     /**
      * Menghapus data obat (DELETE).
      */
@@ -185,6 +190,7 @@ class CrudMedicineController extends Controller
     {
         // Hapus file gambar lama jika ada
         if ($medicine->image) {
+            // Storage::disk('public')->delete($medicine->image);
             Storage::disk('s3')->delete($medicine->image);
         }
 
@@ -198,10 +204,10 @@ class CrudMedicineController extends Controller
     {
         $medicine = Medicine::findOrFail($id);
 
-        // // 1. Hitung URL S3 di sisi server (PHP)
-        // $imageUrl = $medicine->image
-        //     ? Storage::url($medicine->image)
-        //     : null;
+        // 1. Hitung URL S3 di sisi server (PHP)
+        $imageUrl = $medicine->image
+            ? Storage::disk('s3')->url($medicine->image)
+            : null;
 
         return response()->json([
             'id' => $medicine->id,
@@ -210,8 +216,8 @@ class CrudMedicineController extends Controller
             'price' => $medicine->price,
             'stock' => $medicine->stock,
             'total_sold' => $medicine->total_sold ?? 0,
-            // 'image' => $imageUrl,
-            'image' => $medicine->image,
+            'image' => $imageUrl,
+            // 'image' => $medicine->image,
             'description' => $medicine->description,
             'full_indication' => $medicine->full_indication,
             'usage_detail' => $medicine->usage_detail,

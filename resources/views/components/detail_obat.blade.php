@@ -72,8 +72,8 @@
                 <div class="md:col-span-1 space-y-4">
                     <div class="bg-gray-50 rounded-lg p-4 text-center">
                         ${medicine.image 
-                            // ? `<img src="${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
-                            ? `<img src="/storage/${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
+                            ? `<img src="${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
+                            // ? `<img src="/storage/${medicine.image}" alt="${medicine.name}" class="w-full h-48 object-contain rounded-lg mb-4">`
                             : `<div class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center mb-4">
                                 <i class="fas fa-capsules text-6xl text-gray-400"></i>
                                </div>`

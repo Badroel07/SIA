@@ -85,15 +85,18 @@ $total = $subtotal - $diskon;
                 <p class="text-sm text-gray-400 mt-2">Coba ganti kata kunci atau filter Anda.</p>
             </div>
             @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {{-- PERUBAHAN HANYA DI GRID INI --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
 
                 @foreach ($medicines as $medicine)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-200 border-2 border-gray-100 hover:border-indigo-400">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-200 border-2 border-gray-100 hover:border-indigo-400 hover:shadow-lg">
 
+                    {{-- KEMBALIKAN UKURAN GAMBAR KE ASLI --}}
                     <img class="h-24 w-full object-cover"
-                        src="{{ asset('storage/' . $medicine->image) }}"
+                        src="{{ Storage::disk('s3')->url($medicine->image) }}"
                         alt="{{ $medicine->name }}">
 
+                    {{-- KEMBALIKAN PADDING DAN FONT KE ASLI --}}
                     <div class="p-3 text-center">
                         <p class="text-sm font-semibold text-gray-800 truncate">{{ $medicine->name }}</p>
                         <p class="text-xs text-gray-500 mb-1">{{ ucfirst($medicine->category) }}</p>
@@ -145,14 +148,15 @@ $total = $subtotal - $diskon;
         </div>
 
         {{-- SISI KANAN: KERANJANG BELANJA --}}
-        <div class="space-y-6">
-
-            <div class="bg-white p-6 rounded-xl shadow-2xl space-y-4 sticky top-4">
+        {{-- Membuat keranjang menjadi sticky di semua ukuran layar sehingga tidak terpengaruh scroll halaman --}}
+        <div class="sticky top-32 z-30 self-start w-full">
+            <div class="bg-white p-6 rounded-xl shadow-2xl space-y-4 w-full">
 
                 <h2 class="text-xl font-bold text-gray-800 border-b pb-3">Keranjang Belanja</h2>
 
                 {{-- Looping Item Keranjang dari Session --}}
-                <div class="space-y-3 max-h-80 overflow-y-auto" id="cart-items">
+                {{-- Batasi tinggi list item agar jika banyak item, area ini scroll internal saja --}}
+                <div class="space-y-3 max-h-[60vh] overflow-y-auto" id="cart-items">
                     @if (empty($cartItems))
                     <div class="text-center py-4 text-gray-500">
                         <p>Keranjang kosong. Isi kuantitas dan klik "Tambah" di sebelah kiri.</p>
@@ -187,7 +191,7 @@ $total = $subtotal - $diskon;
                 </div>
 
                 {{-- Tombol Pembayaran --}}
-                <button @if (empty($cartItems)) disabled class="w-full bg-green-300 text-white text-lg font-semibold py-3 rounded-lg shadow-xl cursor-not-allowed" @else class="w-full bg-green-500 text-white text-lg font-semibold py-3 rounded-lg shadow-xl hover:bg-green-600 transition duration-150 focus:ring-4 focus:ring-green-400" @endif>
+                <button @if (empty($cartItems)) disabled class="w-full bg-green-300 text-white text-lg font-semibold py-3 rounded-lg shadow-xl cursor-not-allowed" @else id="prosesPembayaranBtn" class="w-full bg-green-500 text-white text-lg font-semibold py-3 rounded-lg shadow-xl hover:bg-green-600 transition duration-150 focus:ring-4 focus:ring-green-400" @endif>
                     <svg class="h-6 w-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                     </svg>
@@ -211,32 +215,132 @@ $total = $subtotal - $diskon;
                 </form>
 
             </div>
-
         </div>
 
     </div>
 </div>
 
+{{-- ========================================================================= --}}
+{{-- MODAL RINGKASAN TRANSAKSI --}}
+{{-- ========================================================================= --}}
+{{-- Modal ini akan muncul ketika tombol "PROSES PEMBAYARAN" diklik --}}
+<div id="paymentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full mb-4">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-center text-gray-900">Ringkasan Transaksi</h3>
+
+            <div class="mt-4 space-y-2 text-sm">
+                <div class="flex justify-between">
+                    <span class="font-medium text-gray-700">No. Invoice:</span>
+                    <span id="invoiceNumber" class="font-bold text-gray-900"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium text-gray-700">Tanggal:</span>
+                    <span id="transactionDate" class="font-bold text-gray-900"></span>
+                </div>
+                <div class="flex justify-between pt-3 mt-3 border-t border-gray-200">
+                    <span class="font-medium text-gray-700">Total Pembayaran:</span>
+                    <span id="totalPayment" class="text-lg font-bold text-green-600"></span>
+                </div>
+            </div>
+
+            {{-- Form untuk mengirim data ke backend --}}
+            <form id="confirmPaymentForm" action="{{ route('cashier.transaction.processPayment') }}" method="POST" class="mt-6">
+                @csrf
+                <input type="hidden" id="invoiceInput" name="invoice_number">
+                <input type="hidden" id="totalInput" name="total_amount">
+                <div class="flex space-x-3">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
+                        Konfirmasi
+                    </button>
+                    <button type="button" id="cancelPayment" class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition">
+                        Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@include('components.detail_obat')
+
+@endsection
+
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const flashMessage = document.getElementById('flash-message');
 
         // Logika Notifikasi Hilang Otomatis
         if (flashMessage) {
-            // Sembunyikan setelah 3000 milidetik (3 detik)
             setTimeout(() => {
                 flashMessage.style.transition = 'opacity 0.5s ease-out';
                 flashMessage.style.opacity = '0';
-
-                // Hapus elemen sepenuhnya setelah transisi selesai
                 setTimeout(() => {
                     flashMessage.remove();
-                }, 500); // Tunggu 500ms agar transisi selesai
+                }, 500);
             }, 3000);
+        }
+
+        // =========================================================================
+        // LOGIKA UNTUK MODAL PEMBAYARAN
+        // =========================================================================
+        const prosesPembayaranBtn = document.getElementById('prosesPembayaranBtn');
+        const paymentModal = document.getElementById('paymentModal');
+        const cancelPaymentBtn = document.getElementById('cancelPayment');
+
+        // Event listener untuk tombol "PROSES PEMBAYARAN"
+        if (prosesPembayaranBtn) {
+            prosesPembayaranBtn.addEventListener('click', function() {
+                // 1. Generate Nomor Invoice
+                const today = new Date();
+                const dateStr = today.getFullYear().toString() +
+                    (today.getMonth() + 1).toString().padStart(2, '0') +
+                    today.getDate().toString().padStart(2, '0');
+                // Menggunakan timestamp untuk memastikan keunikan
+                const uniqueCode = today.getTime().toString().slice(-5);
+                const invoiceNumber = 'INV-' + dateStr + '-' + uniqueCode;
+
+                // 2. Format Tanggal Transaksi
+                const formattedDate = today.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                // 3. Ambil Total Harga dari halaman
+                const totalElement = document.querySelector('.flex.justify-between.text-xl.font-bold.text-gray-900.mt-3 span:last-child');
+                const totalText = totalElement ? totalElement.textContent : 'Rp 0';
+
+                // 4. Isi data ke dalam modal
+                document.getElementById('invoiceNumber').textContent = invoiceNumber;
+                document.getElementById('transactionDate').textContent = formattedDate;
+                document.getElementById('totalPayment').textContent = totalText;
+
+                // 5. Isi data ke input hidden untuk dikirim ke backend
+                document.getElementById('invoiceInput').value = invoiceNumber;
+                // Hapus semua karakter non-digit untuk total amount
+                document.getElementById('totalInput').value = totalText.replace(/[^\d]/g, '');
+
+                // 6. Tampilkan modal
+                paymentModal.classList.remove('hidden');
+                paymentModal.classList.add('flex');
+            });
+        }
+
+        // Event listener untuk tombol "BATAL" pada modal
+        if (cancelPaymentBtn) {
+            cancelPaymentBtn.addEventListener('click', function() {
+                paymentModal.classList.add('hidden');
+                paymentModal.classList.remove('flex');
+            });
         }
     });
 </script>
-
-@include('components.detail_obat')
-
-@endsection
+@endpush

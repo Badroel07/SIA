@@ -6,23 +6,40 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User; // <-- Pastikan model User diimport
 use Illuminate\Support\Facades\Hash; // <-- Untuk hashing password
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // 1. Ambil data User untuk tabel utama (dengan pagination)
-        $users = User::paginate(10);
+        // 1. Query dasar untuk mengambil data User
+        $query = User::query();
 
-        // 2. Ambil daftar role unik dari tabel users
+        // 2. Logika Pencarian
+        if ($request->filled('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('email', 'LIKE', '%' . $searchTerm . '%');
+        }
+
+        // 3. Logika Filter Role
+        if ($request->filled('role')) {
+            $roleFilter = $request->input('role');
+            $query->where('role', $roleFilter);
+        }
+
+        // 4. Ambil data User dengan pagination (10 item per halaman)
+        // Gunakan withQueryString() untuk mempertahankan parameter URL saat pagination
+        $users = $query->orderBy('name', 'asc')->paginate(10)->withQueryString();
+
+        // 5. Ambil daftar role unik dari tabel users
         // Menggunakan select('role')->distinct() untuk mendapatkan nilai role unik saja.
         // pluck('role') mengubah hasil menjadi array sederhana.
         $roles = User::select('role')
             ->distinct()
             ->pluck('role');
 
-        // 3. Lewatkan $users DAN $roles ke view
+        // 6. Lewatkan $users DAN $roles ke view
         return view('admin.users.index', compact('users', 'roles'));
     }
 

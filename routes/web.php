@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;
 
 // =========================================================================================
 // 1. IMPORTS (Pastikan Anda mengimpor Controller ini)
@@ -74,30 +74,39 @@ Route::middleware(['auth', 'is_cashier'])->prefix('cashier')->name('cashier.')->
 
     Route::get('transaction/medicines/{id}/detail', [CrudMedicineController::class, 'detail'])->name('transaction.medicine.detail');
 
+    Route::post('/transaction/process-payment', [TransactionController::class, 'processPayment'])->name('transaction.processPayment');
+
+    // 1. Route untuk menampilkan halaman riwayat transaksi
+    Route::get('/transaction/history', [TransactionController::class, 'history'])->name('transaction.history');
+
+    // 2. Route untuk mengambil detail satu transaksi spesifik (dipanggil via AJAX)
+    //    {transaction} adalah "Route Model Binding" yang otomatis mencari model Transaction berdasarkan ID
+    Route::get('/transaction/{transaction}/details', [TransactionController::class, 'showDetails'])->name('transaction.showDetails');
     // ... route kasir lainnya ...
+
 });
 
 
 
 // // require __DIR__.'/auth.php';
 
-// Route::get('/tes-s3-upload', function () {
-//     try {
-//         $filename = 'tes-koneksi-' . time() . '.txt';
-//         $content = 'Koneksi S3 berhasil! Waktu: ' . now();
+Route::get('/tes-s3-upload', function () {
+    try {
+        $filename = 'tes-koneksi-' . time() . '.txt';
+        $content = 'Koneksi S3 berhasil! Waktu: ' . now();
 
-//         // Upload
-//         Storage::disk('s3')->put($filename, $content, 'public');
+        // Upload
+        Storage::disk('s3')->put($filename, $content, 'public');
 
-//         // BUAT URL MANUAL
-//         $bucket = env('sia-chkl-laravel');
-//         $region = env('ap-southeast-2');
+        // BUAT URL MANUAL
+        $bucket = env('sia-chkl-laravel');
+        $region = env('ap-southeast-2');
 
-//         $url = "https://{$bucket}.s3.{$region}.amazonaws.com/{$filename}";
+        $url = "https://{$bucket}.s3.{$region}.amazonaws.com/{$filename}";
 
-//         return "✔️ Koneksi S3 Berhasil! File '$filename' telah diunggah ke: 
-//             <a href='$url' target='_blank'>$url</a>";
-//     } catch (\Exception $e) {
-//         return "❌ Koneksi S3 Gagal: " . $e->getMessage();
-//     }
-// });
+        return "✔️ Koneksi S3 Berhasil! File '$filename' telah diunggah ke: 
+            <a href='$url' target='_blank'>$url</a>";
+    } catch (\Exception $e) {
+        return "❌ Koneksi S3 Gagal: " . $e->getMessage();
+    }
+});

@@ -10,7 +10,7 @@
     @if(session('success'))
     <div id="notification-alert"
         class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4 
-            **transition-opacity duration-500 ease-in-out opacity-0**"
+            transition-opacity duration-500 ease-in-out opacity-0"
         role="alert">
         <span class="block sm:inline">{{ session('success') }}</span>
     </div>
@@ -32,60 +32,73 @@
         </a>
     </div>
 
-    <form action="{{ route('admin.medicines.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 mb-8">
+    <form action="{{ route('admin.medicines.index') }}" method="GET" class="mb-8">
 
         {{-- Input Cari Nama Obat DENGAN IKON SEARCH --}}
-        <div class="w-full relative">
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Obat..."
-                class="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 placeholder-gray-400 focus:ring-2 transition">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-6 relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-500"></i>
+                </div>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Obat..."
+                    class="w-full pl-10 pr-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 placeholder-gray-400 focus:ring-2 transition">
+            </div>
 
-            {{-- Ikon Search (Absolut) --}}
-            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
-        </div>
+            <div class="md:col-span-3 relative"
+                x-data="{ open: false, selectedLabel: '{{ request('category') == 'all' ? 'Semua Kategori' : (request('category') ?: 'Semua Kategori') }}', selectedValue: '{{ request('category') ?: 'all' }}' }"
+                @click.outside="open = false">
 
-        <div class="w-full md:w-56 relative"
-            x-data="{ open: false, selectedLabel: '{{ request('category') == 'all' ? 'Semua Kategori' : (request('category') ?: 'Semua Kategori') }}', selectedValue: '{{ request('category') ?: 'all' }}' }"
-            @click.outside="open = false">
+                <input type="hidden" name="category" x-model="selectedValue">
 
-            <input type="hidden" name="category" x-model="selectedValue">
+                <button type="button" @click="open = !open"
+                    class="w-full px-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 flex justify-between items-center focus:outline-none focus:ring-2 transition">
+                    <span class="truncate" x-text="selectedLabel"></span>
+                    <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-9"></path>
+                    </svg>
+                </button>
 
-            <button type="button" @click="open = !open"
-                class="w-full px-4 py-3 bg-gray-100 rounded-lg border-none text-gray-700 flex justify-between items-center focus:outline-none focus:ring-2 transition">
-                <span class="truncate" x-text="selectedLabel"></span>
-                <svg class="w-4 h-4 ml-2 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-            </button>
+                <div x-show="open"
+                    x-transition:enter="transition ease-out duration-100"
+                    x-transition:enter-start="transform opacity-0 scale-95"
+                    x-transition:enter-end="transform opacity-100 scale-100"
+                    x-transition:leave="transition ease-in duration-75"
+                    x-transition:leave-start="transform opacity-100 scale-100"
+                    x-transition:leave-end="transform opacity-0 scale-95"
+                    class="absolute z-30 w-full mt-2 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 overflow-hidden max-h-60 overflow-y-auto">
 
-            <div x-show="open"
-                x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95"
-                class="absolute z-30 w-full mt-2 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 overflow-hidden max-h-60 overflow-y-auto">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
+                        @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false; $root.submit()">
+                        Semua Kategori
+                    </a>
 
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
-                    @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false; $root.submit()">
-                    Semua Kategori
+                    @foreach($categories as $cat)
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
+                        @click.prevent="selectedLabel = '{{ $cat }}'; selectedValue = '{{ $cat }}'; open = false; $root.submit()">
+                        {{ $cat }}
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="md:col-span-3 flex gap-2">
+                <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
+                    <i class="fas fa-search mr-2"></i> Cari
+                </button>
+
+                {{-- TOMBOL RESET --}}
+                <a href="{{ route('admin.medicines.index') }}" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center">
+                    <i class="fas fa-redo mr-2"></i> Reset
                 </a>
-
-                @foreach($categories as $cat)
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
-                    @click.prevent="selectedLabel = '{{ $cat }}'; selectedValue = '{{ $cat }}'; open = false; $root.submit()">
-                    {{ $cat }}
-                </a>
-                @endforeach
             </div>
         </div>
-
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition w-full md:w-auto">
-            Cari
-        </button>
     </form>
 
+    {{-- TABEL DATA OBAT ATAU PESAN KOSONG --}}
     <div class="overflow-x-auto border border-gray-200 rounded-lg">
+        @forelse($medicines as $item)
+        @if($loop->first)
+        {{-- Buka <table> hanya sekali di iterasi pertama --}}
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -99,12 +112,13 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($medicines as $item)
+                @endif
+
+                {{-- Row data obat --}}
                 <tr>
                     <td class="px-6 py-4">
                         @if($item->image)
-                        <!-- <img src="{{ Storage::url($item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 object-cover rounded-full"> -->
-                        <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 object-cover rounded-full">
+                        <img src="{{ Storage::disk('s3')->url($item->image) }}" alt="{{ $item->name }}" class="w-10 h-10 object-cover rounded-full">
                         @else
                         <i class="fas fa-capsules text-xl text-gray-400"></i>
                         @endif
@@ -149,9 +163,24 @@
                         </form>
                     </td>
                 </tr>
-                @endforeach
+
+                @if($loop->last)
+                {{-- Tutup </tbody> dan </table> hanya sekali di iterasi terakhir --}}
             </tbody>
         </table>
+        @endif
+
+        @empty
+        {{-- Tampilan ketika tidak ada data --}}
+        <div class="flex flex-col items-center justify-center py-12">
+            <i class="fas fa-pills text-6xl text-gray-300 mb-4"></i>
+            <p class="text-xl text-gray-500 font-medium mb-2">TIDAK ADA DATA OBAT</p>
+            <p class="text-gray-400 mb-4">Silakan tambah obat baru</p>
+            <button onclick="openMedicineModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
+                <i class="fas fa-plus mr-2"></i> Tambah Obat Baru
+            </button>
+        </div>
+        @endforelse
     </div>
 
     <div class="mt-4">

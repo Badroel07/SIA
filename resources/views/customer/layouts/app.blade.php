@@ -55,8 +55,8 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
 
     <div x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
 
-        <div class="bg-blue-500 text-white py-2 text-sm hidden md:block">
-            <div class="container mx-auto px-4 flex justify-between items-center">
+        <div class="bg-blue-500 text-white py-2 text-sm hidden md:block w-full">
+            <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                 <p>Selamat datang di ePharma. Sistem Informasi Apotek Terpercaya dan Akurat.</p>
                 <div class="flex items-center space-x-6">
                     <div class="flex items-center gap-2">
@@ -75,8 +75,8 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
             </div>
         </div>
 
-        <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100">
-            <div class="container mx-auto px-4 flex justify-between items-center">
+        <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100 w-full">
+            <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
                 <div class="flex items-center gap-2">
                     <button @click="sidebarOpen = true" type="button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition">
@@ -147,10 +147,6 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
                 @else 
                     {{$mobile_inactive}}
                 @endif" @click="sidebarOpen = false">Tentang Kami</a>
-
-                <div class="pt-4 border-t border-gray-100 mt-4">
-                    <a href="#" class="block px-3 py-3 rounded-lg text-lg font-medium text-blue-500 hover:bg-blue-50 transition">Masuk/Daftar</a>
-                </div>
             </nav>
         </div>
         <main>
@@ -158,7 +154,7 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
         </main>
 
         <footer class="bg-gray-900 text-white py-12 mt-20">
-            <div class="container mx-auto px-4 grid md:grid-cols-4 gap-8">
+            <div class="px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-8">
                 <div>
                     <h3 class="text-xl font-bold mb-4">ePharma</h3>
                     <p class="text-gray-400 text-sm">Menyediakan layanan dan produk obat terbaik bagi pelanggan.</p>

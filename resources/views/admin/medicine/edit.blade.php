@@ -67,6 +67,7 @@
                             class="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm p-2.5 cursor-not-allowed">
                     </div>
 
+                    {{-- Bagian penyesuaian stok yang dimodifikasi --}}
                     <div class="md:col-span-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <label for="edit-stock-adjustment" class="block text-sm font-medium text-blue-800 mb-1">
                             <i class="fas fa-arrows-alt-v mr-1"></i> Penyesuaian Stok (Tambahkan/Kurangi)
@@ -74,7 +75,22 @@
                         <input type="number" name="stock_adjustment" id="edit-stock-adjustment" placeholder="Masukkan angka positif (+) untuk menambah, atau negatif (-) untuk mengurangi"
                             value=""
                             class="mt-1 block w-full border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                        <p class="text-xs text-gray-600 mt-2">Misal: Masukkan **10** untuk menambah 10 unit, atau **-5** untuk mengurangi 5 unit.</p>
+                        <p class="text-xs text-gray-600 mt-2">Misal: Masukkan 10 untuk menambah 10 unit, atau -5 untuk mengurangi 5 unit.</p>
+
+                        {{-- Tambahkan radio button untuk alasan pengurangan stok --}}
+                        <div id="stock-reason-container" class="mt-4 hidden">
+                            <label class="block text-sm font-medium text-blue-800 mb-2">Alasan Pengurangan Stok:</label>
+                            <div class="flex space-x-6">
+                                <div class="flex items-center">
+                                    <input id="sold-reason" name="stock_reason" value="sold" type="radio" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                                    <label for="sold-reason" class="ml-2 block text-sm text-gray-700">Terjual</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="other-reason" name="stock_reason" value="other" type="radio" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" checked>
+                                    <label for="other-reason" class="ml-2 block text-sm text-gray-700">Lainnya (hilang, rusak, dll)</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -155,7 +171,6 @@
             dropdownParent: $('#medicineEditModal'),
             allowClear: true,
             tags: true, // **MENGAKTIFKAN INPUT MANUAL/TAGS**
-            // Hapus createTag jika ingin Select2 menggunakan logika default-nya
         });
 
         // Memastikan Select2 memilih nilai kategori saat ini
@@ -185,20 +200,20 @@
             document.getElementById('edit-current-stock').value = data.stock;
 
             // 4. Isi Field Detail (Textarea)
-            // Menggunakan || '' untuk memastikan nilai adalah string jika datanya null
             document.getElementById('edit-description').value = data.description || '';
             document.getElementById('edit-full_indication').value = data.full_indication || '';
             document.getElementById('edit-usage_detail').value = data.usage_detail || '';
             document.getElementById('edit-side_effects').value = data.side_effects || '';
             document.getElementById('edit-contraindications').value = data.contraindications || '';
 
-            // 5. Handle Gambar
+            // 5. Handle Gambar - PERBAIKAN DI SINI
             const img = document.getElementById('edit-current-image');
             const noImgSpan = document.getElementById('edit-no-image');
-            const storagePath = baseUrl + '/storage/';
 
             if (data.image) {
-                img.src = storagePath + data.image;
+                // Gunakan image_url dari backend yang sudah berisi full S3 URL
+                // ATAU buat sendiri dengan menambahkan S3 base URL
+                img.src = data.image_url || data.image; // Pastikan backend mengirim image_url
                 img.classList.remove('hidden');
                 noImgSpan.classList.add('hidden');
             } else {
@@ -224,7 +239,6 @@
 
 
     // --- 3. Fungsi untuk Menutup Modal Edit ---
-
     function closeEditMedicineModal() {
         const modal = document.getElementById('medicineEditModal');
         const modalContent = document.getElementById('editModalContent');
@@ -239,4 +253,21 @@
             document.body.style.overflow = 'auto';
         }, 300);
     }
+
+    // Tambahkan ini di bagian JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const stockAdjustmentInput = document.getElementById('edit-stock-adjustment');
+        const stockReasonContainer = document.getElementById('stock-reason-container');
+
+        stockAdjustmentInput.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (isNaN(value)) {
+                stockReasonContainer.classList.add('hidden');
+            } else if (value < 0) {
+                stockReasonContainer.classList.remove('hidden');
+            } else {
+                stockReasonContainer.classList.add('hidden');
+            }
+        });
+    });
 </script>

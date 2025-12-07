@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Medicine;
 use Illuminate\Support\Facades\Session;
+use App\Models\Transaction;
+use App\Models\TransactionDetail;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -113,5 +116,118 @@ class TransactionController extends Controller
 
         // Redirect kembali ke halaman transaksi dengan notifikasi
         return redirect()->route('cashier.transaction.index')->with('success', 'Keranjang belanja berhasil dikosongkan.');
+    }
+
+    public function processPayment(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'invoice_number' => 'required|string|unique:transactions,invoice_number',
+            'total_amount' => 'required|numeric|min:0'
+        ]);
+
+        // Mulai Database Transaction
+        DB::beginTransaction();
+        try {
+            $invoiceNumber = $request->input('invoice_number');
+            $totalAmount = $request->input('total_amount');
+            $cartItems = Session::get('cart', []);
+
+            if (empty($cartItems)) {
+                DB::rollBack();
+                return redirect()->route('cashier.transaction.index')->with('error', 'Keranjang belanja kosong, tidak dapat memproses pembayaran.');
+            }
+
+            // 1. SIMPAN DATA TRANSAKSI UTAMA ke tabel 'transactions'
+            $transaction = Transaction::create([
+                'invoice_number' => $invoiceNumber,
+                'total_amount' => $totalAmount,
+                'user_id' => auth()->id(),
+                'transaction_date' => now(),
+                'status' => 'completed'
+            ]);
+
+            // 2. LOOPING SETIAP ITEM DI KERANJANG
+            foreach ($cartItems as $item) {
+                // 2a. SIMPAN DETAIL TRANSAKSI ke tabel 'transaction_details'
+                TransactionDetail::create([
+                    'transaction_id' => $transaction->id,
+                    'medicine_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'subtotal' => $item['subtotal']
+                ]);
+
+                // --- PERBAIKAN: Gabungkan semua logika update obat di dalam loop ---
+                $medicine = Medicine::find($item['id']);
+                if ($medicine) {
+                    // Cek stok sebagai pengaman
+                    if ($medicine->stock < $item['quantity']) {
+                        throw new \Exception('Stok obat "' . $medicine->name . '" tidak mencukupi.');
+                    }
+
+                    // Kurangi stok
+                    $medicine->stock -= $item['quantity'];
+                    // Tambah total terjual
+                    $medicine->total_sold += $item['quantity'];
+                    // Simpan perubahan SEKALI saja untuk setiap item
+                    $medicine->save();
+                }
+            } // <-- Akhir dari loop. Semua item sudah diproses.
+
+            // HAPUS blok kode yang mengupdate obat yang berada di luar loop.
+
+            // Jika semua proses di atas berhasil, maka commit transaksi
+            DB::commit();
+
+            // 3. KOSONGKAN KERANJANG BELANJA
+            Session::forget('cart');
+
+            // 4. REDIRECT KE HALAMAN TRANSAKSI DENGAN PESAN SUKSES
+            return redirect()->route('cashier.transaction.index')->with('success', 'Pembayaran berhasil! Nomor invoice: ' . $invoiceNumber);
+        } catch (\Exception $e) {
+            // Jika terjadi error di manapun dalam blok try, lakukan rollback
+            DB::rollBack();
+
+            // Log error untuk debugging
+            \Log::error('Payment processing failed: ' . $e->getMessage());
+
+            // Redirect dengan pesan error
+            return redirect()->route('cashier.transaction.index')->with('error', 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage());
+        }
+    }
+
+    public function history(Request $request)
+    {
+        // Query untuk mengambil transaksi dengan relasi user (kasir)
+        // dan diurutkan dari yang terbaru.
+        $query = Transaction::with('user')->latest();
+
+        // Logika Pencarian berdasarkan Nomor Invoice
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('invoice_number', 'like', '%' . $request->search . '%');
+        }
+
+        // Ambil data dengan pagination (10 data per halaman)
+        $transactions = $query->paginate(10);
+
+        // Kembalikan view dengan data transaksi
+        return view('cashier.transaction.history', compact('transactions'));
+    }
+
+    /**
+     * Mengambil detail transaksi tertentu untuk ditampilkan di modal.
+     * Method ini dipanggil via JavaScript (AJAX).
+     */
+    public function showDetails($id)
+    {
+        // SESUDAH (BENAR - dengan eager loading)
+        $transaction = Transaction::with(['user', 'details.medicine'])->find($id);
+
+        if (!$transaction) {
+            return response()->json(['error' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        return response()->json($transaction);
     }
 }

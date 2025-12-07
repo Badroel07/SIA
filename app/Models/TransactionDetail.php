@@ -9,23 +9,26 @@ class TransactionDetail extends Model
 {
     use HasFactory;
 
-    // Kolom yang dapat diisi secara massal
+    // Peningkatan: Tambahkan $casts untuk konsistensi tipe data numerik
+    protected $casts = [
+        'quantity' => 'integer',
+        'price' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+    ];
+
     protected $fillable = [
         'transaction_id',
         'medicine_id',
-        'medicine_name',
         'quantity',
-        'unit_price',
+        'price',
         'subtotal',
     ];
 
-    // Relasi ke Transaksi (Many-to-One)
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
     }
 
-    // Relasi ke Obat (Many-to-One)
     public function medicine()
     {
         return $this->belongsTo(Medicine::class);

@@ -9,27 +9,42 @@ class Transaction extends Model
 {
     use HasFactory;
 
-    // Kolom yang dapat diisi secara massal (mass assignable)
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'invoice_number',
+        'total_amount',
         'user_id',
-        'total_price',
-        'discount',
-        'final_total',
-        'amount_paid',
-        'change_amount',
+        'transaction_date',
         'status',
     ];
 
-    // Relasi ke detail transaksi (One-to-Many)
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'transaction_date' => 'datetime', // <-- INI BARIS PENTINGNYA
+        'total_amount' => 'decimal:2',
+    ];
+
+    /**
+     * Get the user that owns the transaction.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the details for the transaction.
+     */
     public function details()
     {
         return $this->hasMany(TransactionDetail::class);
-    }
-
-    // Relasi ke Kasir (User) (Many-to-One)
-    public function cashier()
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 }
