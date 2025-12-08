@@ -16,37 +16,12 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
     <title>ePharma - Sistem Informasi Apotek Terpercaya</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite('resources/css/app.css')
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-
+    @include('components.fonts.parkin')
+    @include('components.fonts.fontAwesome')
     <style>
-        body {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Class khusus untuk Heading (Judul) */
-        .font-heading {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Tambahan agar scrollbar lebih rapi */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        /* Menyembunyikan elemen sebelum Alpine.js diinisialisasi */
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 </head>
@@ -168,7 +143,7 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
                 </div>
             </div>
             <div class="text-center text-gray-500 text-sm mt-12 pt-8 border-t border-gray-800">
-                &copy; {{ date('Y') }} CHKL. All Rights Reserved.
+                &copy; {{ date('Y') }} ePharma. All Rights Reserved.
             </div>
         </footer>
 

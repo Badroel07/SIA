@@ -11,7 +11,7 @@
     x-cloak>
 
     <div @click.outside="showCart = false"
-        class="bg-white w-full max-w-lg rounded-xl shadow-2xl p-6 transform transition-all max-h-screen overflow-y-auto">
+        class="bg-white w-full max-w-2xl rounded-xl shadow-2xl p-6 transform transition-all max-h-screen overflow-y-auto">
 
         <div class="flex justify-between items-center border-b pb-3 mb-4">
             <h3 class="text-2xl font-bold text-gray-800">Keranjang</h3>

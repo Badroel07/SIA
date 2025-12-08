@@ -1,7 +1,3 @@
-<?php
-// Pastikan Auth Facade sudah tersedia
-use Illuminate\Support\Facades\Auth;
-?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -10,56 +6,18 @@ use Illuminate\Support\Facades\Auth;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Panel') - ePharma</title>
     @vite('resources/css/app.css')
-    {{-- Memuat Font Awesome untuk ikon --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @include('components.fonts.parkin')
+    @include('components.fonts.fontAwesome')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <!-- 1. FONT DARI GOOGLE (Inter & Poppins) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Class khusus untuk Heading (Judul) */
-        .font-heading {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Tambahan agar scrollbar lebih rapi */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
-
     <style>
         /* Fixes for Tailwind and Alpine.js */
         [x-cloak] {
             display: none !important;
-        }
-
-        .font-sans {
-            font-family: 'Poppins', sans-serif;
         }
     </style>
     @stack('styles')

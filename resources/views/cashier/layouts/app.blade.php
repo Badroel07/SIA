@@ -9,7 +9,7 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" x-data="{ sidebarOpen: false }" x-init="sidebarOpen = false">
 
 <head>
     <meta charset="UTF-8">
@@ -17,44 +17,20 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
     <title>ePharma - Sistem Informasi Apotek Terpercaya</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite('resources/css/app.css')
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    @include('components.fonts.parkin')
+    @include('components.fonts.fontAwesome')
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Class khusus untuk Heading (Judul) */
-        .font-heading {
-            font-family: 'Poppins', sans-serif !important;
-        }
-
-        /* Tambahan agar scrollbar lebih rapi */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        /* Menyembunyikan elemen sebelum Alpine.js diinisialisasi */
+        [x-cloak] {
+            display: none !important;
         }
     </style>
 </head>
 
-<body class="text-gray-700 antialiased bg-gray-50">
+<body class="text-gray-700 antialiased bg-gray-50" x-cloak>
 
-    <div x-data="{ sidebarOpen: false }" @keydown.escape.window="sidebarOpen = false">
+    <div @keydown.escape.window="sidebarOpen = false">
 
         <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100 w-full">
             <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -97,13 +73,25 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
             </div>
         </nav>
 
-        <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-gray-900/50 md:hidden z-[51]" aria-hidden="true" x-cloak
+        <div x-show="sidebarOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-gray-900/50 md:hidden z-[51]" aria-hidden="true"
             @click="sidebarOpen = false">
         </div>
 
-        <div x-show="sidebarOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-            class="fixed inset-y-0 left-0 w-64 bg-white shadow-xl flex flex-col pt-6 z-[52] md:hidden" x-cloak>
+        <div x-show="sidebarOpen"
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="-translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-300 transform"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="-translate-x-full"
+            class="fixed inset-y-0 left-0 w-64 bg-white shadow-xl flex flex-col pt-6 z-[52] md:hidden">
 
             <div class="px-4 flex items-center justify-between h-16">
                 <h3 class="text-xl font-bold text-gray-900">ePharma</h3>
@@ -115,26 +103,33 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
             </div>
 
             <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
-                <a href="{{ route('cashier.dashboard') }}" class="@if(request()->is('/')) 
-                    {{$mobile_active}} 
-                @else 
-                    {{$mobile_inactive}}
-                @endif" @click="sidebarOpen = false">Dashboard</a>
+                <!-- Menu Mobile yang disesuaikan dengan Topbar -->
+                <a href="{{ route('cashier.dashboard') }}"
+                    class="{{ request()->routeIs('cashier.dashboard') ? $mobile_active : $mobile_inactive }}"
+                    @click="sidebarOpen = false; window.location.href='{{ route('cashier.dashboard') }}'">
+                    Dashboard
+                </a>
 
-                <a href="{{ route('about') }}" class="@if(request()->is('about')) 
-                    {{$mobile_active}} 
-                @else 
-                    {{$mobile_inactive}}
-                @endif" @click="sidebarOpen = false">Tentang Kami</a>
+                <a href="{{ route('cashier.transaction.index') }}"
+                    class="{{ request()->routeIs('cashier.transaction.index') ? $mobile_active : $mobile_inactive }}"
+                    @click="sidebarOpen = false; window.location.href='{{ route('cashier.transaction.index') }}'">
+                    Transaksi
+                </a>
+
+                <a href="{{ route('cashier.transaction.history') }}"
+                    class="{{ request()->routeIs('cashier.transaction.history') ? $mobile_active : $mobile_inactive }}"
+                    @click="sidebarOpen = false; window.location.href='{{ route('cashier.transaction.history') }}'">
+                    Riwayat Transaksi
+                </a>
 
                 <div class="pt-4 border-t border-gray-100 mt-4">
                     {{-- MODIFIKASI: Tombol Logout Mobile --}}
                     <a href="#"
                         onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();"
-                        class="block px-3 py-3 rounded-lg text-lg font-medium text-red-500 hover:bg-red-50 transition">
+                        class="block px-3 py-3 rounded-lg text-lg font-medium text-red-500 hover:bg-red-50 transition"
+                        @click="sidebarOpen = false">
                         Logout
                     </a>
-                    <a href="#" class="block px-3 py-3 rounded-lg text-lg font-medium text-blue-500 hover:bg-blue-50 transition">Masuk/Daftar</a>
                 </div>
             </nav>
         </div>
@@ -144,7 +139,7 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
 
         <footer class="bg-gray-900 text-white py-6 mt-20">
             <div class="text-center text-gray-500 text-sm mt-5 pt-8 border-t border-gray-800">
-                &copy; {{ date('Y') }} CHKL. All Rights Reserved.
+                &copy; {{ date('Y') }} ePharma. All Rights Reserved.
             </div>
         </footer>
         {{-- FORM LOGOUT TERSEMBUNYI (Wajib di dalam body) --}}

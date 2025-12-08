@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- 1. HERO SECTION (Compact) -->
-<section class="relative py-20 md:py-32 overflow-hidden">
+<section class="relative py-20 md:py-32 backdrop-blur-sm backdrop-brightness-50 overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0 -z-20">
         <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=1920&auto=format&fit=crop"
@@ -11,10 +11,10 @@
             class="w-full h-full object-cover object-center opacity-30">
     </div>
     <!-- Gradient Overlay -->
-    <div class="absolute inset-0 bg-gradient-to-r from-brand-blue/90 to-brand-blue/70 -z-10"></div>
+    <div class="absolute inset-0 -z-10"></div>
 
     <div class="container mx-auto px-4 text-center relative z-10">
-        <span class="text-brand-teal font-bold tracking-wider uppercase text-sm mb-2 block">
+        <span class="text-blue-500 font-bold tracking-wider uppercase text-sm mb-2 block">
             Who We Are
         </span>
         <h1 class="text-4xl md:text-5xl font-heading font-bold text-white mb-6">

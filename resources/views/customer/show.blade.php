@@ -48,7 +48,7 @@
                 </div>
 
                 <!-- Ringkasan Deskripsi -->
-                <p class="text-gray-600 leading-relaxed border-b pb-6 mb-6">{{ $medicine->description }}</p>
+                <p class="text-gray-600 leading-relaxed border-b pb-6 mb-6 whitespace-pre-line">{{ $medicine->description }}</p>
 
                 <!-- Tombol (Simulasi Keranjang) -->
                 @if($medicine->stock > 0)
@@ -77,17 +77,16 @@
                         <i class="fas fa-prescription-bottle-alt"></i> Indikasi & Dosis
                     </h3>
                     <p class="text-gray-700 mb-4">
-                        {{-- Karena di DB belum ada kolom indikasi, kita gunakan description atau mock data --}}
-                        <span class="font-bold">Indikasi Utama<br></span>
-                        {{ $medicine->full_indication }}
+                        <span class="font-bold">Indikasi Utama:</span><br>
+                        <span class="whitespace-pre-line">{{ $medicine->full_indication }}</span>
                     </p>
                     <p class="text-gray-700 border-t pt-3">
-                        <span class="font-bold">Cara Penggunaan<br></span>
-                        @if(isset($medicine->usage_detail))
+                        <span class="font-bold">Cara Penggunaan:</span><br>
+                        <span class="whitespace-pre-line">@if(isset($medicine->usage_detail))
                         {{ $medicine->usage_detail }}
                         @else
                         Konsultasikan dengan apoteker atau dokter Anda.
-                        @endif
+                        @endif</span>
                     </p>
                 </div>
 
@@ -97,18 +96,20 @@
                         <i class="fas fa-exclamation-triangle"></i> Efek Samping & Larangan
                     </h3>
                     <p class="text-gray-700 mb-4">
-                        Efek Samping :@if(isset($medicine->side_effects))
+                        <span class="font-bold">Efek Samping:</span><br>
+                        <span class="whitespace-pre-line">@if(isset($medicine->side_effects))
                         {{ $medicine->side_effects }}
                         @else
                         Belum ada data efek samping yang dicatat.
-                        @endif
+                        @endif</span>
                     </p>
                     <p class="text-gray-700 border-t pt-3">
-                        Kontraindikasi (Larangan) :@if(isset($medicine->contraindications))
+                        <span class="font-bold">Kontraindikasi (Larangan):</span><br>
+                        <span class="whitespace-pre-line">@if(isset($medicine->contraindications))
                         {{ $medicine->contraindications }}
                         @else
                         Hati-hati pada pasien dengan gangguan fungsi ginjal/hati.
-                        @endif
+                        @endif</span>
                     </p>
                 </div>
             </div>
