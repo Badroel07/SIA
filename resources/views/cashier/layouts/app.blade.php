@@ -141,7 +141,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
             @yield('content')
         </main>
 
-        <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-8 mt-20">
+        <!-- <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-8 mt-20">
             <div class="px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-2">
@@ -151,7 +151,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
                     <p class="text-gray-400 text-sm">&copy; {{ date('Y') }} ePharma. All Rights Reserved.</p>
                 </div>
             </div>
-        </footer>
+        </footer> -->
         {{-- FORM LOGOUT TERSEMBUNYI (Wajib di dalam body) --}}
         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
             @csrf

@@ -105,13 +105,13 @@
                     class="absolute z-30 w-full mt-2 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 overflow-hidden max-h-60 overflow-y-auto">
 
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
-                        @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false">
+                        @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false; performSearch()">
                         Semua Kategori
                     </a>
 
                     @foreach($categories as $cat)
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-600 hover:text-white transition"
-                        @click.prevent="selectedLabel = '{{ $cat }}'; selectedValue = '{{ $cat }}'; open = false">
+                        @click.prevent="selectedLabel = '{{ $cat }}'; selectedValue = '{{ $cat }}'; open = false; performSearch()">
                         {{ $cat }}
                     </a>
                     @endforeach
