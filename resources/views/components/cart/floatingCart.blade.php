@@ -1,5 +1,5 @@
 {{-- FLOATING CART SIMULASI --}}
-<div class="fixed bottom-4 right-4 z-40">
+<div class="fixed bottom-20 right-4 z-[60]">
     <button @click="showCart = true"
         class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-xl flex items-center relative transition transform hover:scale-105">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

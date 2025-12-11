@@ -1,11 +1,11 @@
 <?php
-$active = 'font-bold text-lg text-blue-600 border-b-4 border-blue-600';
-$inactive = 'text-lg hover:text-blue-600 hover:border-b-4 border-blue-600 transition duration-500';
-$inactiveLogOut = 'text-lg hover:text-red-600 hover:border-b-4 border-red-600 transition duration-500';
+$active = 'nav-link active font-bold text-lg text-blue-600';
+$inactive = 'nav-link text-lg text-gray-600 hover:text-blue-600 transition-smooth';
+$inactiveLogOut = 'logout-link text-lg text-red-500 hover:text-red-600 transition-smooth';
 
 // Kelas untuk link di Sidebar Mobile
-$mobile_active = 'block px-3 py-3 rounded-lg text-lg font-bold text-white bg-blue-600';
-$mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition';
+$mobile_active = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-bold text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg';
+$mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-smooth';
 ?>
 
 <!DOCTYPE html>
@@ -28,45 +28,49 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
     </style>
 </head>
 
-<body class="text-gray-700 antialiased bg-gray-50" x-cloak>
+<body class="text-gray-700 antialiased bg-gradient-to-br from-gray-50 via-white to-blue-50/20" x-cloak>
 
     <div @keydown.escape.window="sidebarOpen = false">
 
-        <nav class="bg-white py-4 sticky top-0 z-50 shadow-sm border-b border-gray-100 w-full">
+        <!-- Enhanced Navigation -->
+        <nav class="glass bg-white/90 py-3 sticky top-0 z-50 shadow-lg shadow-blue-900/5 border-b border-white/50 w-full">
             <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
-                <div class="flex items-center gap-2">
-                    <button @click="sidebarOpen = true" type="button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-md hover:bg-gray-100 transition">
+                <div class="flex items-center gap-3">
+                    <button @click="sidebarOpen = true" type="button" class="md:hidden text-gray-600 focus:outline-none p-2 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-smooth">
                         <svg class="block h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
 
-                    <a href="{{ route('cashier.dashboard') }}" class="flex items-center gap-1 text-2xl font-heading font-bold text-gray-900 flex-shrink-0">
-                        <div class="w-16 h-16 flex items-center justify-center text-white text-xs">
-                            <img src="{{ asset('img/logo.png') }}" alt="Logo ePharma">
+                    <a href="{{ route('cashier.dashboard') }}" class="flex items-center gap-2 text-xl font-heading font-bold text-gray-900 flex-shrink-0 group">
+                        <div class="w-12 h-12 flex items-center justify-center transition-transform group-hover:scale-105">
+                            <img src="{{ asset('img/logo.png') }}" alt="Logo ePharma" class="">
                         </div>
-                        ePharma Cashier System
+                        <span class="hidden sm:inline"><span class="text-gradient">ePharma</span> Cashier</span>
                     </a>
                 </div>
 
-                <div class="hidden md:flex items-center space-x-8 font-medium text-gray-600">
-                    <a href="{{ route('cashier.dashboard') }}" class="{{ request()->routeIs('cashier.dashboard') ? $active : $inactive}} py-4 -mb-1">
+                <div class="hidden md:flex items-center space-x-8 font-medium">
+                    <a href="{{ route('cashier.dashboard') }}" class="{{ request()->routeIs('cashier.dashboard') ? $active : $inactive}} py-3">
                         Dashboard
                     </a>
 
-                    <a href="{{ route('cashier.transaction.index') }}" class="{{ request()->routeIs('cashier.transaction.index') ? $active : $inactive}} py-4 -mb-1">
+                    <a href="{{ route('cashier.transaction.index') }}" class="{{ request()->routeIs('cashier.transaction.index') ? $active : $inactive}} py-3">
                         Transaksi
                     </a>
 
-                    <a href="{{ route('cashier.transaction.history') }}" class="{{ request()->routeIs('cashier.transaction.history') ? $active : $inactive}} py-4 -mb-1">
-                        Riwayat Transaksi
+                    <a href="{{ route('cashier.transaction.history') }}" class="{{ request()->routeIs('cashier.transaction.history') ? $active : $inactive}} py-3">
+                        Riwayat
                     </a>
 
-                    {{-- MODIFIKASI: Tombol Logout Desktop --}}
+                    {{-- Tombol Logout Desktop --}}
                     <a href="#"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                        class="text-red-600 {{ request()->routeIs('') ? $active : $inactiveLogOut}} py-4 -mb-1 cursor-pointer">
+                        class="{{ $inactiveLogOut }} py-3 cursor-pointer flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
                         Logout
                     </a>
                 </div>
@@ -133,13 +137,19 @@ $mobile_inactive = 'block px-3 py-3 rounded-lg text-lg font-medium text-gray-700
                 </div>
             </nav>
         </div>
-        <main>
+        <main class="animate-fade-in">
             @yield('content')
         </main>
 
-        <footer class="bg-gray-900 text-white py-6 mt-20">
-            <div class="text-center text-gray-500 text-sm mt-5 pt-8 border-t border-gray-800">
-                &copy; {{ date('Y') }} ePharma. All Rights Reserved.
+        <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-8 mt-20">
+            <div class="px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-8 h-8 brightness-0 invert opacity-70">
+                        <span class="font-semibold">ePharma Cashier</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">&copy; {{ date('Y') }} ePharma. All Rights Reserved.</p>
+                </div>
             </div>
         </footer>
         {{-- FORM LOGOUT TERSEMBUNYI (Wajib di dalam body) --}}

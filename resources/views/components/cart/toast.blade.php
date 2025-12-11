@@ -1,5 +1,5 @@
 {{-- TOAST NOTIFICATION STACK - DIUBAH UNTUK SUPPORT MULTIPLE TOASTS --}}
-<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 items-center pointer-events-none">
+<div class="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col gap-2 items-center pointer-events-none">
     <template x-for="toast in toasts" :key="toast.id">
         <div x-show="toast.show"
             x-transition:enter="transition ease-out duration-300"

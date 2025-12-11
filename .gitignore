@@ -21,9 +21,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
-
 .vercel
-
-.vercel
-
-.vercel
+/api
+vercel.json
+.vercelignore

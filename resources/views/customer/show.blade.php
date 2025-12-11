@@ -2,8 +2,6 @@
 
 @section('content')
 
-@include('components.cart.cartLogic')
-
 {{-- Menampilkan tombol kembali ke katalog --}}
 <div class="container mx-auto px-4 pt-10 pb-4">
     <a href="javascript:history.back()" class="text-blue-600 hover:text-blue-800 font-medium transition duration-300 flex items-center gap-1">
@@ -83,10 +81,10 @@
                     <p class="text-gray-700 border-t pt-3">
                         <span class="font-bold">Cara Penggunaan:</span><br>
                         <span class="whitespace-pre-line">@if(isset($medicine->usage_detail))
-                        {{ $medicine->usage_detail }}
-                        @else
-                        Konsultasikan dengan apoteker atau dokter Anda.
-                        @endif</span>
+                            {{ $medicine->usage_detail }}
+                            @else
+                            Konsultasikan dengan apoteker atau dokter Anda.
+                            @endif</span>
                     </p>
                 </div>
 
@@ -98,18 +96,18 @@
                     <p class="text-gray-700 mb-4">
                         <span class="font-bold">Efek Samping:</span><br>
                         <span class="whitespace-pre-line">@if(isset($medicine->side_effects))
-                        {{ $medicine->side_effects }}
-                        @else
-                        Belum ada data efek samping yang dicatat.
-                        @endif</span>
+                            {{ $medicine->side_effects }}
+                            @else
+                            Belum ada data efek samping yang dicatat.
+                            @endif</span>
                     </p>
                     <p class="text-gray-700 border-t pt-3">
                         <span class="font-bold">Kontraindikasi (Larangan):</span><br>
                         <span class="whitespace-pre-line">@if(isset($medicine->contraindications))
-                        {{ $medicine->contraindications }}
-                        @else
-                        Hati-hati pada pasien dengan gangguan fungsi ginjal/hati.
-                        @endif</span>
+                            {{ $medicine->contraindications }}
+                            @else
+                            Hati-hati pada pasien dengan gangguan fungsi ginjal/hati.
+                            @endif</span>
                     </p>
                 </div>
             </div>
@@ -120,50 +118,11 @@
 </section>
 
 
-
-
-{{-- Pastikan Alpine.js x-data block (untuk cart) tetap ada, 
-     karena kita memanggil addToCart di view ini --}}
-<div x-data="{ 
-    cart: JSON.parse(sessionStorage.getItem('simCart')) || [],
-    showCart: false,
-    
-    get cartTotal() {
-        return this.cart.reduce((total, item) => total + (item.price * item.qty), 0);
-    },
-    
-    saveCart() {
-        sessionStorage.setItem('simCart', JSON.stringify(this.cart));
-    },
-
-    addToCart(item, qty = 1) {
-        // Logika penambahan item
-        const index = this.cart.findIndex(i => i.id === item.id);
-        if (index > -1) { this.cart[index].qty += qty; } 
-        else { this.cart.push({...item, qty: qty}); }
-        this.saveCart();
-        this.showCart = true;
-        // Gunakan notifikasi modal yang lebih bagus, tapi pakai alert untuk sementara
-        alert(`${item.name} berhasil ditambahkan ke keranjang!`); 
-    },
-    
-    removeItem(id) {
-        this.cart = this.cart.filter(item => item.id !== id);
-        this.saveCart();
-    },
-
-    clearCart() {
-        if(confirm('Yakin ingin mengosongkan keranjang?')) {
-            this.cart = [];
-            this.saveCart();
-        }
-    }
-}" x-init="saveCart()">
-    {{-- Floating Cart UI akan berada di sini (disembunyikan di view show ini, atau ditaruh di layout app) --}}
-</div>
-
+@push('modals')
 @include('components.cart.floatingCart')
 @include('components.cart.cartModal')
 @include('components.cart.toast')
 @include('components.cart.confirmDelete')
+@endpush
+
 @endsection

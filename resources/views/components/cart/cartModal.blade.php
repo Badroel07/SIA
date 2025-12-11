@@ -7,7 +7,8 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 backdrop-blur-sm backdrop-brightness-50 z-50 flex items-center justify-center p-4"
+    class="fixed inset-0 z-[70] flex items-center justify-center p-4"
+    style="background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
     x-cloak>
 
     <div @click.outside="showCart = false"

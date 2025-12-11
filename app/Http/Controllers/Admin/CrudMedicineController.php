@@ -176,7 +176,7 @@ class CrudMedicineController extends Controller
             if ($medicine->image) {
                 Storage::disk('s3')->delete($medicine->image);
             }
-            $data['image'] = $request->file('image')->store('medicines', 'public');
+            $data['image'] = $request->file('image')->store('medicines', 's3');
         }
 
         $medicine->update($data);

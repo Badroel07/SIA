@@ -23,7 +23,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-gradient-to-br from-gray-100 via-gray-50 to-blue-50/20 font-sans antialiased">
     <div class="min-h-screen flex"
         x-data="{ 
             isSidebarOpen: false, {{-- DEFAULT TERTUTUP --}}
@@ -34,67 +34,59 @@
             }
         }">
 
-        <!-- SIDEBAR (Kiri) - Lebar Ditetapkan (OVERLAY) -->
-        <!-- SIDEBAR (Kiri) - Tambahkan x-cloak -->
+        <!-- SIDEBAR (Kiri) - Enhanced -->
         <aside x-cloak
-            class="bg-white shadow-xl shadow-gray-200 flex flex-col fixed h-full z-50 transition-transform duration-300 w-60"
+            class="bg-gradient-to-b from-white via-white to-gray-50 shadow-2xl shadow-gray-200/50 flex flex-col fixed h-full z-50 transition-transform duration-300 w-64 border-r border-gray-100"
             :class="{ '-translate-x-full': !isSidebarOpen, 'translate-x-0': isSidebarOpen }">
 
-            <!-- Brand & Tombol Tutup di dalam Sidebar (Diperbaiki strukturnya) -->
-            <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-end">
+            <!-- Header with Close Button -->
+            <div class="h-16 flex items-center px-4 border-b border-gray-100 justify-between bg-gradient-to-r from-blue-50/50 to-white">
+                <span class="text-lg font-bold text-gradient">ePharma</span>
 
-
-
-                {{-- Tombol Tutup (Di dalam Sidebar) --}}
+                {{-- Close Button --}}
                 <button @click="toggleSidebar()"
-                    class="text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition p-1.5 flex-shrink-0 ml-2">
-                    <i class="fas fa-times w-5 h-5"></i>
+                    class="text-gray-400 hover:text-gray-600 rounded-xl hover:bg-gray-100 transition-smooth p-2">
+                    <i class="fas fa-times w-4 h-4"></i>
                 </button>
             </div>
 
 
-            <!-- Menu Navigasi -->
-            <nav class="flex-1 overflow-y-auto pt-6">
-                {{-- Logo (Rata Tengah di sisa ruang) --}}
-                <div class="flex-1 text-center">
-                    <span class="block text-xl font-extrabold tracking-wider text-blue-600 overflow-hidden whitespace-nowrap">
-                        ePharma<span class="text-gray-400">Admin</span>
-                    </span>
-                </div>
+            <!-- Navigation Menu -->
+            <nav class="flex-1 overflow-y-auto pt-4 px-3">
 
-                <ul class="space-y-1 px-3 mt-5">
-
-                    {{-- Menu Dasar --}}
-
-                    <li class="mb-4">
+                <ul class="space-y-1">
+                    <li>
                         <a href="{{ route('admin.dashboard') }}"
-                            class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.dashboard') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth {{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
                             <i class="fas fa-home w-5 text-center flex-shrink-0"></i>
-                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.dashboard') ? 'font-bold' : 'font-medium'}}">Dashboard</span>
+                            <span class="font-medium">Dashboard</span>
                         </a>
+                    </li>
 
+                    <li>
                         <a href="{{ route('admin.medicines.index') }}"
-                            class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.medicines.index') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth {{ request()->routeIs('admin.medicines.index') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
                             <i class="fas fa-capsules w-5 text-center flex-shrink-0"></i>
-                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.medicines.index') ? 'font-bold' : 'font-medium'}}">Manajemen Obat</span>
+                            <span class="font-medium">Manajemen Obat</span>
                         </a>
+                    </li>
 
+                    <li>
                         <a href="{{ route('admin.users.index') }}"
-                            class="mt-2 flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition duration-150 {{ request()->routeIs('admin.users.index') ? 'bg-blue-100 text-blue-600' : 'text-gray-700' }}">
+                            class="flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth {{ request()->routeIs('admin.users.index') ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600' }}">
                             <i class="fa-solid fa-circle-user w-5 text-center flex-shrink-0"></i>
-                            <span class="overflow-hidden whitespace-nowrap {{ request()->routeIs('admin.users.index') ? 'font-bold' : 'font-medium'}}">Manajemen User</span>
+                            <span class="font-medium">Manajemen User</span>
                         </a>
-
                     </li>
                 </ul>
             </nav>
 
             <!-- Footer Sidebar/Logout -->
             @auth
-            <div class="p-4 border-t border-gray-100 transition-all duration-300 px-4">
+            <div class="p-4 border-t border-gray-100 bg-gradient-to-r from-red-50/50 to-white">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="flex items-center gap-3 w-full px-2 py-2 text-red-500 hover:bg-red-50 rounded-lg transition text-sm font-medium justify-start">
+                    <button type="submit" class="flex items-center gap-3 w-full px-4 py-2.5 text-red-500 hover:bg-red-50 rounded-xl transition-smooth text-sm font-medium">
                         <i class="fas fa-sign-out-alt w-5 text-center flex-shrink-0"></i>
                         <span>Logout</span>
                     </button>
@@ -109,33 +101,33 @@
         <!-- KONTEN KANAN (Tidak ada margin dinamis, selalu 100% lebar) -->
         <div class="flex-1 flex flex-col min-h-screen">
 
-            <!-- Topbar (Wadah Tombol Toggle Sidebar) -->
-            <header class="bg-white p-3 shadow-md flex justify-between items-center h-16 border-b border-gray-200 sticky top-0 z-20">
+            <!-- Topbar - Enhanced with glass effect -->
+            <header class="glass bg-white/80 p-4 shadow-lg shadow-gray-200/30 flex justify-between items-center h-16 border-b border-white/50 sticky top-0 z-20">
                 <div class="flex items-center gap-4">
-                    {{-- Tombol Toggle Pembuka (Dipindahkan ke Topbar) --}}
+                    {{-- Toggle Button --}}
                     <button @click="toggleSidebar()"
-                        class="text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100 transition p-1.5 flex-shrink-0">
+                        class="text-gray-500 hover:text-blue-600 rounded-xl hover:bg-blue-50 transition-smooth p-2">
                         <i class="fas fa-bars w-5 h-5"></i>
                     </button>
                     <h1 class="text-xl font-bold text-gray-800">@yield('title', 'Dashboard')</h1>
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ Auth::user()->name ?? 'Guest' }}</span>
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-sm font-bold">
+                    <span class="text-sm font-medium text-gray-600 hidden sm:block">{{ Auth::user()->name ?? 'Guest' }}</span>
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-blue-500/30">
                         {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
                     </div>
                 </div>
             </header>
 
             <!-- Main Content Area -->
-            <main class="flex-1 p-6">
+            <main class="flex-1 p-6 animate-fade-in">
                 @yield('content')
             </main>
 
-            <!-- Footer Kecil -->
-            <footer class="p-4 text-center text-xs text-gray-400 border-t border-gray-200">
-                &copy; {{ date('Y') }} CHKL. All Rights Reserved.
+            <!-- Footer -->
+            <footer class="p-4 text-center text-xs text-gray-400 border-t border-gray-100 bg-white/50">
+                &copy; {{ date('Y') }} <span class="font-semibold text-gray-500">ePharma Admin</span>. All Rights Reserved.
             </footer>
         </div>
 

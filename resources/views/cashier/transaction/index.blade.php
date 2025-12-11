@@ -44,7 +44,32 @@ $total = $subtotal - $diskon;
             <h1 class="text-3xl font-extrabold text-gray-900">Transaksi Baru</h1>
 
             {{-- Form Pencarian dan Filter --}}
-            <form action="{{ route('cashier.transaction.index') }}" method="GET" class="bg-white p-4 rounded-xl shadow-lg flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+            <form action="{{ route('cashier.transaction.index') }}" method="GET" class="bg-white p-4 rounded-xl shadow-lg flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4"
+                x-data="{
+                    searchTimeout: null,
+                    loading: false,
+                    performSearch() {
+                        clearTimeout(this.searchTimeout);
+                        this.searchTimeout = setTimeout(() => {
+                            this.loading = true;
+                            const formData = new FormData($el);
+                            const params = new URLSearchParams(formData);
+                            fetch('{{ route('cashier.transaction.index') }}?' + params.toString(), {
+                                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }
+                            })
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                const newResults = doc.querySelector('#medicine-grid-results');
+                                const currentResults = document.querySelector('#medicine-grid-results');
+                                if (newResults && currentResults) { currentResults.innerHTML = newResults.innerHTML; }
+                                this.loading = false;
+                            })
+                            .catch(error => { console.error('Search error:', error); this.loading = false; });
+                        }, 400);
+                    }
+                }">
 
                 <div class="flex-grow">
                     <label for="search" class="sr-only">Cari Obat</label>
@@ -55,14 +80,14 @@ $total = $subtotal - $diskon;
                             </svg>
                         </div>
                         <input type="text" id="search" name="search" placeholder="Cari nama obat, kode, atau bahan aktif..."
-                            value="{{ request('search') }}"
+                            value="{{ request('search') }}" @input="performSearch()"
                             class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition">
                     </div>
                 </div>
 
                 <div>
                     <label for="category" class="sr-only">Filter Kategori</label>
-                    <select id="category" name="category" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    <select id="category" name="category" @change="performSearch()" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition">
                         <option value="all" {{ request('category') === 'all' ? 'selected' : '' }}>Semua Kategori</option>
 
                         @foreach ($existingCategories as $category)
@@ -73,79 +98,93 @@ $total = $subtotal - $diskon;
                     </select>
                 </div>
 
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150">
-                    Cari
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 flex items-center justify-center">
+                    <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" x-show="loading" x-cloak>
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span x-show="!loading">Cari</span>
                 </button>
             </form>
 
             {{-- Daftar Obat --}}
-            @if ($medicines->isEmpty())
-            <div class="text-center py-10 bg-white rounded-xl shadow-md">
-                <p class="text-xl text-gray-500">Tidak ada obat ditemukan.</p>
-                <p class="text-sm text-gray-400 mt-2">Coba ganti kata kunci atau filter Anda.</p>
-            </div>
-            @else
-            {{-- PERUBAHAN HANYA DI GRID INI --}}
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-
-                @foreach ($medicines as $medicine)
-                <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-200 border-2 border-gray-100 hover:border-indigo-400 hover:shadow-lg">
-
-                    {{-- KEMBALIKAN UKURAN GAMBAR KE ASLI --}}
-                    <img class="h-24 w-full object-cover"
-                        src="{{ Storage::disk('s3')->url($medicine->image) }}"
-                        alt="{{ $medicine->name }}">
-
-                    {{-- KEMBALIKAN PADDING DAN FONT KE ASLI --}}
-                    <div class="p-3 text-center">
-                        <p class="text-sm font-semibold text-gray-800 truncate">{{ $medicine->name }}</p>
-                        <p class="text-xs text-gray-500 mb-1">{{ ucfirst($medicine->category) }}</p>
-                        <p class="text-lg font-bold text-green-600">
-                            {{ 'Rp ' . number_format($medicine->price, 0, ',', '.') }}
-                        </p>
-                        <p class="text-xs text-gray-400">Stok: {{ $medicine->stock }}</p>
-
-                        {{-- Tombol Detail Obat --}}
-                        <a onclick="openMedicineDetailModal({{ $medicine->id }})"
-                            class="cursor-pointer inline-block mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline">
-                            Lihat Detail
-                        </a>
-                    </div>
-
-                    {{-- Form Tambah Item --}}
-                    <form action="{{ route('cashier.transaction.cartAdd') }}" method="POST" class="p-3 border-t border-gray-100">
-                        @csrf
-                        <input type="hidden" name="medicine_id" value="{{ $medicine->id }}">
-
-                        <div class="flex space-x-2 items-center">
-                            <input type="number" name="quantity" min="1" max="{{ $medicine->stock }}" value="1"
-                                class="w-1/3 text-center text-sm border border-gray-300 rounded-lg py-1 px-1 focus:ring-indigo-500 focus:border-indigo-500"
-                                required>
-
-                            <button type="submit"
-                                class="w-2/3 flex items-center justify-center bg-indigo-500 text-white text-sm font-medium py-1 rounded-lg shadow-md hover:bg-indigo-600 transition duration-150"
-                                @if ($medicine->stock == 0) disabled @endif>
-                                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                Tambah
-                            </button>
-                        </div>
-                        @if ($medicine->stock == 0)
-                        <p class="text-xs text-red-500 mt-1">Stok Habis</p>
-                        @endif
-                    </form>
+            <div id="medicine-grid-results">
+                @if ($medicines->isEmpty())
+                <div class="text-center py-10 bg-white rounded-xl shadow-md">
+                    <p class="text-xl text-gray-500">Tidak ada obat ditemukan.</p>
+                    <p class="text-sm text-gray-400 mt-2">Coba ganti kata kunci atau filter Anda.</p>
                 </div>
-                @endforeach
+                @else
+                {{-- PERUBAHAN HANYA DI GRID INI --}}
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
 
-            </div>
-            @endif
+                    @foreach ($medicines as $medicine)
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-200 border-2 border-gray-100 hover:border-indigo-400 hover:shadow-lg">
 
-            <div class="flex justify-center mt-6">
-                {{ $medicines->links() }}
-            </div>
+                        {{-- KEMBALIKAN UKURAN GAMBAR KE ASLI --}}
+                        @if($medicine->image)
+                        <img class="h-24 w-full object-cover"
+                            src="{{ Storage::disk('s3')->url($medicine->image) }}"
+                            alt="{{ $medicine->name }}">
+                        @else
+                        <div class="h-24 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+                            <svg class="w-10 h-10 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.761 2.156 18 5.414 18H14.586c3.258 0 4.597-3.239 2.707-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.47-.156a4 4 0 00-2.172-.102l1.027-1.028A3 3 0 009 8.172z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        @endif
 
-        </div>
+                        {{-- KEMBALIKAN PADDING DAN FONT KE ASLI --}}
+                        <div class="p-3 text-center">
+                            <p class="text-sm font-semibold text-gray-800 truncate">{{ $medicine->name }}</p>
+                            <p class="text-xs text-gray-500 mb-1">{{ ucfirst($medicine->category) }}</p>
+                            <p class="text-lg font-bold text-green-600">
+                                {{ 'Rp ' . number_format($medicine->price, 0, ',', '.') }}
+                            </p>
+                            <p class="text-xs text-gray-400">Stok: {{ $medicine->stock }}</p>
+
+                            {{-- Tombol Detail Obat --}}
+                            <a onclick="openMedicineDetailModal({{ $medicine->id }})"
+                                class="cursor-pointer inline-block mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline">
+                                Lihat Detail
+                            </a>
+                        </div>
+
+                        {{-- Form Tambah Item --}}
+                        <form action="{{ route('cashier.transaction.cartAdd') }}" method="POST" class="p-3 border-t border-gray-100">
+                            @csrf
+                            <input type="hidden" name="medicine_id" value="{{ $medicine->id }}">
+
+                            <div class="flex space-x-2 items-center">
+                                <input type="number" name="quantity" min="1" max="{{ $medicine->stock }}" value="1"
+                                    class="w-1/3 text-center text-sm border border-gray-300 rounded-lg py-1 px-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                    required>
+
+                                <button type="submit"
+                                    class="w-2/3 flex items-center justify-center bg-indigo-500 text-white text-sm font-medium py-1 rounded-lg shadow-md hover:bg-indigo-600 transition duration-150"
+                                    @if ($medicine->stock == 0) disabled @endif>
+                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Tambah
+                                </button>
+                            </div>
+                            @if ($medicine->stock == 0)
+                            <p class="text-xs text-red-500 mt-1">Stok Habis</p>
+                            @endif
+                        </form>
+                    </div>
+                    @endforeach
+
+                </div>
+                @endif
+
+                <div class="flex justify-center mt-6">
+                    {{ $medicines->links() }}
+                </div>
+            </div> {{-- Close medicine-grid-results --}}
+
+        </div> {{-- Close left column (lg:col-span-2) --}}
 
         {{-- SISI KANAN: KERANJANG BELANJA --}}
         {{-- Membuat keranjang menjadi sticky di semua ukuran layar sehingga tidak terpengaruh scroll halaman --}}
