@@ -2,109 +2,163 @@
 
 {{-- MODAL KERANJANG - Ultra Modern --}}
 <div x-show="showCart"
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0"
-    x-transition:enter-end="opacity-100"
-    x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100"
-    x-transition:leave-end="opacity-0"
-    class="fixed inset-0 z-[70] flex items-center justify-center p-4"
-    style="background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
+    x-transition:enter="transition ease-out duration-500"
+    x-transition:enter-start="opacity-0 backdrop-blur-none"
+    x-transition:enter-end="opacity-100 backdrop-blur-md"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 backdrop-blur-md"
+    x-transition:leave-end="opacity-0 backdrop-blur-none"
+    class="fixed inset-0 z-[70] flex justify-end items-stretch"
+    style="background-color: rgba(15, 23, 42, 0.3);"
     x-cloak>
 
-    <div @click.outside="showCart = false"
-        class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transform transition-all">
+    {{-- Backdrop click area --}}
+    <div class="absolute inset-0" @click="showCart = false"></div>
+
+    {{-- Slide-over Panel --}}
+    <div x-show="showCart"
+        x-transition:enter="transition ease-out duration-500 transform"
+        x-transition:enter-start="translate-x-full"
+        x-transition:enter-end="translate-x-0"
+        x-transition:leave="transition ease-in duration-300 transform"
+        x-transition:leave-start="translate-x-0"
+        x-transition:leave-end="translate-x-full"
+        class="relative w-full max-w-md bg-white/90 backdrop-blur-xl shadow-2xl h-full flex flex-col border-l border-white/50 z-10">
 
         {{-- Header dengan Gradient --}}
-        <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-5 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 flex-shrink-0">
+            <!-- Decorative Circles -->
+            <div class="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 rounded-full bg-white/10 blur-2xl"></div>
+            <div class="absolute bottom-0 left-0 -ml-10 -mb-10 w-32 h-32 rounded-full bg-indigo-500/30 blur-xl"></div>
 
-            <div class="flex justify-between items-center relative z-10">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <div class="relative z-10 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-white">Keranjang Belanja</h3>
-                        <p class="text-indigo-100 text-sm" x-text="cart.length + ' item'"></p>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Keranjang</h2>
+                        <p class="text-blue-100 text-sm font-medium flex items-center gap-1">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            <span x-text="cart.length + ' Item ditambahkan'"></span>
+                        </p>
                     </div>
                 </div>
-                <button @click="showCart = false" class="w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button @click="showCart = false" class="group p-2 rounded-xl hover:bg-white/20 transition-all duration-300">
+                    <svg class="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
         </div>
 
-        {{-- Body --}}
-        <div class="p-6">
+        {{-- Body - Cart Items --}}
+        <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 scroll-smooth">
             <template x-if="cart.length > 0">
-                <div>
-                    {{-- Item List --}}
-                    <ul class="space-y-3 max-h-80 overflow-y-auto pr-2 no-scrollbar">
-                        <template x-for="item in cart" :key="item.id">
-                            <li class="flex justify-between items-center p-3 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex items-center justify-center">
-                                        <svg class="w-5 h-5 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.761 2.156 18 5.414 18H14.586c3.258 0 4.597-3.239 2.707-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.47-.156a4 4 0 00-2.172-.102l1.027-1.028A3 3 0 009 8.172z" clip-rule="evenodd"></path>
+                <ul class="space-y-4 pb-20">
+                    <template x-for="(item, index) in cart" :key="item.id">
+                        <li class="group bg-white rounded-3xl p-4 shadow-sm border border-gray-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 translate-y-4"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            :style="`transition-delay: ${index * 50}ms`">
+
+                            <!-- Left Border Accent -->
+                            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-blue-400 to-indigo-600 rounded-l-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                            <div class="flex gap-4">
+                                <!-- Image Placeholder / Icon -->
+                                <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center flex-shrink-0 border border-gray-50 group-hover:scale-105 transition-transform duration-500">
+                                    <template x-if="item.image">
+                                        <img :src="'/storage/' + item.image" class="w-full h-full object-cover rounded-2xl">
+                                    </template>
+                                    <template x-if="!item.image">
+                                        <svg class="w-8 h-8 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
-                                    </div>
+                                    </template>
+                                </div>
+
+                                <div class="flex-1 flex flex-col justify-between">
                                     <div>
-                                        <p class="font-bold text-gray-800" x-text="item.name"></p>
-                                        <p class="text-sm text-gray-500">
-                                            Rp <span x-text="item.price.toLocaleString('id-ID')"></span>
-                                        </p>
+                                        <h3 class="font-bold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-1" x-text="item.name"></h3>
+                                        <p class="text-xs text-gray-500 mt-1">Harga Satuan: Rp <span x-text="new Intl.NumberFormat('id-ID').format(item.price)"></span></p>
+                                    </div>
+
+                                    <div class="flex justify-between items-end mt-2">
+                                        <!-- Qty Control -->
+                                        <div class="flex items-center bg-gray-100 rounded-xl p-1 shadow-inner">
+                                            <button @click="updateQty(item.id, -1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white shadow-sm text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all active:scale-90">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4" />
+                                                </svg>
+                                            </button>
+                                            <input type="number" x-model="item.qty" class="w-8 text-center bg-transparent text-sm font-bold text-gray-800 appearance-none border-none p-0 focus:ring-0" readonly>
+                                            <button @click="updateQty(item.id, 1)" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white shadow-sm text-gray-600 hover:text-green-500 hover:bg-green-50 transition-all active:scale-90">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </button>
+                                        </div>
+
+                                        <!-- Subtotal -->
+                                        <span class="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(item.price * item.qty)"></span>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4">
-                                    {{-- Quantity Controls --}}
-                                    <div class="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
-                                        <button @click="updateQty(item.id, -1)" class="w-8 h-8 rounded-lg bg-white shadow-sm text-gray-600 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center font-bold">-</button>
-                                        <span x-text="item.qty" class="w-8 text-center font-bold text-gray-800"></span>
-                                        <button @click="updateQty(item.id, 1)" class="w-8 h-8 rounded-lg bg-white shadow-sm text-gray-600 hover:bg-green-500 hover:text-white transition-all flex items-center justify-center font-bold">+</button>
-                                    </div>
-                                    {{-- Subtotal --}}
-                                    <span class="font-bold text-indigo-600 min-w-[100px] text-right" x-text="`Rp ${(item.price * item.qty).toLocaleString('id-ID')}`"></span>
-                                </div>
-                            </li>
-                        </template>
-                    </ul>
-
-                    {{-- Footer --}}
-                    <div class="mt-6 pt-4 border-t border-gray-100">
-                        {{-- Total --}}
-                        <div class="flex justify-between items-center p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl mb-4">
-                            <span class="text-lg font-bold text-gray-700">Total Harga</span>
-                            <span class="text-2xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent" x-text="`Rp ${cartTotal.toLocaleString('id-ID')}`"></span>
-                        </div>
-
-                        {{-- Clear Button --}}
-                        <button @click="confirmClear()" class="w-full py-3 bg-gradient-to-r from-red-500 to-rose-600 text-white font-bold rounded-xl shadow-lg shadow-red-500/30 hover:shadow-red-500/50 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            Kosongkan Keranjang
-                        </button>
-                    </div>
-                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
             </template>
 
             {{-- Empty State --}}
             <template x-if="cart.length === 0">
-                <div class="text-center py-12">
-                    <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                <div class="h-full flex flex-col items-center justify-center text-center opacity-0 animate-scale-in">
+                    <div class="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mb-6 animate-float">
+                        <svg class="w-16 h-16 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
                     </div>
-                    <p class="text-gray-600 font-bold text-lg">Keranjang Kosong</p>
-                    <p class="text-gray-400 text-sm mt-1">Silakan tambahkan obat ke keranjang</p>
+                    <h3 class="text-2xl font-bold text-gray-800">Keranjang Kosong</h3>
+                    <p class="text-gray-500 mt-2 max-w-xs mx-auto">Sepertinya Anda belum memilih obat apapun. Yuk, cari obat yang Anda butuhkan!</p>
+                    <button @click="showCart = false; document.getElementById('katalog').scrollIntoView({behavior: 'smooth'})"
+                        class="mt-8 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 hover:scale-105 transition-transform">
+                        Belanja Sekarang
+                    </button>
                 </div>
             </template>
         </div>
+
+        {{-- Footer - Sticky Bottom --}}
+        <template x-if="cart.length > 0">
+            <div class="p-6 bg-white border-t border-gray-100 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] relative z-20">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-500 font-medium">Total Pembayaran</span>
+                    <span class="text-2xl font-black text-gray-900" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(cartTotal)"></span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button @click="confirmClear()"
+                        class="py-4 bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-500 font-bold rounded-2xl transition-colors duration-300 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Hapus
+                    </button>
+                    <a href="#" @click.prevent="alert('Fitur Checkout sedang dalam pengembangan!');"
+                        class="relative overflow-hidden py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/30 flex items-center justify-center gap-2 group hover:scale-[1.02] transition-transform duration-300">
+                        {{-- Shine --}}
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+
+                        Checkout
+                        <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </template>
     </div>
 </div>

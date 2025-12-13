@@ -178,7 +178,7 @@
                 </p>
 
                 <!-- CTA Button Epic -->
-                <a href="#katalog" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 animate-slide-up" style="animation-delay: 0.3s;">
+                <a href="#katalog" @click.prevent="document.getElementById('katalog').scrollIntoView({ behavior: 'smooth' })" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 animate-slide-up" style="animation-delay: 0.3s;">
                     <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -227,9 +227,11 @@
     </div>
 
     <!-- Search & Filter - Glass Card -->
-    <div class="glass-card p-6 md:p-8 rounded-3xl shadow-2xl border border-white/50 mb-12 max-w-5xl mx-auto relative overflow-hidden animate-scale-in">
+    <div class="glass-card p-6 md:p-8 rounded-3xl shadow-2xl border border-white/50 mb-12 max-w-5xl mx-auto relative animate-scale-in">
         <!-- Decorative -->
-        <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full"></div>
+        <div class="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full"></div>
+        </div>
 
         <form action="{{ route('home') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-center relative z-10"
             x-data="{
@@ -388,11 +390,7 @@
                         </button>
                         @endif
 
-                        <a href="{{ route('show', $item->id) }}" class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all duration-300 flex-shrink-0" title="Lihat Detail">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
+
                     </div>
                 </div>
             </div>
