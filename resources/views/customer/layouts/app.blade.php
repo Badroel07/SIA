@@ -137,8 +137,8 @@ $mobile_inactive = 'block px-4 py-3 rounded-xl text-lg font-medium text-gray-700
                 </div>
 
                 <div class="flex items-center gap-3 relative z-10">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
-                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-9 h-9 drop-shadow-lg">
+                    <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-9 h-9 drop-shadow-sm">
                     </div>
                     <div>
                         <h3 class="text-xl font-bold text-white tracking-tight">ePharma</h3>
