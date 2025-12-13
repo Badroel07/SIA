@@ -4,348 +4,521 @@
 
 @section('content')
 
-{{-- ========================================================================= --}}
-{{-- 1. LOGIKA PHP UNTUK SESSION DAN TOTAL HARGA --}}
-{{-- ========================================================================= --}}
+<style>
+    @keyframes slideInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        0% {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse-subtle {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.02);
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideInUp 0.5s ease-out forwards;
+    }
+
+    .animate-slide-right {
+        animation: slideInRight 0.5s ease-out forwards;
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .animate-pulse-subtle {
+        animation: pulse-subtle 2s ease-in-out infinite;
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+    }
+
+    .hover-lift {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card:hover {
+        border-color: #6366f1;
+    }
+
+    .product-card:hover .product-image {
+        transform: scale(1.05);
+    }
+</style>
+
 @php
-// Ambil item dari Session, default array kosong jika belum ada
 $cartItems = Session::get('cart', []);
 $subtotal = 0;
 $diskon = 0;
-
-// Hitung Subtotal
-foreach ($cartItems as $item) {
-$subtotal += $item['subtotal'];
-}
-
+foreach ($cartItems as $item) { $subtotal += $item['subtotal']; }
 $total = $subtotal - $diskon;
 @endphp
 
-{{-- Tampilkan Notifikasi Flash (Success/Error) --}}
+{{-- Flash Notifications --}}
 @if (session('success'))
-<div id="flash-message" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-    <span class="font-bold">Success!</span> <span class="block sm:inline">{{ session('success') }}</span>
+<div id="flash-message" class="fixed top-24 right-4 z-[100] glass-card border-l-4 border-green-500 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-slide-right">
+    <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+    </div>
+    <div>
+        <p class="font-bold text-gray-800">Berhasil!</p>
+        <p class="text-gray-600 text-sm">{{ session('success') }}</p>
+    </div>
 </div>
 @endif
 @if (session('error'))
-<div id="flash-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-    <span class="font-bold">Error!</span> <span class="block sm:inline">{{ session('error') }}</span>
+<div id="flash-message" class="fixed top-24 right-4 z-[100] glass-card border-l-4 border-red-500 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-slide-right">
+    <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-white">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </div>
+    <div>
+        <p class="font-bold text-gray-800">Error!</p>
+        <p class="text-gray-600 text-sm">{{ session('error') }}</p>
+    </div>
 </div>
 @endif
 
-
-<div class="min-h-screen bg-gray-50 p-4 lg:p-8">
+<div class="min-h-screen p-4 lg:p-8" x-data="cashierApp">
+    <!-- Background Decorations -->
+    <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-400/10 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {{-- SISI KIRI: PRODUK & FILTER --}}
+        {{-- LEFT SIDE: PRODUCTS --}}
         <div class="lg:col-span-2 space-y-6">
 
-            <h1 class="text-3xl font-extrabold text-gray-900">Transaksi Baru</h1>
+            {{-- Header --}}
+            <div class="flex items-center gap-4 animate-slide-up">
+                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/30">
+                    <i class="fas fa-cash-register text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-extrabold text-gray-900">Transaksi Baru</h1>
+                    <p class="text-gray-500">Pilih produk dan tambahkan ke keranjang</p>
+                </div>
+            </div>
 
-            {{-- Form Pencarian dan Filter --}}
-            <form action="{{ route('cashier.transaction.index') }}" method="GET" class="bg-white p-4 rounded-xl shadow-lg flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4"
-                x-data="{
-                    searchTimeout: null,
-                    loading: false,
-                    performSearch() {
-                        clearTimeout(this.searchTimeout);
-                        this.searchTimeout = setTimeout(() => {
-                            this.loading = true;
-                            const formData = new FormData($el);
-                            const params = new URLSearchParams(formData);
-                            fetch('{{ route('cashier.transaction.index') }}?' + params.toString(), {
-                                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' }
-                            })
-                            .then(response => response.text())
-                            .then(html => {
-                                const parser = new DOMParser();
-                                const doc = parser.parseFromString(html, 'text/html');
-                                const newResults = doc.querySelector('#medicine-grid-results');
-                                const currentResults = document.querySelector('#medicine-grid-results');
-                                if (newResults && currentResults) { currentResults.innerHTML = newResults.innerHTML; }
-                                this.loading = false;
-                            })
-                            .catch(error => { console.error('Search error:', error); this.loading = false; });
-                        }, 400);
-                    }
-                }">
-
-                <div class="flex-grow">
-                    <label for="search" class="sr-only">Cari Obat</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {{-- Search & Filter --}}
+            <div class="glass-card p-5 rounded-2xl shadow-xl border border-gray-100 animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-grow relative group">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-green-50 group-focus-within:bg-green-100 flex items-center justify-center transition-colors">
+                            <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="text" id="search" name="search" placeholder="Cari nama obat, kode, atau bahan aktif..."
-                            value="{{ request('search') }}" @input="performSearch()"
-                            class="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition">
+                        <input type="text" x-model="search" placeholder="Cari nama obat..."
+                            class="w-full pl-16 pr-4 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all duration-300 focus:bg-white">
                     </div>
-                </div>
 
-                <div>
-                    <label for="category" class="sr-only">Filter Kategori</label>
-                    <select id="category" name="category" @change="performSearch()" class="block w-full py-2 px-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 transition">
-                        <option value="all" {{ request('category') === 'all' ? 'selected' : '' }}>Semua Kategori</option>
-
-                        @foreach ($existingCategories as $category)
-                        <option value="{{ $category }}" {{ request('category') === $category ? 'selected' : '' }}>
-                            {{ ucfirst($category) }}
-                        </option>
+                    <select x-model="category"
+                        class="px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all duration-300 focus:bg-white">
+                        <option value="all">Semua Kategori</option>
+                        @foreach ($existingCategories as $cat)
+                        <option value="{{ $cat }}">{{ ucfirst($cat) }}</option>
                         @endforeach
                     </select>
                 </div>
+            </div>
 
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 flex items-center justify-center">
-                    <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" x-show="loading" x-cloak>
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span x-show="!loading">Cari</span>
-                </button>
-            </form>
-
-            {{-- Daftar Obat --}}
-            <div id="medicine-grid-results">
-                @if ($medicines->isEmpty())
-                <div class="text-center py-10 bg-white rounded-xl shadow-md">
-                    <p class="text-xl text-gray-500">Tidak ada obat ditemukan.</p>
-                    <p class="text-sm text-gray-400 mt-2">Coba ganti kata kunci atau filter Anda.</p>
+            {{-- Product Grid --}}
+            <div id="medicine-grid-results" class="animate-slide-up" style="animation-delay: 0.2s;">
+                <!-- Empty State -->
+                <div x-show="filteredMedicines.length === 0" class="glass-card text-center py-16 rounded-3xl border border-gray-100" x-cloak>
+                    <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-pills text-3xl text-gray-400"></i>
+                    </div>
+                    <p class="text-xl text-gray-600 font-bold">Tidak ada obat ditemukan</p>
+                    <p class="text-gray-400 mt-2">Coba ganti kata kunci atau filter</p>
                 </div>
-                @else
-                {{-- PERUBAHAN HANYA DI GRID INI --}}
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                    @foreach ($medicines as $medicine)
-                    <div class="bg-white rounded-xl shadow-md overflow-hidden transition duration-200 border-2 border-gray-100 hover:border-indigo-400 hover:shadow-lg">
+                <!-- Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" x-show="filteredMedicines.length > 0">
+                    <template x-for="medicine in filteredMedicines" :key="medicine.id">
+                        <div class="product-card glass-card rounded-2xl overflow-hidden border-2 border-gray-100 hover-lift transition-all duration-300">
+                            {{-- Product Image --}}
+                            <div class="relative h-28 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
+                                <template x-if="medicine.image">
+                                    <img class="product-image w-full h-full object-cover transition-transform duration-500" :src="'/storage/' + medicine.image" :alt="medicine.name">
+                                </template>
+                                <template x-if="!medicine.image">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <svg class="w-12 h-12 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.761 2.156 18 5.414 18H14.586c3.258 0 4.597-3.239 2.707-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.47-.156a4 4 0 00-2.172-.102l1.027-1.028A3 3 0 009 8.172z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </template>
 
-                        {{-- KEMBALIKAN UKURAN GAMBAR KE ASLI --}}
-                        @if($medicine->image)
-                        <img class="h-24 w-full object-cover"
-                            src="{{ Storage::disk('s3')->url($medicine->image) }}"
-                            alt="{{ $medicine->name }}">
-                        @else
-                        <div class="h-24 w-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-                            <svg class="w-10 h-10 text-blue-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C.817 14.761 2.156 18 5.414 18H14.586c3.258 0 4.597-3.239 2.707-5.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.47-.156a4 4 0 00-2.172-.102l1.027-1.028A3 3 0 009 8.172z" clip-rule="evenodd"></path>
-                            </svg>
-                        </div>
-                        @endif
+                                {{-- Category Badge --}}
+                                <span class="absolute top-2 left-2 px-2 py-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-xs font-bold rounded-lg shadow" x-text="medicine.category.charAt(0).toUpperCase() + medicine.category.slice(1)"></span>
 
-                        {{-- KEMBALIKAN PADDING DAN FONT KE ASLI --}}
-                        <div class="p-3 text-center">
-                            <p class="text-sm font-semibold text-gray-800 truncate">{{ $medicine->name }}</p>
-                            <p class="text-xs text-gray-500 mb-1">{{ ucfirst($medicine->category) }}</p>
-                            <p class="text-lg font-bold text-green-600">
-                                {{ 'Rp ' . number_format($medicine->price, 0, ',', '.') }}
-                            </p>
-                            <p class="text-xs text-gray-400">Stok: {{ $medicine->stock }}</p>
+                                {{-- Stock Badge --}}
+                                <template x-if="medicine.stock <= 5">
+                                    <span class="absolute top-2 right-2 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-lg animate-pulse">
+                                        <span x-text="medicine.stock + ' left'"></span>
+                                    </span>
+                                </template>
+                            </div>
 
-                            {{-- Tombol Detail Obat --}}
-                            <a onclick="openMedicineDetailModal({{ $medicine->id }})"
-                                class="cursor-pointer inline-block mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-medium underline">
-                                Lihat Detail
-                            </a>
-                        </div>
+                            {{-- Product Info --}}
+                            <div class="p-4 text-center">
+                                <p class="font-bold text-gray-800 truncate text-sm" x-text="medicine.name"></p>
+                                <p class="text-lg font-extrabold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mt-1" x-text="'Rp ' + formatPrice(medicine.price)"></p>
+                                <p class="text-xs text-gray-400 mt-1">Stok: <span x-text="medicine.stock"></span></p>
 
-                        {{-- Form Tambah Item --}}
-                        <form action="{{ route('cashier.transaction.cartAdd') }}" method="POST" class="p-3 border-t border-gray-100">
-                            @csrf
-                            <input type="hidden" name="medicine_id" value="{{ $medicine->id }}">
-
-                            <div class="flex space-x-2 items-center">
-                                <input type="number" name="quantity" min="1" max="{{ $medicine->stock }}" value="1"
-                                    class="w-1/3 text-center text-sm border border-gray-300 rounded-lg py-1 px-1 focus:ring-indigo-500 focus:border-indigo-500"
-                                    required>
-
-                                <button type="submit"
-                                    class="w-2/3 flex items-center justify-center bg-indigo-500 text-white text-sm font-medium py-1 rounded-lg shadow-md hover:bg-indigo-600 transition duration-150"
-                                    @if ($medicine->stock == 0) disabled @endif>
-                                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                                    </svg>
-                                    Tambah
+                                <button @click="openMedicineDetailModal(medicine.id)" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium mt-2 inline-block hover:underline">
+                                    <i class="fas fa-eye mr-1"></i> Detail
                                 </button>
                             </div>
-                            @if ($medicine->stock == 0)
-                            <p class="text-xs text-red-500 mt-1">Stok Habis</p>
-                            @endif
-                        </form>
-                    </div>
-                    @endforeach
 
-                </div>
-                @endif
-
-                <div class="flex justify-center mt-6">
-                    {{ $medicines->links() }}
-                </div>
-            </div> {{-- Close medicine-grid-results --}}
-
-        </div> {{-- Close left column (lg:col-span-2) --}}
-
-        {{-- SISI KANAN: KERANJANG BELANJA --}}
-        {{-- Membuat keranjang menjadi sticky di semua ukuran layar sehingga tidak terpengaruh scroll halaman --}}
-        <div class="sticky top-32 z-30 self-start w-full">
-            <div class="bg-white p-6 rounded-xl shadow-2xl space-y-4 w-full">
-
-                <h2 class="text-xl font-bold text-gray-800 border-b pb-3">Keranjang Belanja</h2>
-
-                {{-- Looping Item Keranjang dari Session --}}
-                {{-- Batasi tinggi list item agar jika banyak item, area ini scroll internal saja --}}
-                <div class="space-y-3 max-h-[60vh] overflow-y-auto" id="cart-items">
-                    @if (empty($cartItems))
-                    <div class="text-center py-4 text-gray-500">
-                        <p>Keranjang kosong. Isi kuantitas dan klik "Tambah" di sebelah kiri.</p>
-                    </div>
-                    @else
-                    @foreach ($cartItems as $item)
-                    <div class="flex justify-between items-center text-sm border-b pb-2">
-                        <div class="flex flex-col text-left">
-                            <span class="font-medium text-gray-700">{{ $item['name'] }}</span>
-                            <span class="text-xs text-gray-500">{{ $item['quantity'] }} x Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
+                            {{-- Add to Cart Form --}}
+                            <div class="px-4 pb-4">
+                                <div class="flex gap-2">
+                                    <!-- Simplified: Just Add Button, default qty 1. Or we can keep logic. But simpler is better for speed. -->
+                                    <!-- User rarely adds multiple at once from grid. Usually simple click to add +1 -->
+                                    <button @click="addToCart(medicine)" :disabled="medicine.stock == 0"
+                                        class="w-full flex items-center justify-center gap-2 py-2 rounded-xl font-bold text-sm transition-all duration-300"
+                                        :class="medicine.stock == 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02]'">
+                                        <i class="fas fa-plus"></i> Tambah
+                                    </button>
+                                </div>
+                                <p x-show="medicine.stock == 0" class="text-xs text-red-500 text-center mt-2 font-medium">Stok Habis</p>
+                            </div>
                         </div>
-                        <span class="font-semibold text-gray-800">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</span>
-                    </div>
-                    @endforeach
-                    @endif
+                    </template>
                 </div>
 
-                {{-- Ringkasan Total --}}
-                <div class="pt-3 border-t border-gray-200 space-y-2">
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <span>Subtotal:</span>
-                        <span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
+
+            </div>
+        </div>
+
+        {{-- RIGHT SIDE: CART --}}
+        <div class="lg:sticky lg:top-24 z-30 self-start animate-slide-right">
+            <div class="glass-card p-6 rounded-3xl shadow-2xl border border-gray-100 space-y-5" id="cart-section-wrapper">
+                {{-- Cart Header --}}
+                <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-shopping-cart text-xl"></i>
                     </div>
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <span>Diskon (0%):</span>
-                        <span>Rp {{ number_format($diskon, 0, ',', '.') }}</span>
-                    </div>
-                    <div class="flex justify-between text-xl font-bold text-gray-900 mt-3">
-                        <span>TOTAL:</span>
-                        <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">Keranjang</h2>
+                        <p class="text-sm text-gray-500"><span x-text="cartCount"></span> item</p>
                     </div>
                 </div>
 
-                {{-- Tombol Pembayaran --}}
-                <button @if (empty($cartItems)) disabled class="w-full bg-green-300 text-white text-lg font-semibold py-3 rounded-lg shadow-xl cursor-not-allowed" @else id="prosesPembayaranBtn" class="w-full bg-green-500 text-white text-lg font-semibold py-3 rounded-lg shadow-xl hover:bg-green-600 transition duration-150 focus:ring-4 focus:ring-green-400" @endif>
-                    <svg class="h-6 w-6 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                    </svg>
-                    PROSES PEMBAYARAN
-                </button>
+                {{-- Empty Cart State --}}
+                <div x-show="cartCount === 0" class="text-center py-8" x-cloak>
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-shopping-basket text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">Keranjang kosong</p>
+                    <p class="text-gray-400 text-sm">Tambahkan produk dari katalog</p>
+                </div>
 
-                {{-- Form Batalkan Transaksi (Reset Session) --}}
-                <form action="{{ route('cashier.transaction.cartClear') }}" method="POST" id="form-batal-transaksi">
-                    @csrf
-                    <button type="submit"
-                        @if (empty($cartItems)) disabled @endif
-                        class="w-full text-sm py-2 rounded-lg transition duration-150 
-                        @if (empty($cartItems)) 
-                            bg-gray-200 text-gray-500 cursor-not-allowed
-                        @else 
-                            bg-red-500 text-white hover:bg-red-600
-                        @endif"
-                        onclick="return confirm('Apakah Anda yakin ingin membatalkan transaksi ini? Semua item di keranjang akan dihapus.');">
-                        Batalkan Transaksi
+                {{-- Cart Items --}}
+                <div class="space-y-3 max-h-[45vh] overflow-y-auto no-scrollbar" id="cart-items" x-show="cartCount > 0">
+                    <template x-for="item in cartItems" :key="item.id">
+                        <div class="group flex justify-between items-center p-3 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-50 hover:from-red-100 hover:to-red-200 group-hover:text-red-500 transition-colors"
+                                    @click="removeFromCart(item.id)">
+                                    <i class="fas fa-trash-alt text-gray-400 group-hover:text-red-500 text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm truncate w-32" x-text="item.name"></p>
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <button @click="updateQty(item.id, -1)" class="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs">-</button>
+                                        <span class="text-xs font-bold w-4 text-center" x-text="item.quantity"></span>
+                                        <button @click="updateQty(item.id, 1)" class="w-5 h-5 rounded-full bg-indigo-100 hover:bg-indigo-200 flex items-center justify-center text-indigo-600 text-xs">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="font-bold text-gray-900 text-sm" x-text="'Rp ' + formatPrice(item.subtotal)"></span>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Cart Summary --}}
+                <div class="pt-4 border-t border-gray-100 space-y-3">
+                    <div class="flex justify-between text-sm text-gray-600">
+                        <span>Subtotal</span>
+                        <span x-text="'Rp ' + formatPrice(subtotal)"></span>
+                    </div>
+                    <div class="flex justify-between text-2xl font-extrabold text-gray-900 pt-3 border-t border-dashed border-gray-200">
+                        <span>TOTAL</span>
+                        <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent" x-text="'Rp ' + formatPrice(total)"></span>
+                    </div>
+                </div>
+
+                {{-- Action Buttons --}}
+                <div class="space-y-3 pt-2">
+                    <button @click="prepareCheckout()" :disabled="cartCount === 0"
+                        class="group w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300"
+                        :class="cartCount === 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02]'">
+                        <i class="fas fa-credit-card group-hover:animate-pulse"></i>
+                        PROSES PEMBAYARAN
                     </button>
-                </form>
 
+                    <button @click="clearCart()" :disabled="cartCount === 0"
+                        class="w-full py-3 rounded-xl font-medium transition-all duration-300"
+                        :class="cartCount === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-500 hover:text-white'">
+                        <i class="fas fa-times mr-2"></i> Batalkan Transaksi
+                    </button>
+                </div>
             </div>
         </div>
 
     </div>
 </div>
 
-{{-- ========================================================================= --}}
-{{-- MODAL RINGKASAN TRANSAKSI --}}
-{{-- ========================================================================= --}}
-{{-- Modal ini akan muncul ketika tombol "PROSES PEMBAYARAN" diklik --}}
-<div id="paymentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-4">
-        <div class="p-6">
-            <div class="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full mb-4">
-                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+@push('modals')
+{{-- Payment Modal --}}
+<div id="paymentModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="relative glass-card rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+        {{-- Modal Header --}}
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center text-white flex-shrink-0">
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <i class="fas fa-check-circle text-3xl"></i>
             </div>
-            <h3 class="text-lg font-semibold text-center text-gray-900">Ringkasan Transaksi</h3>
+            <h3 class="text-xl font-bold">Konfirmasi Pembayaran</h3>
+        </div>
 
-            <div class="mt-4 space-y-2 text-sm">
-                <div class="flex justify-between">
-                    <span class="font-medium text-gray-700">No. Invoice:</span>
-                    <span id="invoiceNumber" class="font-bold text-gray-900"></span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="font-medium text-gray-700">Tanggal:</span>
-                    <span id="transactionDate" class="font-bold text-gray-900"></span>
-                </div>
-                <div class="flex justify-between pt-3 mt-3 border-t border-gray-200">
-                    <span class="font-medium text-gray-700">Total Pembayaran:</span>
-                    <span id="totalPayment" class="text-lg font-bold text-green-600"></span>
-                </div>
+        {{-- Modal Body --}}
+        <div class="p-6 space-y-4 overflow-y-auto max-h-[70vh] no-scrollbar">
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+                <span class="text-gray-600">No. Invoice</span>
+                <span id="invoiceNumber" class="font-bold text-gray-900"></span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+                <span class="text-gray-600">Tanggal</span>
+                <span id="transactionDate" class="font-bold text-gray-900"></span>
+            </div>
+            <div class="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+                <span class="text-gray-700 font-medium">Total Pembayaran</span>
+                <span id="totalPayment" class="text-2xl font-extrabold text-green-600"></span>
             </div>
 
-            {{-- Form untuk mengirim data ke backend --}}
-            <form id="confirmPaymentForm" action="{{ route('cashier.transaction.processPayment') }}" method="POST" class="mt-6">
+            <form id="confirmPaymentForm" action="{{ route('cashier.transaction.processPayment') }}" method="POST" class="space-y-3 pt-4">
                 @csrf
                 <input type="hidden" id="invoiceInput" name="invoice_number">
                 <input type="hidden" id="totalInput" name="total_amount">
-                <div class="flex space-x-3">
-                    <button type="submit" class="flex-1 px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300 transition">
-                        Konfirmasi
-                    </button>
-                    <button type="button" id="cancelPayment" class="flex-1 px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 transition">
-                        Batal
-                    </button>
-                </div>
+                <input type="hidden" id="cartInput" name="cart_data">
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+                    <i class="fas fa-check mr-2"></i> Konfirmasi Pembayaran
+                </button>
+                <button type="button" id="cancelPayment" class="w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-all duration-300">
+                    Batal
+                </button>
             </form>
         </div>
     </div>
 </div>
 
 @include('components.detail_obat')
+@endpush
 
 @endsection
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const flashMessage = document.getElementById('flash-message');
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('cashierApp', () => ({
+            medicines: @json($allMedicines),
+            cart: {},
+            search: @json(request('search', '')),
+            category: @json(request('category', 'all')),
+            loading: false,
 
-        // Logika Notifikasi Hilang Otomatis
-        if (flashMessage) {
-            setTimeout(() => {
-                flashMessage.style.transition = 'opacity 0.5s ease-out';
-                flashMessage.style.opacity = '0';
-                setTimeout(() => {
-                    flashMessage.remove();
-                }, 500);
-            }, 3000);
-        }
+            init() {
+                const sessionSuccess = @json(session('success') ? true : false);
 
-        // =========================================================================
-        // LOGIKA UNTUK MODAL PEMBAYARAN
-        // =========================================================================
-        const prosesPembayaranBtn = document.getElementById('prosesPembayaranBtn');
-        const paymentModal = document.getElementById('paymentModal');
-        const cancelPaymentBtn = document.getElementById('cancelPayment');
+                if (sessionSuccess) {
+                    localStorage.removeItem('pos_cart');
+                    this.cart = {};
+                } else {
+                    const storedCart = localStorage.getItem('pos_cart');
+                    if (storedCart) {
+                        try {
+                            this.cart = JSON.parse(storedCart);
+                        } catch (e) {
+                            console.error('Cart parse error', e);
+                            this.cart = {};
+                        }
+                    } else {
+                        const sessionCart = @json(session('cart', []));
+                        if (Object.keys(sessionCart).length > 0) {
+                            this.cart = sessionCart;
+                        }
+                    }
+                }
 
-        // Event listener untuk tombol "PROSES PEMBAYARAN"
-        if (prosesPembayaranBtn) {
-            prosesPembayaranBtn.addEventListener('click', function() {
-                // 1. Generate Nomor Invoice
+                this.$watch('cart', (val) => {
+                    localStorage.setItem('pos_cart', JSON.stringify(val));
+                });
+            },
+
+            get filteredMedicines() {
+                return this.medicines.filter(medicine => {
+                    const matchesSearch = medicine.name.toLowerCase().includes(this.search.toLowerCase());
+                    const matchesCategory = this.category === 'all' || medicine.category === this.category;
+                    return matchesSearch && matchesCategory;
+                });
+            },
+
+            get cartItems() {
+                return Object.values(this.cart);
+            },
+
+            get cartCount() {
+                return this.cartItems.length;
+            },
+
+            get subtotal() {
+                return this.cartItems.reduce((sum, item) => sum + item.subtotal, 0);
+            },
+
+            get diskon() {
+                return 0; // Logic diskon bisa ditambahkan di sini
+            },
+
+            get total() {
+                return this.subtotal - this.diskon;
+            },
+
+            addToCart(medicine) {
+                if (medicine.stock <= 0) {
+                    showToast('error', 'Stok habis!');
+                    return;
+                }
+
+                if (this.cart[medicine.id]) {
+                    if (this.cart[medicine.id].quantity + 1 > medicine.stock) {
+                        showToast('error', 'Stok tidak mencukupi!');
+                        return;
+                    }
+                    this.cart[medicine.id].quantity++;
+                    this.cart[medicine.id].subtotal = this.cart[medicine.id].price * this.cart[medicine.id].quantity;
+                } else {
+                    this.cart[medicine.id] = {
+                        id: medicine.id,
+                        name: medicine.name,
+                        price: medicine.price,
+                        quantity: 1,
+                        subtotal: medicine.price
+                    };
+                }
+                showToast('success', 'Berhasil ditambahkan!');
+            },
+
+            updateQty(id, change) {
+                if (this.cart[id]) {
+                    const medicine = this.medicines.find(m => m.id === id);
+                    const newQty = this.cart[id].quantity + change;
+
+                    if (newQty <= 0) {
+                        this.removeFromCart(id);
+                        return;
+                    }
+
+                    if (medicine && newQty > medicine.stock) {
+                        showToast('error', 'Stok tidak mencukupi!');
+                        return;
+                    }
+
+                    this.cart[id].quantity = newQty;
+                    this.cart[id].subtotal = this.cart[id].price * newQty;
+                }
+            },
+
+            removeFromCart(id) {
+                if (confirm('Hapus item ini?')) {
+                    delete this.cart[id];
+                }
+            },
+
+            clearCart() {
+                if (confirm('Kosongkan keranjang?')) {
+                    this.cart = {};
+                }
+            },
+
+            prepareCheckout() {
+                if (this.cartCount === 0) return;
+
                 const today = new Date();
                 const dateStr = today.getFullYear().toString() +
                     (today.getMonth() + 1).toString().padStart(2, '0') +
                     today.getDate().toString().padStart(2, '0');
-                // Menggunakan timestamp untuk memastikan keunikan
                 const uniqueCode = today.getTime().toString().slice(-5);
                 const invoiceNumber = 'INV-' + dateStr + '-' + uniqueCode;
 
-                // 2. Format Tanggal Transaksi
                 const formattedDate = today.toLocaleDateString('id-ID', {
                     weekday: 'long',
                     year: 'numeric',
@@ -353,33 +526,45 @@ $total = $subtotal - $diskon;
                     day: 'numeric'
                 });
 
-                // 3. Ambil Total Harga dari halaman
-                const totalElement = document.querySelector('.flex.justify-between.text-xl.font-bold.text-gray-900.mt-3 span:last-child');
-                const totalText = totalElement ? totalElement.textContent : 'Rp 0';
-
-                // 4. Isi data ke dalam modal
                 document.getElementById('invoiceNumber').textContent = invoiceNumber;
                 document.getElementById('transactionDate').textContent = formattedDate;
-                document.getElementById('totalPayment').textContent = totalText;
+                document.getElementById('totalPayment').textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(this.total);
 
-                // 5. Isi data ke input hidden untuk dikirim ke backend
+                // Set hidden inputs
                 document.getElementById('invoiceInput').value = invoiceNumber;
-                // Hapus semua karakter non-digit untuk total amount
-                document.getElementById('totalInput').value = totalText.replace(/[^\d]/g, '');
+                document.getElementById('totalInput').value = this.total;
+                document.getElementById('cartInput').value = JSON.stringify(this.cart);
 
-                // 6. Tampilkan modal
+                const paymentModal = document.getElementById('paymentModal');
                 paymentModal.classList.remove('hidden');
                 paymentModal.classList.add('flex');
-            });
-        }
+            },
 
-        // Event listener untuk tombol "BATAL" pada modal
-        if (cancelPaymentBtn) {
-            cancelPaymentBtn.addEventListener('click', function() {
-                paymentModal.classList.add('hidden');
-                paymentModal.classList.remove('flex');
-            });
-        }
+            formatPrice(price) {
+                return new Intl.NumberFormat('id-ID').format(price);
+            }
+        }));
     });
+
+    function showToast(type, message) {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-24 right-4 z-[100] glass-card border-l-4 ${type === 'success' ? 'border-green-500' : 'border-red-500'} px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 animate-slide-right transition-all duration-500`;
+        toast.innerHTML = `
+            <div class="w-12 h-12 bg-gradient-to-br ${type === 'success' ? 'from-green-500 to-emerald-600' : 'from-red-500 to-rose-600'} rounded-xl flex items-center justify-center text-white">
+                <i class="fas ${type === 'success' ? 'fa-check' : 'fa-exclamation-triangle'}"></i>
+            </div>
+            <div>
+                <p class="font-bold text-gray-800">${type === 'success' ? 'Berhasil!' : 'Error!'}</p>
+                <p class="text-gray-600 text-sm">${message}</p>
+            </div>
+        `;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
 </script>
 @endpush

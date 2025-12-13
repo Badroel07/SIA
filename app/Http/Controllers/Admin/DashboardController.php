@@ -14,7 +14,7 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $totalInitialStock = 5000;
+        $totalInitialStock = 1000;
         // 1. Total Stok Obat (Jumlah semua unit)
         $totalStock = Medicine::sum('stock');
 
@@ -39,6 +39,6 @@ class DashboardController extends Controller
             'stockPercentage' => round(($totalStock / $totalInitialStock) * 100, 1),
         ];
 
-        return view('admin.index', compact('stats', 'lowStockMedicines'));
+        return view('admin.index', compact('stats', 'lowStockMedicines', 'totalInitialStock'));
     }
 }

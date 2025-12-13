@@ -442,7 +442,11 @@
     left: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(90deg, #ef4444, #dc2626); /* red-500 to red-600 */
+    background: linear-gradient(
+        90deg,
+        #ef4444,
+        #dc2626
+    ); /* red-500 to red-600 */
     border-radius: 2px;
     transition: width 0.3s ease;
 }
@@ -472,6 +476,15 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #64748b, #475569);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 /* ============================================

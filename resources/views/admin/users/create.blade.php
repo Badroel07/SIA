@@ -1,89 +1,192 @@
 @extends('admin.layouts.app')
 
-@section('content')
-<div class="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+@section('title', 'Tambah Pengguna Baru')
 
-    {{-- HEADER --}}
-    <div class="flex items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Tambah Pengguna Baru</h1>
+@section('content')
+
+<style>
+    @keyframes slideInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideInUp 0.5s ease-out forwards;
+    }
+
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+    }
+
+    .input-modern {
+        transition: all 0.3s ease;
+    }
+
+    .input-modern:focus {
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+    }
+</style>
+
+<div class="min-h-screen p-4 lg:p-8">
+
+    <!-- Background Decorations -->
+    <div class="fixed inset-0 -z-10 pointer-events-none overflow-hidden">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
     </div>
 
-    {{-- CARD FORM --}}
-    <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto space-y-6">
 
-        {{-- Formulir akan diproses oleh method 'store' di UserController --}}
-        <form method="POST" action="{{ route('admin.users.store') }}">
-            @csrf
+        {{-- Header --}}
+        <div class="flex items-center gap-4 animate-slide-up">
+            <a href="{{ route('admin.users.index') }}" class="w-12 h-12 bg-white rounded-2xl shadow-lg flex items-center justify-center text-gray-600 hover:text-purple-600 hover:scale-110 transition-all duration-300">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                    <i class="fas fa-user-plus text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">Tambah Pengguna</h1>
+                    <p class="text-gray-500">Isi data pengguna baru di bawah ini</p>
+                </div>
+            </div>
+        </div>
 
-            {{-- 1. Input NAMA LENGKAP --}}
-            <div class="mb-5">
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="name" id="name" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror"
-                    value="{{ old('name') }}" placeholder="Masukkan nama lengkap">
-                @error('name')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
+        {{-- Form Card --}}
+        <div class="glass-card rounded-3xl shadow-2xl border border-gray-100 overflow-hidden animate-slide-up" style="animation-delay: 0.1s;">
+
+            {{-- Card Header --}}
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
+                <div class="flex items-center gap-3 text-white">
+                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-id-card text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold">Informasi Pengguna</h3>
+                        <p class="text-purple-100 text-sm">Semua field wajib diisi</p>
+                    </div>
+                </div>
             </div>
 
-            {{-- 2. Input EMAIL --}}
-            <div class="mb-5">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input type="email" name="email" id="email" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('email') border-red-500 @enderror"
-                    value="{{ old('email') }}" placeholder="Masukkan alamat email">
-                @error('email')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+            {{-- Form Content --}}
+            <form method="POST" action="{{ route('admin.users.store') }}" class="p-6 sm:p-8 space-y-6">
+                @csrf
 
-            {{-- 3. Input PASSWORD --}}
-            <div class="mb-5">
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input type="password" name="password" id="password" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror"
-                    placeholder="Masukkan password">
-                @error('password')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Name Input --}}
+                <div class="space-y-2">
+                    <label for="name" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                        <i class="fas fa-user text-purple-500"></i>
+                        Nama Lengkap
+                    </label>
+                    <input type="text" name="name" id="name" required
+                        class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:bg-white @error('name') border-red-500 @enderror"
+                        value="{{ old('name') }}" placeholder="Masukkan nama lengkap">
+                    @error('name')
+                    <p class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> {{ $message }}</p>
+                    @enderror
+                </div>
 
-            {{-- 4. Input KONFIRMASI PASSWORD --}}
-            <div class="mb-5">
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Ulangi password">
-            </div>
+                {{-- Email Input --}}
+                <div class="space-y-2">
+                    <label for="email" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                        <i class="fas fa-envelope text-purple-500"></i>
+                        Email
+                    </label>
+                    <input type="email" name="email" id="email" required
+                        class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:bg-white @error('email') border-red-500 @enderror"
+                        value="{{ old('email') }}" placeholder="contoh@email.com">
+                    @error('email')
+                    <p class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> {{ $message }}</p>
+                    @enderror
+                </div>
 
-            {{-- 5. Input ROLE --}}
-            <div class="mb-6">
-                <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                <select name="role" id="role" required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 @error('role') border-red-500 @enderror">
-                    <option value="" disabled selected>Pilih Role Pengguna</option>
-                    @foreach ($availableRoles as $role)
-                    <option value="{{ $role }}" {{ old('role') == $role ? 'selected' : '' }}>
-                        {{ ucfirst($role) }}
-                    </option>
-                    @endforeach
-                </select>
-                @error('role')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Password Input --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="password" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                            <i class="fas fa-lock text-purple-500"></i>
+                            Password
+                        </label>
+                        <input type="password" name="password" id="password" required
+                            class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:bg-white @error('password') border-red-500 @enderror"
+                            placeholder="Buat password">
+                        @error('password')
+                        <p class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> {{ $message }}</p>
+                        @enderror
+                    </div>
 
-            {{-- Tombol Submit --}}
-            <div class="flex justify-end space-x-3">
-                <a href="{{ route('admin.users.index') }}" class="py-2 px-4 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-150">
-                    Batal
-                </a>
-                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
-                    Simpan Pengguna
-                </button>
-            </div>
-        </form>
+                    <div class="space-y-2">
+                        <label for="password_confirmation" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                            <i class="fas fa-lock text-purple-500"></i>
+                            Konfirmasi Password
+                        </label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" required
+                            class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:bg-white"
+                            placeholder="Ulangi password">
+                    </div>
+                </div>
 
+                {{-- Role Select --}}
+                <div class="space-y-2">
+                    <label for="role" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                        <i class="fas fa-user-tag text-purple-500"></i>
+                        Role Pengguna
+                    </label>
+                    <select name="role" id="role" required
+                        class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 focus:outline-none focus:border-purple-500 focus:bg-white @error('role') border-red-500 @enderror appearance-none cursor-pointer">
+                        <option value="" disabled selected>Pilih Role Pengguna</option>
+                        @foreach ($availableRoles as $role)
+                        <option value="{{ $role }}" {{ old('role') == $role ? 'selected' : '' }}>
+                            {{ ucfirst($role) }}
+                        </option>
+                        @endforeach
+                    </select>
+                    @error('role')
+                    <p class="text-red-500 text-xs flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> {{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Action Buttons --}}
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-100">
+                    <a href="{{ route('admin.users.index') }}"
+                        class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all duration-300">
+                        <i class="fas fa-times"></i>
+                        Batal
+                    </a>
+                    <button type="submit"
+                        class="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-[1.02] transition-all duration-300">
+                        <i class="fas fa-save"></i>
+                        Simpan Pengguna
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 @endsection

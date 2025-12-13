@@ -41,15 +41,18 @@ class TransactionController extends Controller
         // Ambil semua kategori unik untuk filter dropdown
         $categories = Medicine::select('category')->distinct()->pluck('category');
 
-        $existingCategories = Medicine::select('category')
-            ->distinct()
-            ->pluck('category')
+        $allMedicines = Medicine::select('id', 'name', 'price', 'stock', 'category', 'image')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $existingCategories = $allMedicines->pluck('category')
+            ->unique()
             ->filter()
             ->values()
             ->toArray();
 
         // Pastikan view CRUD index dipanggil
-        return view('cashier.transaction.index', compact('medicines', 'categories', 'existingCategories'));
+        return view('cashier.transaction.index', compact('medicines', 'categories', 'existingCategories', 'allMedicines'));
     }
 
     public function cartAdd(Request $request)
@@ -105,6 +108,25 @@ class TransactionController extends Controller
         // 5. SIMPAN KEMBALI KERANJANG KE SESSION
         Session::put('cart', $cart);
 
+        // --- AJAX RESPONSE ---
+        if ($request->ajax()) {
+            $cartItems = $cart;
+            $subtotal = 0;
+            foreach ($cartItems as $item) {
+                $subtotal += $item['subtotal'];
+            }
+            $diskon = 0;
+            $total = $subtotal - $diskon;
+
+            $html = view('cashier.transaction.partials.cart-sidebar', compact('cartItems', 'subtotal', 'diskon', 'total'))->render();
+
+            return response()->json([
+                'success' => true,
+                'message' => $medicine->name . ' berhasil ditambahkan ke keranjang!',
+                'html' => $html
+            ]);
+        }
+
         // 6. REDIRECT DAN BERI NOTIFIKASI
         return redirect()->route('cashier.transaction.index')->with('success', $medicine->name . ' berhasil ditambahkan ke keranjang!');
     }
@@ -131,7 +153,15 @@ class TransactionController extends Controller
         try {
             $invoiceNumber = $request->input('invoice_number');
             $totalAmount = $request->input('total_amount');
-            $cartItems = Session::get('cart', []);
+
+            // Ambil data dari input hidden (Client Side Cart)
+            $cartData = $request->input('cart_data');
+            $cartItems = json_decode($cartData, true);
+
+            // Fallback ke session jika kosong (untuk backwards compatibility atau direct access)
+            if (empty($cartItems)) {
+                $cartItems = Session::get('cart', []);
+            }
 
             if (empty($cartItems)) {
                 DB::rollBack();

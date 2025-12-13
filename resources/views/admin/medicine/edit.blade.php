@@ -1,140 +1,224 @@
-{{-- Container Utama Modal Edit --}}
-<div id="medicineEditModal" class="hidden fixed inset-0 backdrop-blur-sm backdrop-brightness-50 overflow-y-auto h-full w-full z-50 p-4 sm:p-6">
+{{-- Modal Edit Obat - Ultra Modern --}}
+<div id="medicineEditModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 sm:p-6">
+
+    <style>
+        @keyframes modalSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-animate {
+            animation: modalSlideIn 0.4s ease-out forwards;
+        }
+
+        .input-modern {
+            transition: all 0.3s ease;
+        }
+
+        .input-modern:focus {
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+    </style>
 
     <div id="editModalContent"
-        class="relative top-10 mx-auto w-full max-w-4xl shadow-2xl rounded-xl bg-white mb-10 transform opacity-0 scale-95 transition-all duration-300 ease-out">
+        class="relative mx-auto w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl rounded-2xl bg-white overflow-hidden transform opacity-0 scale-95 transition-all duration-300 ease-out">
 
-        <div class="p-6 sm:p-8">
-            {{-- Header Modal --}}
-            <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
-                <h3 class="text-2xl font-extrabold text-gray-900">Edit Data Obat: <span id="edit-modal-name" class="text-blue-600"></span></h3>
-                <button type="button" onclick="closeEditMedicineModal()" class="text-gray-400 hover:text-red-500 text-3xl font-bold transition duration-150">&times;</button>
+        {{-- Header dengan Gradient --}}
+        <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 relative overflow-hidden flex-shrink-0">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-10 w-20 h-20 bg-white/10 rounded-full translate-y-1/2"></div>
+
+            <div class="flex justify-between items-center relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-edit text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Edit Data Obat</h3>
+                        <p class="text-blue-100 text-sm" id="edit-modal-name">-</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditMedicineModal()" class="w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90 hover:scale-110">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
+        </div>
 
-            {{-- Form Content --}}
-            <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-8">
+        {{-- Form Content --}}
+        <div class="p-6 sm:p-8 overflow-y-auto flex-1 no-scrollbar">
+            <form id="editForm" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
 
-                {{-- Handle Error Validasi (Jika ada error saat submit form edit) --}}
+                {{-- Error Validasi --}}
                 @if ($errors->any())
-                <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg shadow-sm">
-                    <p class="font-bold">Terjadi Kesalahan Input:</p>
-                    <ul class="mt-1 list-disc list-inside text-sm">
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="flex items-center gap-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl">
+                    <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-red-700">Terjadi Kesalahan:</p>
+                        <ul class="list-disc list-inside text-sm text-red-600">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 @endif
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Section: Data Dasar --}}
+                <div class="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-6 border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-pills text-white text-sm"></i>
+                        </div>
+                        Informasi Dasar
+                    </h4>
 
-                    <div class="space-y-1">
-                        <label for="edit-name" class="block text-sm font-semibold text-gray-700">Nama Obat</label>
-                        <input type="text" name="name" id="edit-name" value="" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 transition duration-150">
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="edit-name" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-tag text-blue-500"></i> Nama Obat
+                            </label>
+                            <input type="text" name="name" id="edit-name" required
+                                class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
 
-                    {{-- START: FIELD KATEGORI (MENGGUNAKAN SELECT2 DENGAN TAGS DAN OPSIONAL) --}}
-                    <div class="space-y-1">
-                        <label for="edit-category-select2" class="block text-sm font-semibold text-gray-700">Kategori</label>
-                        <div class="mt-1">
-                            {{-- Atribut required DIHAPUS, Select2 akan diaktifkan dengan Tags --}}
+                        <div class="space-y-2">
+                            <label for="edit-category-select2" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-folder text-blue-500"></i> Kategori
+                            </label>
                             <select name="category" id="edit-category-select2" class="w-full">
-                                {{-- Opsi kosong untuk nilai null/opsional --}}
-                                <option value="">-- Pilih Kategori (Opsional, atau ketik baru) --</option>
-                                {{-- Opsi kategori yang sudah ada --}}
+                                <option value="">-- Pilih Kategori --</option>
                                 @foreach($existingCategories as $cat)
                                 <option value="{{ $cat }}">{{ $cat }}</option>
                                 @endforeach
                             </select>
+                        </div>
 
-                            {{-- Input Teks Manual Kategori BARU sudah tidak diperlukan karena dihandle oleh Select2 Tags --}}
+                        <div class="space-y-2">
+                            <label for="edit-price" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-money-bill text-green-500"></i> Harga (Rp)
+                            </label>
+                            <input type="number" name="price" id="edit-price" required min="0"
+                                class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-boxes text-purple-500"></i> Stok Saat Ini
+                            </label>
+                            <input type="text" id="edit-current-stock" disabled
+                                class="w-full px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-200 cursor-not-allowed font-bold text-gray-600">
                         </div>
                     </div>
-                    {{-- END: FIELD KATEGORI --}}
+                </div>
 
-                    <div class="space-y-1">
-                        <label for="edit-price" class="block text-sm font-semibold text-gray-700">Harga (Rp)</label>
-                        <input type="number" name="price" id="edit-price" value="" required min="0"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 transition duration-150">
+                {{-- Section: Penyesuaian Stok --}}
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+                    <h4 class="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-arrows-alt-v text-white text-sm"></i>
+                        </div>
+                        Penyesuaian Stok
+                    </h4>
+
+                    <input type="number" name="stock_adjustment" id="edit-stock-adjustment"
+                        placeholder="Contoh: +10 untuk menambah, -5 untuk mengurangi"
+                        class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:outline-none">
+                    <p class="text-xs text-blue-600 mt-2">Masukkan angka positif untuk menambah, atau negatif untuk mengurangi stok.</p>
+
+                    <div id="stock-reason-container" class="mt-4 hidden p-4 bg-white rounded-xl border border-blue-200">
+                        <label class="block text-sm font-bold text-blue-800 mb-3">Alasan Pengurangan Stok:</label>
+                        <div class="flex flex-wrap gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input id="sold-reason" name="stock_reason" value="sold" type="radio" class="w-5 h-5 text-blue-600">
+                                <span class="text-gray-700 font-medium">Terjual</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input id="other-reason" name="stock_reason" value="other" type="radio" class="w-5 h-5 text-blue-600" checked>
+                                <span class="text-gray-700 font-medium">Lainnya (hilang, rusak, dll)</span>
+                            </label>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="space-y-1">
-                        <label class="block text-sm font-semibold text-gray-700">Stok Saat Ini</label>
-                        <input type="text" id="edit-current-stock" value="" disabled
-                            class="mt-1 block w-full bg-gray-100 border border-gray-300 rounded-md shadow-sm p-2.5 cursor-not-allowed">
-                    </div>
+                {{-- Section: Gambar --}}
+                <div class="bg-gradient-to-br from-gray-50 to-purple-50/30 rounded-2xl p-6 border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-image text-white text-sm"></i>
+                        </div>
+                        Gambar Produk
+                    </h4>
 
-                    {{-- Bagian penyesuaian stok yang dimodifikasi --}}
-                    <div class="md:col-span-2 bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <label for="edit-stock-adjustment" class="block text-sm font-medium text-blue-800 mb-1">
-                            <i class="fas fa-arrows-alt-v mr-1"></i> Penyesuaian Stok (Tambahkan/Kurangi)
-                        </label>
-                        <input type="number" name="stock_adjustment" id="edit-stock-adjustment" placeholder="Masukkan angka positif (+) untuk menambah, atau negatif (-) untuk mengurangi"
-                            value=""
-                            class="mt-1 block w-full border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                        <p class="text-xs text-gray-600 mt-2">Misal: Masukkan 10 untuk menambah 10 unit, atau -5 untuk mengurangi 5 unit.</p>
-
-                        {{-- Tambahkan radio button untuk alasan pengurangan stok --}}
-                        <div id="stock-reason-container" class="mt-4 hidden">
-                            <label class="block text-sm font-medium text-blue-800 mb-2">Alasan Pengurangan Stok:</label>
-                            <div class="flex space-x-6">
-                                <div class="flex items-center">
-                                    <input id="sold-reason" name="stock_reason" value="sold" type="radio" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
-                                    <label for="sold-reason" class="ml-2 block text-sm text-gray-700">Terjual</label>
-                                </div>
-                                <div class="flex items-center">
-                                    <input id="other-reason" name="stock_reason" value="other" type="radio" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300" checked>
-                                    <label for="other-reason" class="ml-2 block text-sm text-gray-700">Lainnya (hilang, rusak, dll)</label>
-                                </div>
+                    <div class="flex items-center gap-6">
+                        <div class="flex-shrink-0">
+                            <div class="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
+                                <img id="edit-current-image" src="" alt="" class="w-full h-full object-cover hidden">
+                                <span id="edit-no-image" class="text-gray-400"><i class="fas fa-image text-3xl"></i></span>
                             </div>
                         </div>
-                    </div>
-
-
-                    <div class="md:col-span-2 flex items-center gap-6 border-t pt-4">
-                        <div class="flex-shrink-0">
-                            <label class="block text-sm font-semibold text-gray-700">Gambar Saat Ini</label>
-                            <img id="edit-current-image" src="" alt="Gambar Obat" class="w-16 h-16 object-cover rounded-full mt-2 border border-gray-200 shadow-sm">
-                            <span id="edit-no-image" class="text-sm text-gray-500 mt-2 hidden">Tidak ada gambar</span>
-                        </div>
-
                         <div class="flex-grow">
-                            <label for="edit-image" class="block text-sm font-medium text-gray-700">Ganti Gambar (Opsional)</label>
-                            <input type="file" name="image" id="edit-image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <label for="edit-image" class="block text-sm font-medium text-gray-700 mb-2">Ganti Gambar (Opsional)</label>
+                            <input type="file" name="image" id="edit-image"
+                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer">
                         </div>
                     </div>
                 </div>
 
-                <h4 class="text-lg font-bold text-gray-800 pt-4 border-t">Detail Informasi Obat</h4>
+                {{-- Section: Detail Informasi --}}
+                <div class="bg-gradient-to-br from-gray-50 to-green-50/30 rounded-2xl p-6 border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-white text-sm"></i>
+                        </div>
+                        Detail Informasi Obat
+                    </h4>
 
-                @php
-                $detailFields = [
-                'description' => ['label' => 'Deskripsi Singkat (Katalog)', 'rows' => 2],
-                'full_indication' => ['label' => 'Indikasi dan Manfaat Lengkap', 'rows' => 4],
-                'usage_detail' => ['label' => 'Cara Penggunaan / Dosis', 'rows' => 3],
-                'side_effects' => ['label' => 'Efek Samping', 'rows' => 3],
-                'contraindications' => ['label' => 'Larangan / Kontraindikasi', 'rows' => 3]
-                ];
-                @endphp
+                    <div class="space-y-5">
+                        @php
+                        $detailFields = [
+                        'description' => ['label' => 'Deskripsi Singkat', 'rows' => 2, 'icon' => 'info-circle', 'color' => 'blue'],
+                        'full_indication' => ['label' => 'Indikasi dan Manfaat', 'rows' => 3, 'icon' => 'check-circle', 'color' => 'green'],
+                        'usage_detail' => ['label' => 'Cara Penggunaan / Dosis', 'rows' => 3, 'icon' => 'pills', 'color' => 'purple'],
+                        'side_effects' => ['label' => 'Efek Samping', 'rows' => 3, 'icon' => 'exclamation-triangle', 'color' => 'amber'],
+                        'contraindications' => ['label' => 'Kontraindikasi', 'rows' => 3, 'icon' => 'ban', 'color' => 'red']
+                        ];
+                        @endphp
 
-                @foreach($detailFields as $name => $data)
-                <div class="space-y-1">
-                    <label for="edit-{{ $name }}" class="block text-sm font-semibold text-gray-700">{{ $data['label'] }}</label>
-                    <textarea name="{{ $name }}" id="edit-{{ $name }}" rows="{{ $data['rows'] }}" required
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150"></textarea>
+                        @foreach($detailFields as $name => $data)
+                        <div class="space-y-2">
+                            <label for="edit-{{ $name }}" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-{{ $data['icon'] }} text-{{ $data['color'] }}-500"></i>
+                                {{ $data['label'] }}
+                            </label>
+                            <textarea name="{{ $name }}" id="edit-{{ $name }}" rows="{{ $data['rows'] }}" required
+                                class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none resize-none"></textarea>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
-                @endforeach
 
-
-                <div class="flex justify-end pt-4 gap-3 border-t">
-                    <button type="button" onclick="closeEditMedicineModal()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-bold transition">
-                        Batal
+                {{-- Action Buttons --}}
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="closeEditMedicineModal()"
+                        class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all duration-300">
+                        <i class="fas fa-times"></i> Batal
                     </button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition ml-3">
-                        Simpan Perubahan
+                    <button type="submit"
+                        class="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all duration-300">
+                        <i class="fas fa-save"></i> Simpan Perubahan
                     </button>
                 </div>
             </form>
@@ -145,75 +229,57 @@
 <script>
     const baseUrl = "{{ url('/') }}";
 
-    // --- 1. Fungsi Inisialisasi Select2 Edit (FINAL dengan Tags) ---
     function initEditSelect2(currentCategory) {
         const select = $('#edit-category-select2');
-
         if (select.data('select2')) {
             select.select2('destroy');
         }
 
         const categoryToSelect = currentCategory || '';
-
-        // Cek apakah kategori saat ini ada di daftar opsi yang tersedia
         const isExisting = select.find('option[value="' + categoryToSelect + '"]').length > 0;
 
-        // Jika kategori saat ini TIDAK ada di daftar, kita tambahkan opsi tersebut 
-        // agar data lama tetap muncul dan terpilih, penting untuk Select2 Tags
         if (!isExisting && categoryToSelect) {
             const newOption = new Option(categoryToSelect, categoryToSelect, true, true);
             select.append(newOption);
         }
 
-        // Re-inisialisasi Select2 DENGAN tags: true
         select.select2({
-            placeholder: "Pilih kategori, atau ketik untuk menambah baru...",
+            placeholder: "Pilih atau ketik kategori baru...",
             dropdownParent: $('#medicineEditModal'),
             allowClear: true,
-            tags: true, // **MENGAKTIFKAN INPUT MANUAL/TAGS**
+            tags: true,
         });
 
-        // Memastikan Select2 memilih nilai kategori saat ini
         select.val(categoryToSelect).trigger('change');
     }
 
-    // --- 2. Fungsi Utama untuk Membuka Modal Edit ---
     function openMedicineEditModal(id) {
         const modal = document.getElementById('medicineEditModal');
         const modalContent = document.getElementById('editModalContent');
         const form = document.getElementById('editForm');
 
-        // 0. Reset dan Persiapan
         form.reset();
         document.getElementById('edit-stock-adjustment').value = '';
 
-        // 1. Ambil Data Obat melalui AJAX
         $.getJSON(baseUrl + '/admin/medicines/' + id + '/detail', function(data) {
-
-            // 2. Isi Form Action (URL untuk PUT)
             form.action = baseUrl + '/admin/medicines/' + id;
 
-            // 3. Isi Field Dasar
             document.getElementById('edit-modal-name').textContent = data.name;
             document.getElementById('edit-name').value = data.name;
             document.getElementById('edit-price').value = data.price;
-            document.getElementById('edit-current-stock').value = data.stock;
+            document.getElementById('edit-current-stock').value = data.stock + ' unit';
 
-            // 4. Isi Field Detail (Textarea)
             document.getElementById('edit-description').value = data.description || '';
             document.getElementById('edit-full_indication').value = data.full_indication || '';
             document.getElementById('edit-usage_detail').value = data.usage_detail || '';
             document.getElementById('edit-side_effects').value = data.side_effects || '';
             document.getElementById('edit-contraindications').value = data.contraindications || '';
 
-            // 5. Handle Gambar - PERBAIKAN DI SINI
             const img = document.getElementById('edit-current-image');
             const noImgSpan = document.getElementById('edit-no-image');
 
             if (data.image) {
-                // Gunakan image_url dari backend yang sudah berisi full S3 URL
-                // ATAU buat sendiri dengan menambahkan S3 base URL
-                img.src = data.image_url || data.image; // Pastikan backend mengirim image_url
+                img.src = data.image_url || data.image;
                 img.classList.remove('hidden');
                 noImgSpan.classList.add('hidden');
             } else {
@@ -222,14 +288,11 @@
                 noImgSpan.classList.remove('hidden');
             }
 
-            // 6. Inisialisasi dan Set Select2 Kategori
             initEditSelect2(data.category);
 
-            // 7. Tampilkan Modal
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
-            // Animasi
             setTimeout(() => {
                 modalContent.classList.remove('opacity-0', 'scale-95');
                 modalContent.classList.add('opacity-100', 'scale-100');
@@ -237,36 +300,29 @@
         });
     }
 
-
-    // --- 3. Fungsi untuk Menutup Modal Edit ---
     function closeEditMedicineModal() {
         const modal = document.getElementById('medicineEditModal');
         const modalContent = document.getElementById('editModalContent');
 
-        // Animasi
         modalContent.classList.remove('opacity-100', 'scale-100');
         modalContent.classList.add('opacity-0', 'scale-95');
 
-        // Sembunyikan setelah transisi selesai (300ms)
         setTimeout(() => {
             modal.classList.add('hidden');
             document.body.style.overflow = 'auto';
         }, 300);
     }
 
-    // Tambahkan ini di bagian JavaScript
     document.addEventListener('DOMContentLoaded', function() {
         const stockAdjustmentInput = document.getElementById('edit-stock-adjustment');
         const stockReasonContainer = document.getElementById('stock-reason-container');
 
-        stockAdjustmentInput.addEventListener('input', function() {
+        stockAdjustmentInput?.addEventListener('input', function() {
             const value = parseInt(this.value);
-            if (isNaN(value)) {
+            if (isNaN(value) || value >= 0) {
                 stockReasonContainer.classList.add('hidden');
-            } else if (value < 0) {
-                stockReasonContainer.classList.remove('hidden');
             } else {
-                stockReasonContainer.classList.add('hidden');
+                stockReasonContainer.classList.remove('hidden');
             }
         });
     });

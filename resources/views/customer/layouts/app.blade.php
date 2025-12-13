@@ -23,6 +23,19 @@ $mobile_inactive = 'block px-4 py-3 rounded-xl text-lg font-medium text-gray-700
         [x-cloak] {
             display: none !important;
         }
+
+        /* Sidebar Stagger Animation */
+        @keyframes slideInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 
@@ -105,51 +118,141 @@ $mobile_inactive = 'block px-4 py-3 rounded-xl text-lg font-medium text-gray-700
             @click="sidebarOpen = false">
         </div>
 
-        <!-- Mobile Sidebar - Enhanced -->
-        <div x-show="sidebarOpen" x-transition:enter="transition ease-in-out duration-300 transform" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-            class="fixed inset-y-0 left-0 w-72 bg-white shadow-2xl flex flex-col z-[52] md:hidden" x-cloak>
+        <!-- Mobile Sidebar - Enhanced with Modern Animations -->
+        <div x-show="sidebarOpen" x-transition:enter="transition ease-out duration-400 transform" x-transition:enter-start="-translate-x-full opacity-0" x-transition:enter-end="translate-x-0 opacity-100" x-transition:leave="transition ease-in duration-300 transform" x-transition:leave-start="translate-x-0 opacity-100" x-transition:leave-end="-translate-x-full opacity-0"
+            class="fixed inset-y-0 left-0 w-80 bg-gradient-to-br from-white via-white to-blue-50/30 shadow-2xl flex flex-col z-[52] md:hidden overflow-hidden" x-cloak>
 
-            <!-- Sidebar Header -->
-            <div class="px-5 flex items-center justify-between h-20 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
-                <div class="flex items-center gap-2">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-10 h-10">
-                    <h3 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">ePharma</h3>
+            <!-- Decorative Background Elements -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-gradient-to-tr from-purple-400/15 to-pink-400/15 rounded-full blur-3xl" style="animation: pulse 3s ease-in-out infinite; animation-delay: 1s;"></div>
+            </div>
+
+            <!-- Sidebar Header with Animated Logo -->
+            <div class="relative px-6 flex items-center justify-between h-24 border-b border-gray-100/50 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600">
+                <!-- Animated background pattern -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-2 left-10 w-16 h-16 border border-white/30 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+                    <div class="absolute bottom-2 right-16 w-8 h-8 border border-white/20 rounded-full animate-ping" style="animation-duration: 4s;"></div>
                 </div>
-                <button @click="sidebarOpen = false" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-gray-100 transition-smooth">
+
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-9 h-9 drop-shadow-lg">
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white tracking-tight">ePharma</h3>
+                        <p class="text-blue-100 text-xs font-medium">Apotek Digital</p>
+                    </div>
+                </div>
+                <button @click="sidebarOpen = false" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:rotate-90 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
 
-            <!-- Sidebar Navigation -->
-            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="{{ route('home') }}" class="@if(request()->is('/')) 
-                    {{$mobile_active}} 
-                @else 
-                    {{$mobile_inactive}}
-                @endif flex items-center gap-3" @click="sidebarOpen = false">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <!-- Sidebar Navigation with Stagger Animation -->
+            <nav class="flex-1 px-5 py-8 space-y-3 overflow-y-auto relative z-10">
+                <!-- Menu Label -->
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4 px-4 flex items-center gap-2">
+                    <span class="w-8 h-px bg-gradient-to-r from-gray-300 to-transparent"></span>
+                    Menu Navigasi
+                    <span class="flex-1 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></span>
+                </p>
+
+                <!-- Nav Items with Stagger Animation -->
+                <a href="{{ route('home') }}"
+                    class="group flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] 
+                   @if(request()->is('/')) 
+                       bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-xl shadow-blue-500/30
+                   @else 
+                       text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-lg
+                   @endif"
+                    @click="sidebarOpen = false"
+                    style="animation: slideInLeft 0.3s ease-out forwards; animation-delay: 0.1s;">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 
+                        @if(request()->is('/')) 
+                            bg-white/20 shadow-inner
+                        @else 
+                            bg-blue-100 text-blue-600 group-hover:bg-blue-500 group-hover:text-white group-hover:shadow-lg group-hover:scale-110
+                        @endif">
+                        <svg class="w-6 h-6 @if(request()->is('/')) animate-pulse @endif" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="font-bold text-base block">Cari Obat</span>
+                        <span class="text-xs opacity-70">Temukan obat yang Anda butuhkan</span>
+                    </div>
+                    <svg class="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                    Cari Obat
                 </a>
 
-                <a href="{{ route('about') }}" class="@if(request()->is('about')) 
-                    {{$mobile_active}} 
-                @else 
-                    {{$mobile_inactive}}
-                @endif flex items-center gap-3" @click="sidebarOpen = false">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                <a href="{{ route('about') }}"
+                    class="group flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] 
+                   @if(request()->is('about')) 
+                       bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white shadow-xl shadow-blue-500/30
+                   @else 
+                       text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:shadow-lg
+                   @endif"
+                    @click="sidebarOpen = false"
+                    style="animation: slideInLeft 0.3s ease-out forwards; animation-delay: 0.2s;">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 
+                        @if(request()->is('about')) 
+                            bg-white/20 shadow-inner
+                        @else 
+                            bg-indigo-100 text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white group-hover:shadow-lg group-hover:scale-110
+                        @endif">
+                        <svg class="w-6 h-6 @if(request()->is('about')) animate-bounce @endif" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <span class="font-bold text-base block">Tentang Kami</span>
+                        <span class="text-xs opacity-70">Kenali ePharma lebih dekat</span>
+                    </div>
+                    <svg class="w-5 h-5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
-                    Tentang Kami
                 </a>
+
+                <!-- Decorative Card -->
+                <div class="mt-8 p-5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl text-white relative overflow-hidden shadow-xl" style="animation: slideInLeft 0.3s ease-out forwards; animation-delay: 0.3s;">
+                    <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full"></div>
+                    <div class="absolute -right-2 -top-2 w-12 h-12 bg-white/10 rounded-full"></div>
+                    <div class="relative z-10">
+                        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="font-bold text-sm mb-1">Butuh Bantuan?</h4>
+                        <p class="text-xs text-blue-100 leading-relaxed">Hubungi layanan pelanggan kami</p>
+                        <p class="text-sm font-bold mt-2 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                            (0262) 123-4567
+                        </p>
+                    </div>
+                </div>
             </nav>
 
-            <!-- Sidebar Footer -->
-            <div class="px-4 py-4 border-t border-gray-100 bg-gray-50">
-                <p class="text-xs text-gray-500 text-center">© {{ date('Y') }} ePharma</p>
+            <!-- Sidebar Footer with Animation -->
+            <div class="relative z-10 px-5 py-5 border-t border-gray-100/50 bg-gradient-to-r from-gray-50 to-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs font-bold text-gray-800">ePharma</p>
+                        <p class="text-xs text-gray-500">© {{ date('Y') }} All Rights Reserved</p>
+                    </div>
+                </div>
             </div>
         </div>
 

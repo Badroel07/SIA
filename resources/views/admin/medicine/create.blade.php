@@ -1,131 +1,200 @@
-{{-- Modal Overlay untuk Form Tambah Obat --}}
-{{-- Class backdrop-blur dan bg-opacity-30 memberikan efek blur transparan modern --}}
-<div id="medicineModal" class="hidden fixed inset-0 backdrop-blur-sm backdrop-brightness-50 overflow-y-auto h-full w-full z-50 p-4 sm:p-6">
+{{-- Modal Create Obat - Ultra Modern --}}
+<div id="medicineModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 sm:p-6">
 
-    {{-- Container konten modal dengan animasi CSS kustom --}}
+    <style>
+        @keyframes modalSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-animate-create {
+            animation: modalSlideIn 0.4s ease-out forwards;
+        }
+
+        .input-modern-create {
+            transition: all 0.3s ease;
+        }
+
+        .input-modern-create:focus {
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+    </style>
+
     <div id="modalContent"
-        class="relative top-10 mx-auto w-full max-w-4xl shadow-2xl rounded-xl bg-white mb-10 transform opacity-0 scale-95 transition-all duration-300 ease-out">
+        class="relative mx-auto w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl rounded-2xl bg-white overflow-hidden transform opacity-0 scale-95 transition-all duration-300 ease-out">
 
-        <div class="p-6 sm:p-8">
-            {{-- Header Modal --}}
-            <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
-                <h3 class="text-2xl font-extrabold text-gray-900">Input Data Obat</h3>
-                <button type="button" onclick="closeMedicineModal()" class="text-gray-400 hover:text-red-500 text-3xl font-bold transition duration-150">&times;</button>
+        {{-- Header dengan Gradient --}}
+        <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-6 relative overflow-hidden flex-shrink-0">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="absolute bottom-0 left-10 w-20 h-20 bg-white/10 rounded-full translate-y-1/2"></div>
+
+            <div class="flex justify-between items-center relative z-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-plus-circle text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">Tambah Obat Baru</h3>
+                        <p class="text-green-100 text-sm">Isi data obat dengan lengkap</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeMedicineModal()" class="w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90 hover:scale-110">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
+        </div>
 
-            {{-- Form Content --}}
-            <form action="{{ route('admin.medicines.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+        {{-- Form Content --}}
+        <div class="p-6 sm:p-8 overflow-y-auto flex-1 no-scrollbar">
+            <form action="{{ route('admin.medicines.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
                 {{-- Error Validasi --}}
                 @if ($errors->any())
-                <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg shadow-sm">
-                    <p class="font-extrabold">🚨 Terjadi Kesalahan Input:</p>
-                    <ul class="mt-2 list-disc list-inside text-sm">
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="flex items-center gap-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl">
+                    <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-red-700">🚨 Terjadi Kesalahan Input:</p>
+                        <ul class="list-disc list-inside text-sm text-red-600">
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 @endif
 
-                {{-- Bagian 1: Data Dasar --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-1">
-                        <label for="name" class="block text-sm font-semibold text-gray-700">Nama Obat</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 transition duration-150">
-                    </div>
+                {{-- Section: Data Dasar --}}
+                <div class="bg-gradient-to-br from-gray-50 to-green-50/30 rounded-2xl p-6 border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-pills text-white text-sm"></i>
+                        </div>
+                        Informasi Dasar
+                    </h4>
 
-                    {{-- Kategori (Menggunakan Select2 DENGAN TAGS) --}}
-                    <div class="space-y-1">
-                        <label for="category_select2" class="block text-sm font-semibold text-gray-700">Kategori</label>
-                        <div class="mt-1">
-                            {{-- Select ini akan di-init dengan tags: true --}}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="name" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-tag text-green-500"></i> Nama Obat
+                            </label>
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="category_select2" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-folder text-green-500"></i> Kategori
+                            </label>
                             <select name="category" id="category_select2" class="w-full">
-                                {{-- Jika ada old value, pastikan itu muncul di select --}}
                                 @if(old('category'))
                                 <option value="{{ old('category') }}" selected>{{ old('category') }}</option>
                                 @endif
-                                {{-- Opsi kategori yang sudah ada --}}
                                 @foreach($existingCategories as $cat)
                                 <option value="{{ $cat }}" {{ old('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
                                 @endforeach
                             </select>
-                            {{-- INPUT TEKS MANUAL DIHAPUS, DIGANTI OLEH Select2 Tags --}}
+                            <p class="text-xs text-gray-500">Pilih dari daftar, atau ketik kategori baru.</p>
                         </div>
-                        <p class="mt-1 text-xs text-gray-500">Pilih dari daftar, atau ketik kategori baru lalu tekan Enter/Tab.</p>
-                    </div>
 
+                        <div class="space-y-2">
+                            <label for="price" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-money-bill text-emerald-500"></i> Harga (Rp)
+                            </label>
+                            <input type="number" name="price" id="price" value="{{ old('price') }}" required min="0"
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none">
+                        </div>
 
-                    <div class="space-y-1">
-                        <label for="price" class="block text-sm font-semibold text-gray-700">Harga (Rp)</label>
-                        <input type="number" name="price" id="price" value="{{ old('price') }}" required min="0"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 transition duration-150">
-                    </div>
+                        <div class="space-y-2">
+                            <label for="stock" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-boxes text-teal-500"></i> Stok Awal
+                            </label>
+                            <input type="number" name="stock" id="stock" value="{{ old('stock') }}" required min="0"
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none">
+                        </div>
 
-                    <div class="space-y-1">
-                        <label for="stock" class="block text-sm font-semibold text-gray-700">Stok Awal</label>
-                        <input type="number" name="stock" id="stock" value="{{ old('stock') }}" required min="0"
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2.5 transition duration-150">
-                    </div>
-
-                    <div class="md:col-span-2 space-y-1">
-                        <label for="image" class="block text-sm font-semibold text-gray-700">Gambar Obat (Opsional, Maks 2MB)</label>
-                        <input type="file" name="image" id="image"
-                            class="mt-1 block w-full text-sm text-gray-500 
-                                file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 
-                                file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 
-                                hover:file:bg-blue-100 cursor-pointer">
-                    </div>
-                </div>
-
-                <div class="border-t pt-8">
-                    <h4 class="text-xl font-extrabold text-gray-900 mb-4">Detail Informasi Obat</h4>
-                </div>
-
-                {{-- Bagian 2: Detail Informasi --}}
-                <div class="space-y-6">
-                    <div class="space-y-1">
-                        <label for="description" class="block text-sm font-semibold text-gray-700">Deskripsi Singkat (Katalog)</label>
-                        <textarea name="description" id="description" rows="2" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150">{{ old('description') }}</textarea>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label for="full_indication" class="block text-sm font-semibold text-gray-700">Indikasi dan Manfaat Lengkap</label>
-                        <textarea name="full_indication" id="full_indication" rows="4" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150">{{ old('full_indication') }}</textarea>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label for="usage_detail" class="block text-sm font-semibold text-gray-700">Cara Penggunaan / Dosis</label>
-                        <textarea name="usage_detail" id="usage_detail" rows="3" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150">{{ old('usage_detail') }}</textarea>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label for="side_effects" class="block text-sm font-semibold text-gray-700">Efek Samping</label>
-                        <textarea name="side_effects" id="side_effects" rows="3" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150">{{ old('side_effects') }}</textarea>
-                    </div>
-
-                    <div class="space-y-1">
-                        <label for="contraindications" class="block text-sm font-semibold text-gray-700">Larangan / Kontraindikasi</label>
-                        <textarea name="contraindications" id="contraindications" rows="3" required
-                            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 transition duration-150">{{ old('contraindications') }}</textarea>
+                        <div class="md:col-span-2 space-y-2">
+                            <label for="image" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-image text-purple-500"></i> Gambar Obat (Opsional, Maks 2MB)
+                            </label>
+                            <input type="file" name="image" id="image"
+                                class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-green-50 file:text-green-600 hover:file:bg-green-100 cursor-pointer">
+                        </div>
                     </div>
                 </div>
 
-                {{-- Button Actions --}}
-                <div class="flex justify-end gap-3 pt-6 border-t border-gray-100">
+                {{-- Section: Detail Informasi --}}
+                <div class="bg-gradient-to-br from-gray-50 to-blue-50/30 rounded-2xl p-6 border border-gray-100">
+                    <h4 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-white text-sm"></i>
+                        </div>
+                        Detail Informasi Obat
+                    </h4>
+
+                    <div class="space-y-5">
+                        <div class="space-y-2">
+                            <label for="description" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-info-circle text-blue-500"></i> Deskripsi Singkat (Katalog)
+                            </label>
+                            <textarea name="description" id="description" rows="2" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:outline-none resize-none">{{ old('description') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="full_indication" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-check-circle text-green-500"></i> Indikasi dan Manfaat Lengkap
+                            </label>
+                            <textarea name="full_indication" id="full_indication" rows="4" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none resize-none">{{ old('full_indication') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="usage_detail" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-pills text-purple-500"></i> Cara Penggunaan / Dosis
+                            </label>
+                            <textarea name="usage_detail" id="usage_detail" rows="3" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:outline-none resize-none">{{ old('usage_detail') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="side_effects" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-exclamation-triangle text-amber-500"></i> Efek Samping
+                            </label>
+                            <textarea name="side_effects" id="side_effects" rows="3" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-amber-500 focus:outline-none resize-none">{{ old('side_effects') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="contraindications" class="flex items-center gap-2 text-sm font-bold text-gray-700">
+                                <i class="fas fa-ban text-red-500"></i> Larangan / Kontraindikasi
+                            </label>
+                            <textarea name="contraindications" id="contraindications" rows="3" required
+                                class="input-modern-create w-full px-4 py-3 bg-white rounded-xl border-2 border-gray-200 focus:border-red-500 focus:outline-none resize-none">{{ old('contraindications') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Action Buttons --}}
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-100">
                     <button type="button" onclick="closeMedicineModal()"
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-bold transition duration-150">
-                        Batal
+                        class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all duration-300">
+                        <i class="fas fa-times"></i> Batal
                     </button>
                     <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition duration-150 ease-in-out">
-                        Simpan Data Obat
+                        class="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02] transition-all duration-300">
+                        <i class="fas fa-save"></i> Simpan Data Obat
                     </button>
                 </div>
             </form>
@@ -134,54 +203,57 @@
 </div>
 
 <style>
-    /* |--------------------------------------------------------------------------
-| CSS Kustom Select2 (Meniru Gaya Tailwind)
-|--------------------------------------------------------------------------
-*/
+    /* Select2 Modern Styling */
     .select2-container--default .select2-selection--single {
-        height: 40px !important;
-        padding: 0.375rem 0.75rem !important;
-        border: 1px solid #d1d5db !important;
-        border-radius: 0.375rem !important;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-        transition: all 0.15s ease-in-out;
+        height: 48px !important;
+        padding: 0.5rem 1rem !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        background: white !important;
+        transition: all 0.3s ease;
     }
 
-    .select2-container--default .select2-selection--single:focus,
+    .select2-container--default .select2-selection--single:hover {
+        border-color: #d1d5db !important;
+    }
+
     .select2-container--default.select2-container--focus .select2-selection--single {
-        border-color: #3b82f6 !important;
-        box-shadow: 0 0 0 1px #3b82f6 !important;
+        border-color: #22c55e !important;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15) !important;
     }
 
     .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 38px !important;
+        height: 46px !important;
         top: 1px !important;
     }
 
     .select2-selection__rendered {
-        line-height: 25px !important;
+        line-height: 30px !important;
+        color: #374151 !important;
     }
 
     .select2-container--default .select2-search--dropdown .select2-search__field {
-        border: 1px solid #d1d5db !important;
-        border-radius: 0.375rem !important;
-        padding: 0.5rem !important;
-        margin-top: 0.5rem !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem !important;
         font-size: 1rem !important;
     }
 
     .select2-dropdown {
-        border-radius: 0.5rem !important;
+        border-radius: 0.75rem !important;
+        border: 2px solid #e5e7eb !important;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .select2-results__option--highlighted {
+        background-color: #22c55e !important;
     }
 </style>
 
 <script>
     $(document).ready(function() {
-        initCreateSelect2(); // Pastikan Select2 modal Create ter-init saat halaman dimuat
+        initCreateSelect2();
     });
-
-    // === 1. SELECT2 INITIALIZERS ===
 
     function initCreateSelect2() {
         const select = $('#category_select2');
@@ -191,7 +263,6 @@
             select.select2('destroy');
         }
 
-        // Handle Old Value untuk Select2 Tags (jika validasi gagal)
         if (oldCategory && select.find('option[value="' + oldCategory + '"]').length === 0) {
             const newOption = new Option(oldCategory, oldCategory, true, true);
             select.append(newOption);
@@ -206,39 +277,12 @@
         select.val(oldCategory).trigger('change');
     }
 
-    function initEditSelect2(currentCategory) {
-        const select = $('#edit-category-select2');
-
-        if (select.data('select2')) {
-            select.select2('destroy');
-        }
-
-        const categoryToSelect = currentCategory || '';
-        const isExisting = select.find('option[value="' + categoryToSelect + '"]').length > 0;
-
-        if (!isExisting && categoryToSelect) {
-            const newOption = new Option(categoryToSelect, categoryToSelect, true, true);
-            select.append(newOption);
-        }
-
-        select.select2({
-            placeholder: "Pilih kategori (Opsional, atau ketik baru)...",
-            dropdownParent: $('#medicineEditModal'),
-            allowClear: true,
-            tags: true,
-        });
-
-        select.val(categoryToSelect).trigger('change');
-    }
-
-    // === 2. MODAL CREATE LOGIC ===
-
     function openMedicineModal() {
         const modal = document.getElementById('medicineModal');
         const modalContent = document.getElementById('modalContent');
 
         document.querySelector('#medicineModal form').reset();
-        initCreateSelect2(); // Re-init Select2
+        initCreateSelect2();
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -264,92 +308,18 @@
         }, 300);
     }
 
-    // === 3. MODAL EDIT LOGIC ===
-
-    function openMedicineEditModal(id) {
-        const modal = document.getElementById('medicineEditModal');
-        const modalContent = document.getElementById('editModalContent');
-        const form = document.getElementById('editForm');
-
-        form.reset();
-        document.getElementById('edit-stock-adjustment').value = '';
-
-        // Ambil Data Obat melalui AJAX
-        $.getJSON(baseUrl + '/admin/medicines/' + id + '/detail', function(data) {
-
-            // Isi Form Action (URL untuk PUT)
-            form.action = baseUrl + '/admin/medicines/' + id;
-
-            // Isi Field Dasar
-            document.getElementById('edit-modal-name').textContent = data.name;
-            document.getElementById('edit-name').value = data.name;
-            document.getElementById('edit-price').value = data.price;
-            document.getElementById('edit-current-stock').value = data.stock;
-
-            // Isi Field Detail (Textarea)
-            document.getElementById('edit-description').value = data.description || '';
-            document.getElementById('edit-full_indication').value = data.full_indication || '';
-            document.getElementById('edit-usage_detail').value = data.usage_detail || '';
-            document.getElementById('edit-side_effects').value = data.side_effects || '';
-            document.getElementById('edit-contraindications').value = data.contraindications || '';
-
-            // Handle Gambar
-            const img = document.getElementById('edit-current-image');
-            const noImgSpan = document.getElementById('edit-no-image');
-            const storagePath = baseUrl + '/storage/';
-
-            if (data.image) {
-                img.src = storagePath + data.image;
-                img.classList.remove('hidden');
-                noImgSpan.classList.add('hidden');
-            } else {
-                img.src = '';
-                img.classList.add('hidden');
-                noImgSpan.classList.remove('hidden');
-            }
-
-            // Inisialisasi dan Set Select2 Kategori
-            initEditSelect2(data.category);
-
-            // Tampilkan Modal
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-
-            // Animasi
-            setTimeout(() => {
-                modalContent.classList.remove('opacity-0', 'scale-95');
-                modalContent.classList.add('opacity-100', 'scale-100');
-            }, 10);
-        });
-    }
-
-    function closeEditMedicineModal() {
-        const modal = document.getElementById('medicineEditModal');
-        const modalContent = document.getElementById('editModalContent');
-
-        modalContent.classList.remove('opacity-100', 'scale-100');
-        modalContent.classList.add('opacity-0', 'scale-95');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }, 300);
-    }
-
-    // === 4. GLOBAL LOGIC ===
-
-    // FUNGSI ESCAPE
     document.addEventListener('keydown', function(e) {
         const createModal = document.getElementById('medicineModal');
         const editModal = document.getElementById('medicineEditModal');
 
         if (!createModal.classList.contains('hidden') && e.key === 'Escape') {
             closeMedicineModal();
-        } else if (!editModal.classList.contains('hidden') && e.key === 'Escape') {
+        } else if (editModal && !editModal.classList.contains('hidden') && e.key === 'Escape') {
             closeEditMedicineModal();
         }
     });
 </script>
+
 @if ($errors->any())
 <script>
     document.addEventListener('DOMContentLoaded', function() {
