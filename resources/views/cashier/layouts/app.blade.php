@@ -257,7 +257,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
             </div>
         </div>
 
-        <main class="animate-fade-in">
+        <main>
             @yield('content')
         </main>
 

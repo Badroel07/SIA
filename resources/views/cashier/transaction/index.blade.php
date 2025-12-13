@@ -149,24 +149,25 @@ $total = $subtotal - $diskon;
         <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    {{-- Header (Outside Grid) --}}
+    <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/30">
+            <i class="fas fa-cash-register text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-3xl font-extrabold text-gray-900">Transaksi Baru</h1>
+            <p class="text-gray-500">Pilih produk dan tambahkan ke keranjang</p>
+        </div>
+    </div>
+
+    {{-- Main Grid: Search+Products | Cart --}}
+    <div class="flex flex-col lg:flex-row gap-8">
 
         {{-- LEFT SIDE: PRODUCTS --}}
-        <div class="lg:col-span-2 space-y-6">
-
-            {{-- Header --}}
-            <div class="flex items-center gap-4 animate-slide-up">
-                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-500/30">
-                    <i class="fas fa-cash-register text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-extrabold text-gray-900">Transaksi Baru</h1>
-                    <p class="text-gray-500">Pilih produk dan tambahkan ke keranjang</p>
-                </div>
-            </div>
+        <div class="flex-1 space-y-6">
 
             {{-- Search & Filter --}}
-            <div class="glass-card p-5 rounded-2xl shadow-xl border border-gray-100 animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="bg-white p-5 rounded-2xl shadow-lg border border-gray-100">
                 <div class="flex flex-col sm:flex-row gap-4">
                     <div class="flex-grow relative group">
                         <div class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-green-50 group-focus-within:bg-green-100 flex items-center justify-center transition-colors">
@@ -189,9 +190,9 @@ $total = $subtotal - $diskon;
             </div>
 
             {{-- Product Grid --}}
-            <div id="medicine-grid-results" class="animate-slide-up" style="animation-delay: 0.2s;">
+            <div id="medicine-grid-results">
                 <!-- Empty State -->
-                <div x-show="filteredMedicines.length === 0" class="glass-card text-center py-16 rounded-3xl border border-gray-100" x-cloak>
+                <div x-show="filteredMedicines.length === 0" class="bg-white text-center py-16 rounded-3xl border border-gray-100" x-cloak>
                     <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-pills text-3xl text-gray-400"></i>
                     </div>
@@ -202,11 +203,11 @@ $total = $subtotal - $diskon;
                 <!-- Grid -->
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" x-show="filteredMedicines.length > 0">
                     <template x-for="medicine in filteredMedicines" :key="medicine.id">
-                        <div class="product-card glass-card rounded-2xl overflow-hidden border-2 border-gray-100 hover-lift transition-all duration-300">
+                        <div class="product-card bg-white rounded-2xl overflow-hidden border-2 border-gray-100 hover:border-green-300 hover:shadow-lg transition-all duration-300">
                             {{-- Product Image --}}
                             <div class="relative h-28 overflow-hidden bg-gradient-to-br from-green-50 to-emerald-50">
                                 <template x-if="medicine.image">
-                                    <img class="product-image w-full h-full object-cover transition-transform duration-500" :src="'/storage/' + medicine.image" :alt="medicine.name">
+                                    <img class="product-image w-full h-full object-cover transition-transform duration-500 hover:scale-105" :src="'/storage/' + medicine.image" :alt="medicine.name">
                                 </template>
                                 <template x-if="!medicine.image">
                                     <div class="w-full h-full flex items-center justify-center">
@@ -241,11 +242,9 @@ $total = $subtotal - $diskon;
                             {{-- Add to Cart Form --}}
                             <div class="px-4 pb-4">
                                 <div class="flex gap-2">
-                                    <!-- Simplified: Just Add Button, default qty 1. Or we can keep logic. But simpler is better for speed. -->
-                                    <!-- User rarely adds multiple at once from grid. Usually simple click to add +1 -->
                                     <button @click="addToCart(medicine)" :disabled="medicine.stock == 0"
                                         class="w-full flex items-center justify-center gap-2 py-2 rounded-xl font-bold text-sm transition-all duration-300"
-                                        :class="medicine.stock == 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02]'">
+                                        :class="medicine.stock == 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg shadow-green-500/30 hover:shadow-green-500/50'">
                                         <i class="fas fa-plus"></i> Tambah
                                     </button>
                                 </div>
@@ -259,78 +258,110 @@ $total = $subtotal - $diskon;
             </div>
         </div>
 
-        {{-- RIGHT SIDE: CART --}}
-        <div class="lg:sticky lg:top-24 z-30 self-start animate-slide-right">
-            <div class="glass-card p-6 rounded-3xl shadow-2xl border border-gray-100 space-y-5" id="cart-section-wrapper">
-                {{-- Cart Header --}}
-                <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
-                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg">
-                        <i class="fas fa-shopping-cart text-xl"></i>
+        {{-- RIGHT SIDE: CART (Sticky, aligned with search bar) --}}
+        <div class="flex-1">
+            <div class="sticky top-20" style="height: fit-content;">
+                <div class="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 space-y-5" id="cart-section-wrapper">
+                    {{-- Cart Header --}}
+                    <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Keranjang</h2>
+                            <p class="text-sm text-gray-500"><span x-text="cartCount"></span> item</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-800">Keranjang</h2>
-                        <p class="text-sm text-gray-500"><span x-text="cartCount"></span> item</p>
-                    </div>
-                </div>
 
-                {{-- Empty Cart State --}}
-                <div x-show="cartCount === 0" class="text-center py-8" x-cloak>
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-shopping-basket text-2xl text-gray-400"></i>
+                    {{-- Empty Cart State --}}
+                    <div x-show="cartCount === 0" class="text-center py-8" x-cloak>
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-shopping-basket text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">Keranjang kosong</p>
+                        <p class="text-gray-400 text-sm">Tambahkan produk dari katalog</p>
                     </div>
-                    <p class="text-gray-500 font-medium">Keranjang kosong</p>
-                    <p class="text-gray-400 text-sm">Tambahkan produk dari katalog</p>
-                </div>
 
-                {{-- Cart Items --}}
-                <div class="space-y-3 max-h-[45vh] overflow-y-auto no-scrollbar" id="cart-items" x-show="cartCount > 0">
-                    <template x-for="item in cartItems" :key="item.id">
-                        <div class="group flex justify-between items-center p-3 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:border-indigo-200 hover:shadow-md transition-all duration-300">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-50 hover:from-red-100 hover:to-red-200 group-hover:text-red-500 transition-colors"
-                                    @click="removeFromCart(item.id)">
-                                    <i class="fas fa-trash-alt text-gray-400 group-hover:text-red-500 text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-gray-800 text-sm truncate w-32" x-text="item.name"></p>
-                                    <div class="flex items-center gap-2 mt-1">
-                                        <button @click="updateQty(item.id, -1)" class="w-5 h-5 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-600 text-xs">-</button>
-                                        <span class="text-xs font-bold w-4 text-center" x-text="item.quantity"></span>
-                                        <button @click="updateQty(item.id, 1)" class="w-5 h-5 rounded-full bg-indigo-100 hover:bg-indigo-200 flex items-center justify-center text-indigo-600 text-xs">+</button>
+                    {{-- Cart Items --}}
+                    <div class="space-y-3 max-h-[40vh] overflow-y-auto" id="cart-items" x-show="cartCount > 0">
+                        <template x-for="item in cartItems" :key="item.id">
+                            <div class="group flex justify-between items-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-green-300 transition-all duration-300 relative overflow-hidden transform hover:-translate-y-1"
+                                x-transition:enter="transition-all cubic-bezier(0.34, 1.56, 0.64, 1) duration-500"
+                                x-transition:enter-start="opacity-0 translate-x-10 scale-50 rotate-12"
+                                x-transition:enter-end="opacity-100 translate-x-0 scale-100 rotate-0"
+                                x-transition:leave="transition-all duration-300 ease-in"
+                                x-transition:leave-start="opacity-100 translate-x-0 scale-100"
+                                x-transition:leave-end="opacity-0 translate-x-full scale-50">
+
+                                {{-- Active Indicator --}}
+                                <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-green-400 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white text-red-500 transition-all duration-300 hover:scale-110 hover:rotate-12 hover:shadow-lg hover:shadow-red-500/40 active:scale-95"
+                                        @click="removeFromCart(item.id)">
+                                        <i class="fas fa-trash-alt text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-extrabold text-gray-800 text-sm truncate w-36 group-hover:text-green-600 transition-colors" x-text="item.name"></p>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <button @click="updateQty(item.id, -1)" class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 transition-all duration-200 active:scale-75 hover:scale-110 shadow-sm">
+                                                <i class="fas fa-minus font-bold text-xs"></i>
+                                            </button>
+
+                                            <input type="number"
+                                                class="w-16 h-8 text-center text-sm font-black text-gray-800 bg-gray-50 border-2 border-transparent focus:border-green-400 focus:bg-white rounded-lg transition-all outline-none"
+                                                :value="item.quantity"
+                                                @change="setQty(item.id, $el.value)"
+                                                min="1">
+
+                                            <button @click="updateQty(item.id, 1)" class="w-8 h-8 rounded-xl bg-green-100 hover:bg-green-500 hover:text-white flex items-center justify-center text-green-600 transition-all duration-200 active:scale-75 hover:scale-110 shadow-sm hover:shadow-green-500/50">
+                                                <i class="fas fa-plus font-bold text-xs"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="text-right">
+                                    <span class="font-black text-gray-900 text-base block group-hover:scale-110 transition-transform origin-right duration-300" x-text="'Rp ' + formatPrice(item.subtotal)"></span>
+                                    <span class="text-[10px] font-medium text-gray-400" x-text="'@ Rp ' + formatPrice(item.price)"></span>
+                                </div>
                             </div>
-                            <span class="font-bold text-gray-900 text-sm" x-text="'Rp ' + formatPrice(item.subtotal)"></span>
+                        </template>
+                    </div>
+
+                    {{-- Cart Summary --}}
+                    <div class="pt-4 border-t border-gray-100 space-y-3">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Subtotal</span>
+                            <span x-text="'Rp ' + formatPrice(subtotal)"></span>
                         </div>
-                    </template>
-                </div>
-
-                {{-- Cart Summary --}}
-                <div class="pt-4 border-t border-gray-100 space-y-3">
-                    <div class="flex justify-between text-sm text-gray-600">
-                        <span>Subtotal</span>
-                        <span x-text="'Rp ' + formatPrice(subtotal)"></span>
+                        <div class="flex justify-between text-2xl font-extrabold text-gray-900 pt-3 border-t border-dashed border-gray-200">
+                            <span>TOTAL</span>
+                            <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent" x-text="'Rp ' + formatPrice(total)"></span>
+                        </div>
                     </div>
-                    <div class="flex justify-between text-2xl font-extrabold text-gray-900 pt-3 border-t border-dashed border-gray-200">
-                        <span>TOTAL</span>
-                        <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent" x-text="'Rp ' + formatPrice(total)"></span>
+
+                    {{-- Action Buttons --}}
+                    <div class="space-y-3 pt-2">
+                        <button @click="prepareCheckout()" :disabled="cartCount === 0"
+                            class="group relative w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 overflow-hidden"
+                            :class="cartCount === 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02]'">
+
+                            {{-- Shine Effect --}}
+                            <div class="absolute top-0 -inset-full h-full w-1/2 z-0 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white opacity-20 group-hover:animate-shine"></div>
+
+                            <div class="relative z-10 flex items-center gap-3">
+                                <i class="fas fa-credit-card group-hover:animate-bounce"></i>
+                                <span>PROSES PEMBAYARAN</span>
+                            </div>
+                        </button>
+
+                        <button @click="clearCart()" :disabled="cartCount === 0"
+                            class="w-full py-3 rounded-xl font-medium transition-all duration-300 group"
+                            :class="cartCount === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-500 hover:text-white'">
+                            <i class="fas fa-times mr-2 group-hover:rotate-90 transition-transform"></i>
+                            <span class="group-hover:tracking-widest transition-all">Batalkan Transaksi</span>
+                        </button>
                     </div>
-                </div>
-
-                {{-- Action Buttons --}}
-                <div class="space-y-3 pt-2">
-                    <button @click="prepareCheckout()" :disabled="cartCount === 0"
-                        class="group w-full py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300"
-                        :class="cartCount === 0 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-xl shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02]'">
-                        <i class="fas fa-credit-card group-hover:animate-pulse"></i>
-                        PROSES PEMBAYARAN
-                    </button>
-
-                    <button @click="clearCart()" :disabled="cartCount === 0"
-                        class="w-full py-3 rounded-xl font-medium transition-all duration-300"
-                        :class="cartCount === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-red-50 text-red-600 hover:bg-red-500 hover:text-white'">
-                        <i class="fas fa-times mr-2"></i> Batalkan Transaksi
-                    </button>
                 </div>
             </div>
         </div>
@@ -397,6 +428,16 @@ $total = $subtotal - $diskon;
             loading: false,
 
             init() {
+                // Handle Cancel Button for Payment Modal
+                const cancelBtn = document.getElementById('cancelPayment');
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', () => {
+                        const modal = document.getElementById('paymentModal');
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    });
+                }
+
                 const sessionSuccess = @json(session('success') ? true : false);
 
                 if (sessionSuccess) {
@@ -494,6 +535,30 @@ $total = $subtotal - $diskon;
 
                     this.cart[id].quantity = newQty;
                     this.cart[id].subtotal = this.cart[id].price * newQty;
+                }
+            },
+
+            setQty(id, value) {
+                const qty = parseInt(value);
+                if (isNaN(qty) || qty < 1) {
+                    // Reset to 1 if invalid
+                    this.cart[id].quantity = 1;
+                    this.cart[id].subtotal = this.cart[id].price;
+                    return;
+                }
+
+                if (this.cart[id]) {
+                    const medicine = this.medicines.find(m => m.id === id);
+
+                    if (medicine && qty > medicine.stock) {
+                        showToast('error', `Stok hanya tersedia ${medicine.stock}!`);
+                        this.cart[id].quantity = medicine.stock;
+                        this.cart[id].subtotal = this.cart[id].price * medicine.stock;
+                        return;
+                    }
+
+                    this.cart[id].quantity = qty;
+                    this.cart[id].subtotal = this.cart[id].price * qty;
                 }
             },
 
