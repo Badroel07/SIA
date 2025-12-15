@@ -314,10 +314,10 @@
                 @yield('content')
             </main>
 
-            <!-- Footer -->
+            <!-- Footer
             <footer class="p-4 text-center text-xs text-gray-400 border-t border-gray-100 bg-white/50">
                 &copy; {{ date('Y') }} <span class="font-semibold text-gray-500">ePharma Admin</span>. All Rights Reserved.
-            </footer>
+            </footer> -->
         </div>
 
     </div>

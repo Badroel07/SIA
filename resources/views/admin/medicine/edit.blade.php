@@ -216,9 +216,10 @@
                         class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all duration-300">
                         <i class="fas fa-times"></i> Batal
                     </button>
-                    <button type="submit"
+                    <button type="submit" id="editMedicineSubmit"
                         class="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] transition-all duration-300">
-                        <i class="fas fa-save"></i> Simpan Perubahan
+                        <i class="fas fa-save" id="editBtnIcon"></i>
+                        <span id="editBtnText">Simpan Perubahan</span>
                     </button>
                 </div>
             </form>
@@ -228,6 +229,99 @@
 
 <script>
     const baseUrl = "{{ url('/') }}";
+
+    // AJAX Form Submission for Edit
+    document.addEventListener('DOMContentLoaded', function() {
+        const editForm = document.getElementById('editForm');
+
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const submitBtn = document.getElementById('editMedicineSubmit');
+            const btnIcon = document.getElementById('editBtnIcon');
+            const btnText = document.getElementById('editBtnText');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnIcon.className = 'fas fa-spinner fa-spin';
+            btnText.textContent = 'Menyimpan...';
+
+            // Remove previous error messages
+            const existingError = form.querySelector('.ajax-error-container');
+            if (existingError) existingError.remove();
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json().then(data => ({
+                    status: response.status,
+                    body: data
+                })))
+                .then(({
+                    status,
+                    body
+                }) => {
+                    if (status === 200 && body.success) {
+                        // Success - close modal and refresh table
+                        closeEditMedicineModal();
+                        showNotification('success', body.message);
+                        refreshMedicineTable();
+                    } else if (status === 422) {
+                        // Validation errors
+                        let errorHtml = '<div class="ajax-error-container flex items-center gap-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl mb-4">';
+                        errorHtml += '<div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-exclamation-triangle"></i></div>';
+                        errorHtml += '<div><p class="font-bold text-red-700">Terjadi Kesalahan:</p><ul class="list-disc list-inside text-sm text-red-600">';
+
+                        if (body.errors) {
+                            Object.values(body.errors).forEach(errors => {
+                                errors.forEach(error => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            });
+                        } else if (body.message) {
+                            errorHtml += `<li>${body.message}</li>`;
+                        }
+
+                        errorHtml += '</ul></div></div>';
+                        form.insertAdjacentHTML('afterbegin', errorHtml);
+                        form.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    btnIcon.className = 'fas fa-save';
+                    btnText.textContent = 'Simpan Perubahan';
+                });
+        });
+
+        // Stock adjustment visibility
+        const stockAdjustmentInput = document.getElementById('edit-stock-adjustment');
+        const stockReasonContainer = document.getElementById('stock-reason-container');
+
+        stockAdjustmentInput?.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (isNaN(value) || value >= 0) {
+                stockReasonContainer.classList.add('hidden');
+            } else {
+                stockReasonContainer.classList.remove('hidden');
+            }
+        });
+    });
 
     function initEditSelect2(currentCategory) {
         const select = $('#edit-category-select2');
@@ -260,6 +354,10 @@
 
         form.reset();
         document.getElementById('edit-stock-adjustment').value = '';
+
+        // Remove any previous error containers
+        const existingError = form.querySelector('.ajax-error-container');
+        if (existingError) existingError.remove();
 
         $.getJSON(baseUrl + '/admin/medicines/' + id + '/detail', function(data) {
             form.action = baseUrl + '/admin/medicines/' + id;
@@ -312,18 +410,4 @@
             document.body.style.overflow = 'auto';
         }, 300);
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const stockAdjustmentInput = document.getElementById('edit-stock-adjustment');
-        const stockReasonContainer = document.getElementById('stock-reason-container');
-
-        stockAdjustmentInput?.addEventListener('input', function() {
-            const value = parseInt(this.value);
-            if (isNaN(value) || value >= 0) {
-                stockReasonContainer.classList.add('hidden');
-            } else {
-                stockReasonContainer.classList.remove('hidden');
-            }
-        });
-    });
 </script>

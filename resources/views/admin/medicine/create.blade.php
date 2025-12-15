@@ -192,9 +192,10 @@
                         class="flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all duration-300">
                         <i class="fas fa-times"></i> Batal
                     </button>
-                    <button type="submit"
+                    <button type="submit" id="createMedicineSubmit"
                         class="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 hover:scale-[1.02] transition-all duration-300">
-                        <i class="fas fa-save"></i> Simpan Data Obat
+                        <i class="fas fa-save" id="createBtnIcon"></i>
+                        <span id="createBtnText">Simpan Data Obat</span>
                     </button>
                 </div>
             </form>
@@ -253,6 +254,84 @@
 <script>
     $(document).ready(function() {
         initCreateSelect2();
+
+        // AJAX Form Submission
+        document.querySelector('#medicineModal form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const submitBtn = document.getElementById('createMedicineSubmit');
+            const btnIcon = document.getElementById('createBtnIcon');
+            const btnText = document.getElementById('createBtnText');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            btnIcon.className = 'fas fa-spinner fa-spin';
+            btnText.textContent = 'Menyimpan...';
+
+            // Remove previous error messages
+            const existingError = form.querySelector('.ajax-error-container');
+            if (existingError) existingError.remove();
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json().then(data => ({
+                    status: response.status,
+                    body: data
+                })))
+                .then(({
+                    status,
+                    body
+                }) => {
+                    if (status === 200 && body.success) {
+                        // Success - close modal and refresh table
+                        closeMedicineModal();
+                        showNotification('success', body.message);
+                        refreshMedicineTable();
+                    } else if (status === 422) {
+                        // Validation errors
+                        let errorHtml = '<div class="ajax-error-container flex items-center gap-4 bg-red-50 border-l-4 border-red-500 p-4 rounded-2xl mb-4">';
+                        errorHtml += '<div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-exclamation-triangle"></i></div>';
+                        errorHtml += '<div><p class="font-bold text-red-700">🚨 Terjadi Kesalahan Input:</p><ul class="list-disc list-inside text-sm text-red-600">';
+
+                        if (body.errors) {
+                            Object.values(body.errors).forEach(errors => {
+                                errors.forEach(error => {
+                                    errorHtml += `<li>${error}</li>`;
+                                });
+                            });
+                        } else if (body.message) {
+                            errorHtml += `<li>${body.message}</li>`;
+                        }
+
+                        errorHtml += '</ul></div></div>';
+                        form.insertAdjacentHTML('afterbegin', errorHtml);
+
+                        // Scroll to top of form
+                        form.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    btnIcon.className = 'fas fa-save';
+                    btnText.textContent = 'Simpan Data Obat';
+                });
+        });
     });
 
     function initCreateSelect2() {
@@ -282,6 +361,11 @@
         const modalContent = document.getElementById('modalContent');
 
         document.querySelector('#medicineModal form').reset();
+
+        // Remove any previous error containers
+        const existingError = document.querySelector('#medicineModal .ajax-error-container');
+        if (existingError) existingError.remove();
+
         initCreateSelect2();
 
         modal.classList.remove('hidden');

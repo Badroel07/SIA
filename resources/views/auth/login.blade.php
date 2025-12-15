@@ -189,8 +189,8 @@
             <div class="flex justify-center mb-8 animate-slide-up">
                 <div class="relative">
                     <div class="absolute inset-0 bg-blue-500 rounded-2xl animate-pulse-ring opacity-30"></div>
-                    <div class="relative w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/30 transform hover:scale-110 hover:rotate-6 transition-all duration-300">
-                        <img src="{{ asset('img/logo.png') }}" alt="Logo ePharma" class="w-14 h-14">
+                    <div class="relative w-20 h-20 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex items-center justify-center shadow-lg shadow-slate-300/50 border border-slate-200/50 transform hover:scale-110 hover:rotate-6 transition-all duration-300">
+                        <img src="{{ asset('img/logo.png') }}" alt="Logo ePharma" class="w-16 h-16">
                     </div>
                 </div>
             </div>

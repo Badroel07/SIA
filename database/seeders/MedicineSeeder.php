@@ -19,7 +19,8 @@ class MedicineSeeder extends Seeder
     {
         $faker = Faker::create('id_ID'); // Menggunakan Faker bahasa Indonesia
 
-        // 1. Kosongkan tabel medicines terlebih dahulu
+        // 1. Disable foreign key checks dan kosongkan tabel medicines
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('medicines')->truncate();
 
         // Daftar Kategori yang akan diacak
@@ -249,6 +250,9 @@ class MedicineSeeder extends Seeder
 
         // 2. Masukkan 100 data ke tabel 'medicines'
         DB::table('medicines')->insert($medicines);
+
+        // 3. Enable kembali foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->command->info('Berhasil membuat 100 data obat!');
     }

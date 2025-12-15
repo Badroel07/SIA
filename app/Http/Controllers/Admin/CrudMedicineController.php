@@ -78,7 +78,7 @@ class CrudMedicineController extends Controller
     public function store(Request $request)
     {
         // 1. Validasi Input (tetap sama)
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:100|unique:medicines,name',
             'category' => 'required|string|max:100',
             'price' => 'required|integer|min:0',
@@ -98,7 +98,7 @@ class CrudMedicineController extends Controller
 
         $slug = Str::slug($request->name);
 
-        Medicine::create([
+        $medicine = Medicine::create([
             'name' => $request->name,
             'slug' => $slug,
             'category' => $request->category,
@@ -112,6 +112,15 @@ class CrudMedicineController extends Controller
             'image' => $imagePath,
             'total_sold' => 0,
         ]);
+
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data obat berhasil ditambahkan!',
+                'data' => $medicine
+            ]);
+        }
 
         // PERBAIKAN: Menggunakan route admin.medicines.index
         return redirect()->route('admin.medicines.index')->with('success', 'Data obat berhasil ditambahkan!');
@@ -167,6 +176,12 @@ class CrudMedicineController extends Controller
             }
 
             if ($data['stock'] < 0) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Stok yang dikurangi melebihi stok tersedia!'
+                    ], 422);
+                }
                 return redirect()->back()->with('error', 'Stok yang dikurangi melebihi stok tersedia!');
             }
         }
@@ -180,12 +195,21 @@ class CrudMedicineController extends Controller
 
         $medicine->update($data);
 
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data obat berhasil diperbarui!',
+                'data' => $medicine->fresh()
+            ]);
+        }
+
         return redirect()->route('admin.medicines.index')->with('success', 'Data obat berhasil diperbarui!');
     }
     /**
      * Menghapus data obat (DELETE).
      */
-    public function destroy(Medicine $medicine)
+    public function destroy(Request $request, Medicine $medicine)
     {
         // Hapus file gambar lama jika ada
         if ($medicine->image) {
@@ -193,6 +217,14 @@ class CrudMedicineController extends Controller
         }
 
         $medicine->delete();
+
+        // Return JSON for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data obat berhasil dihapus!'
+            ]);
+        }
 
         // PERBAIKAN: Menggunakan route admin.medicines.index
         return redirect()->route('admin.medicines.index')->with('success', 'Data obat berhasil dihapus!');

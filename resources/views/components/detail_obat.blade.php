@@ -35,7 +35,7 @@
         }
     </style>
 
-    <div class="relative mx-auto mt-8 p-0 w-full max-w-4xl shadow-2xl rounded-3xl bg-white mb-10 overflow-hidden modal-animate">
+    <div class="relative mx-auto p-0 w-full max-w-4xl shadow-2xl rounded-3xl bg-white overflow-hidden modal-animate" style="max-height: 90vh;">
 
         {{-- Header Modal dengan Gradient --}}
         <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-6 relative overflow-hidden">
@@ -62,7 +62,7 @@
         </div>
 
         {{-- Content akan diisi dengan JavaScript --}}
-        <div id="medicineDetailContent" class="p-6 space-y-6 overflow-y-auto flex-1 no-scrollbar">
+        <div id="medicineDetailContent" class="p-6 space-y-6 overflow-y-auto" style="max-height: calc(90vh - 100px);">
             {{-- Loading State --}}
             <div class="flex flex-col justify-center items-center py-16">
                 <div class="relative">
@@ -233,14 +233,7 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Close modal when clicking outside
-    document.getElementById('medicineDetailModal')?.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeMedicineDetailModal();
-        }
-    });
-
-    // Close modal with ESC key
+    // Close modal with ESC key only (removed click outside to close)
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeMedicineDetailModal();

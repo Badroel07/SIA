@@ -301,14 +301,10 @@
                                     class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <form action="{{ route('admin.medicines.destroy', $item) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus {{ $item->name }}?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="w-10 h-10 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                <button onclick="deleteMedicine({{ $item->id }}, '{{ addslashes($item->name) }}')"
+                                    class="w-10 h-10 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white flex items-center justify-center transition-all duration-300 hover:scale-110" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -342,7 +338,31 @@
     </div>
 </div>
 
+{{-- Delete Confirmation Modal --}}
+<div id="deleteConfirmModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Konfirmasi Hapus</h3>
+            <p class="text-gray-600 mb-6">Yakin ingin menghapus obat <strong id="deleteItemName"></strong>?</p>
+            <div class="flex gap-3 justify-center">
+                <button onclick="closeDeleteModal()" class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all">
+                    Batal
+                </button>
+                <button id="confirmDeleteBtn" class="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all flex items-center gap-2">
+                    <i class="fas fa-trash" id="deleteBtnIcon"></i>
+                    <span id="deleteBtnText">Hapus</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    let deleteItemId = null;
+
     document.addEventListener('DOMContentLoaded', function() {
         const notification = document.getElementById('notification-alert');
         if (notification) {
@@ -356,6 +376,122 @@
                 setTimeout(() => notification.remove(), 500);
             }, 5000);
         }
+    });
+
+    // Show notification function
+    function showNotification(type, message) {
+        // Remove existing notifications
+        const existing = document.getElementById('ajax-notification');
+        if (existing) existing.remove();
+
+        const isSuccess = type === 'success';
+        const bgColor = isSuccess ? 'from-green-500 to-emerald-600' : 'from-red-500 to-rose-600';
+        const icon = isSuccess ? 'fa-check' : 'fa-exclamation-triangle';
+
+        const html = `
+            <div id="ajax-notification" class="fixed top-4 right-4 z-[100] glass-card border-l-4 ${isSuccess ? 'border-green-500' : 'border-red-500'} px-6 py-4 rounded-2xl shadow-lg flex items-center gap-4 animate-slide-up opacity-0 transition-opacity duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br ${bgColor} rounded-xl flex items-center justify-center text-white shadow-lg">
+                    <i class="fas ${icon} text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold text-gray-800">${isSuccess ? 'Berhasil!' : 'Error!'}</p>
+                    <p class="text-gray-600">${message}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', html);
+
+        const notification = document.getElementById('ajax-notification');
+        setTimeout(() => notification.classList.add('opacity-100'), 10);
+        setTimeout(() => {
+            notification.classList.remove('opacity-100');
+            notification.classList.add('opacity-0');
+            setTimeout(() => notification.remove(), 500);
+        }, 5000);
+    }
+
+    // Refresh medicine table function
+    function refreshMedicineTable() {
+        const currentUrl = new URL(window.location.href);
+
+        fetch(currentUrl.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newResults = doc.querySelector('#medicine-table-results');
+                const currentResults = document.querySelector('#medicine-table-results');
+                if (newResults && currentResults) {
+                    currentResults.innerHTML = newResults.innerHTML;
+                }
+            })
+            .catch(error => {
+                console.error('Refresh error:', error);
+            });
+    }
+
+    // Delete medicine function
+    function deleteMedicine(id, name) {
+        deleteItemId = id;
+        document.getElementById('deleteItemName').textContent = name;
+        document.getElementById('deleteConfirmModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteConfirmModal').classList.add('hidden');
+        deleteItemId = null;
+    }
+
+    // Confirm delete
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+        if (!deleteItemId) return;
+
+        const btn = this;
+        const btnIcon = document.getElementById('deleteBtnIcon');
+        const btnText = document.getElementById('deleteBtnText');
+
+        // Show loading
+        btn.disabled = true;
+        btnIcon.className = 'fas fa-spinner fa-spin';
+        btnText.textContent = 'Menghapus...';
+
+        fetch(`{{ url('/admin/medicines') }}/${deleteItemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeDeleteModal();
+                if (data.success) {
+                    showNotification('success', data.message);
+                    refreshMedicineTable();
+                } else {
+                    showNotification('error', data.message || 'Gagal menghapus data');
+                }
+            })
+            .catch(error => {
+                console.error('Delete error:', error);
+                closeDeleteModal();
+                showNotification('error', 'Terjadi kesalahan. Silakan coba lagi.');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btnIcon.className = 'fas fa-trash';
+                btnText.textContent = 'Hapus';
+            });
     });
 </script>
 
