@@ -357,7 +357,7 @@
                 <!-- Content -->
                 <div class="p-5">
                     <h3 class="font-heading font-bold text-lg text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-1">{{ $item->name }}</h3>
-                    <p class="text-sm text-gray-500 mb-4 line-clamp-2 h-10 leading-relaxed">{{ $item->description }}</p>
+                    <p class="text-sm text-gray-500 mb-4 line-clamp-2 h-12 leading-relaxed">{{ $item->description }}</p>
 
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
