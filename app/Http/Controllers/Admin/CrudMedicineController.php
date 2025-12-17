@@ -184,6 +184,9 @@ class CrudMedicineController extends Controller
                 }
                 return redirect()->back()->with('error', 'Stok yang dikurangi melebihi stok tersedia!');
             }
+        } elseif ($request->filled('stock_manual')) {
+             // FITUR BARU: Update Initial Stock / Set Stok Manual
+             $data['stock'] = (int) $request->stock_manual;
         }
 
         if ($request->hasFile('image')) {

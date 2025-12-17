@@ -227,7 +227,7 @@
     </div>
 
     <!-- Search & Filter - Glass Card -->
-    <div class="glass-card p-6 md:p-8 rounded-3xl shadow-2xl border border-white/50 mb-12 max-w-5xl mx-auto relative animate-scale-in">
+    <div class="glass-card p-6 md:p-8 rounded-3xl shadow-2xl border border-white/50 mb-12 max-w-5xl mx-auto relative z-20 animate-scale-in">
         <!-- Decorative -->
         <div class="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
             <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/10 to-transparent rounded-bl-full"></div>
@@ -254,6 +254,11 @@
                             const newResults = doc.querySelector('#medicine-results');
                             const currentResults = document.querySelector('#medicine-results');
                             if (newResults && currentResults) { currentResults.innerHTML = newResults.innerHTML; }
+                            
+                            
+                            const newUrl = window.location.pathname + '?' + params.toString();
+                            window.history.pushState({path: newUrl}, '', newUrl);
+
                             this.loading = false;
                         })
                         .catch(error => { console.error('Search error:', error); this.loading = false; });
@@ -290,7 +295,7 @@
                 </button>
 
                 <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                    class="absolute z-30 w-full mt-2 rounded-2xl shadow-2xl bg-white border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
+                    class="absolute z-50 w-full mt-2 rounded-2xl shadow-2xl bg-white border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
 
                     <a href="#" class="group block px-5 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white transition-all duration-300"
                         @click.prevent="selectedLabel = 'Semua Kategori'; selectedValue = 'all'; open = false; performSearch()">

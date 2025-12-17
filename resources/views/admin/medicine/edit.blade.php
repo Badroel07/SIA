@@ -125,31 +125,61 @@
                 </div>
 
                 {{-- Section: Penyesuaian Stok --}}
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
-                    <h4 class="text-lg font-bold text-blue-800 mb-4 flex items-center gap-2">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-arrows-alt-v text-white text-sm"></i>
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200" x-data="{ mode: 'adjust' }">
+                    <h4 class="text-lg font-bold text-blue-800 mb-4 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrows-alt-v text-white text-sm"></i>
+                            </div>
+                            <span>Manajemen Stok</span>
                         </div>
-                        Penyesuaian Stok
+                        
+                        {{-- Toggle Switch --}}
+                        <div class="bg-white rounded-lg p-1 flex shadow-sm border border-blue-100">
+                            <button type="button" @click="mode = 'adjust'; document.getElementById('edit-stock-manual').value = ''" 
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-300"
+                                :class="mode === 'adjust' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'">
+                                Penyesuaian (+/-)
+                            </button>
+                            <button type="button" @click="mode = 'manual'; document.getElementById('edit-stock-adjustment').value = ''"
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-all duration-300"
+                                :class="mode === 'manual' ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'">
+                                Set Stok Awal
+                            </button>
+                        </div>
                     </h4>
 
-                    <input type="number" name="stock_adjustment" id="edit-stock-adjustment"
-                        placeholder="Contoh: +10 untuk menambah, -5 untuk mengurangi"
-                        class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:outline-none">
-                    <p class="text-xs text-blue-600 mt-2">Masukkan angka positif untuk menambah, atau negatif untuk mengurangi stok.</p>
+                    {{-- Mode: Adjustment --}}
+                    <div x-show="mode === 'adjust'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform -translate-x-2" x-transition:enter-end="opacity-100 transform translate-x-0">
+                        <input type="number" name="stock_adjustment" id="edit-stock-adjustment"
+                            placeholder="Contoh: +10 untuk menambah, -5 untuk mengurangi"
+                            class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-blue-200 focus:border-blue-500 focus:outline-none">
+                        <p class="text-xs text-blue-600 mt-2">Masukkan angka positif untuk menambah, atau negatif untuk mengurangi stok.</p>
 
-                    <div id="stock-reason-container" class="mt-4 hidden p-4 bg-white rounded-xl border border-blue-200">
-                        <label class="block text-sm font-bold text-blue-800 mb-3">Alasan Pengurangan Stok:</label>
-                        <div class="flex flex-wrap gap-4">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input id="sold-reason" name="stock_reason" value="sold" type="radio" class="w-5 h-5 text-blue-600">
-                                <span class="text-gray-700 font-medium">Terjual</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input id="other-reason" name="stock_reason" value="other" type="radio" class="w-5 h-5 text-blue-600" checked>
-                                <span class="text-gray-700 font-medium">Lainnya (hilang, rusak, dll)</span>
-                            </label>
+                        <div id="stock-reason-container" class="mt-4 hidden p-4 bg-white rounded-xl border border-blue-200">
+                            <label class="block text-sm font-bold text-blue-800 mb-3">Alasan Pengurangan Stok:</label>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input id="sold-reason" name="stock_reason" value="sold" type="radio" class="w-5 h-5 text-blue-600">
+                                    <span class="text-gray-700 font-medium">Terjual</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input id="other-reason" name="stock_reason" value="other" type="radio" class="w-5 h-5 text-blue-600" checked>
+                                    <span class="text-gray-700 font-medium">Lainnya (hilang, rusak, dll)</span>
+                                </label>
+                            </div>
                         </div>
+                    </div>
+
+                    {{-- Mode: Manual Set --}}
+                    <div x-show="mode === 'manual'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform translate-x-2" x-transition:enter-end="opacity-100 transform translate-x-0">
+                        <input type="number" name="stock_manual" id="edit-stock-manual" min="0"
+                            placeholder="Masukkan jumlah total stok yang benar"
+                            class="input-modern w-full px-4 py-3 bg-white rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-500/10">
+                        <p class="text-xs text-purple-600 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i> 
+                            Nilai ini akan <strong>menimpa</strong> jumlah stok saat ini. Gunakan untuk koreksi stok awal.
+                        </p>
                     </div>
                 </div>
 
@@ -354,6 +384,7 @@
 
         form.reset();
         document.getElementById('edit-stock-adjustment').value = '';
+        if(document.getElementById('edit-stock-manual')) document.getElementById('edit-stock-manual').value = '';
 
         // Remove any previous error containers
         const existingError = form.querySelector('.ajax-error-container');
