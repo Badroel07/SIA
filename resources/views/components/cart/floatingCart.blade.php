@@ -1,5 +1,45 @@
 {{-- FLOATING CART MODERN --}}
-<div class="fixed bottom-10 right-10 z-[60]" x-cloak x-show="true" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0">
+<div class="fixed bottom-10 right-10 z-[60]" 
+    x-data="{ 
+        showFloating: false,
+        observer: null,
+        init() {
+            const katalogEl = document.getElementById('katalog');
+            if (!katalogEl) return;
+            
+            // IntersectionObserver: lebih efisien dari scroll listener
+            // threshold: 0 = trigger saat bagian apapun dari elemen visible
+            this.observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        this.showFloating = entry.isIntersecting;
+                    });
+                },
+                { 
+                    root: null, // viewport sebagai root
+                    rootMargin: '0px',
+                    threshold: 0 // trigger segera saat mulai visible
+                }
+            );
+            
+            this.observer.observe(katalogEl);
+        },
+        destroy() {
+            if (this.observer) {
+                this.observer.disconnect();
+            }
+        }
+    }"
+    x-init="init()"
+    @beforeunmount.window="destroy()"
+    x-cloak 
+    x-show="showFloating" 
+    x-transition:enter="transition ease-out duration-300" 
+    x-transition:enter-start="opacity-0 translate-y-10" 
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-y-0"
+    x-transition:leave-end="opacity-0 translate-y-10">
     <div class="relative group">
         <!-- Pulse Ring -->
         <div class="absolute inset-0 rounded-full bg-blue-500 opacity-20 group-hover:animate-ping"></div>

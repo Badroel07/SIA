@@ -2,12 +2,12 @@
 
 {{-- MODAL KERANJANG - Ultra Modern --}}
 <div x-show="showCart"
-    x-transition:enter="transition ease-out duration-500"
-    x-transition:enter-start="opacity-0 backdrop-blur-none"
-    x-transition:enter-end="opacity-100 backdrop-blur-md"
-    x-transition:leave="transition ease-in duration-300"
-    x-transition:leave-start="opacity-100 backdrop-blur-md"
-    x-transition:leave-end="opacity-0 backdrop-blur-none"
+    x-transition:enter="transition ease-out duration-250"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-250"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
     class="fixed inset-0 z-[70] flex justify-end items-stretch"
     style="background-color: rgba(15, 23, 42, 0.3);"
     x-cloak>
@@ -16,14 +16,14 @@
     <div class="absolute inset-0" @click="showCart = false"></div>
 
     {{-- Slide-over Panel --}}
-    <div x-show="showCart"
-        x-transition:enter="transition ease-out duration-500 transform"
+    <div
+        x-transition:enter="transition ease-out duration-300 transform"
         x-transition:enter-start="translate-x-full"
         x-transition:enter-end="translate-x-0"
-        x-transition:leave="transition ease-in duration-300 transform"
+        x-transition:leave="transition ease-in duration-200 transform"
         x-transition:leave-start="translate-x-0"
         x-transition:leave-end="translate-x-full"
-        class="relative w-full max-w-md bg-white/90 backdrop-blur-xl shadow-2xl h-full flex flex-col border-l border-white/50 z-10">
+        class="relative w-full max-w-md bg-white/90  shadow-2xl h-full flex flex-col border-l border-white/50 z-10">
 
         {{-- Header dengan Gradient --}}
         <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-6 flex-shrink-0">
@@ -33,7 +33,7 @@
 
             <div class="relative z-10 flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
+                    <div class="w-12 h-12 bg-white/20  rounded-2xl flex items-center justify-center shadow-lg border border-white/10">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>

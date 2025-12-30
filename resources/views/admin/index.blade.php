@@ -154,10 +154,10 @@
 
             <div class="relative p-8">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="w-16 h-16 bg-white/20  rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-cubes text-white text-2xl"></i>
                     </div>
-                    <div class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+                    <div class="px-3 py-1 bg-white/20  rounded-full text-white text-xs font-medium">
                         Realtime
                     </div>
                 </div>
@@ -188,10 +188,10 @@
 
             <div class="relative p-8">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="w-16 h-16 bg-white/20  rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-capsules text-white text-2xl"></i>
                     </div>
-                    <div class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+                    <div class="px-3 py-1 bg-white/20  rounded-full text-white text-xs font-medium">
                         Active
                     </div>
                 </div>
@@ -222,10 +222,10 @@
 
             <div class="relative p-8">
                 <div class="flex items-start justify-between mb-4">
-                    <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="w-16 h-16 bg-white/20  rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-shipping-fast text-white text-2xl"></i>
                     </div>
-                    <div class="px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs font-medium">
+                    <div class="px-3 py-1 bg-white/20  rounded-full text-white text-xs font-medium">
                         Sold
                     </div>
                 </div>

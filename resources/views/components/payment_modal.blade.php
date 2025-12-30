@@ -1,5 +1,5 @@
 {{-- Modal Pembayaran - Ultra Modern --}}
-<div id="payment-modal" class="fixed inset-0 bg-gray-900/70 backdrop-blur-sm z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="payment-modal" class="fixed inset-0 bg-gray-900/70  z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 
     <style>
         @keyframes modalSlideUp {
@@ -30,7 +30,7 @@
 
                 <div class="flex justify-between items-center relative z-10">
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                        <div class="w-14 h-14 bg-white/20  rounded-2xl flex items-center justify-center shadow-lg">
                             <i class="fas fa-credit-card text-white text-2xl"></i>
                         </div>
                         <div>
@@ -38,7 +38,7 @@
                             <p class="text-green-100 text-sm" id="invoice-number-display">{{ $invoiceNumber }}</p>
                         </div>
                     </div>
-                    <button onclick="closePaymentModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90">
+                    <button onclick="closePaymentModal()" class="w-10 h-10 bg-white/20 hover:bg-white/30  rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>

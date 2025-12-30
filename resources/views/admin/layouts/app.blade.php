@@ -99,7 +99,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 relative z-10">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
+                    <div class="w-12 h-12 bg-white/20  rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-shield-alt text-white text-xl"></i>
                     </div>
                     <div>
@@ -107,7 +107,7 @@
                         <p class="text-blue-100 text-xs font-medium">Panel Administrasi</p>
                     </div>
                 </div>
-                <button @click="toggleSidebar()" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:rotate-90 hover:scale-110">
+                <button @click="toggleSidebar()" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20  transition-all duration-300 hover:rotate-90 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -234,13 +234,13 @@
             x-transition:leave="transition-opacity ease-linear duration-300"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-40" x-cloak></div>
+            class="fixed inset-0 bg-gray-900/40 z-40" x-cloak></div>
 
         <!-- KONTEN KANAN (Tidak ada margin dinamis, selalu 100% lebar) -->
         <div class="flex-1 flex flex-col min-h-screen">
 
             <!-- Topbar - Ultra Modern & Sexy -->
-            <header class="relative bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100/50 sticky top-0 z-30 transition-all duration-300">
+            <header class="relative bg-white/90  shadow-sm border-b border-gray-100/50 sticky top-0 z-30 transition-all duration-300">
                 <!-- Decorative Gradient Line at Bottom -->
                 <div class="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
 

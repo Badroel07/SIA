@@ -49,6 +49,84 @@
     .input-modern:focus {
         box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
     }
+
+    /* Select2 Modern Styling - Admin Purple Theme */
+    .select2-container--default .select2-selection--single {
+        height: 56px !important;
+        padding: 0.75rem 1rem !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 1rem !important;
+        background: #f9fafb !important;
+        transition: all 0.3s ease;
+    }
+
+    .select2-container--default .select2-selection--single:hover {
+        border-color: #d1d5db !important;
+        background: white !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15) !important;
+        background: white !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 54px !important;
+        top: 1px !important;
+        right: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #9ca3af transparent transparent transparent !important;
+        border-width: 6px 5px 0 5px !important;
+    }
+
+    .select2-selection__rendered {
+        line-height: 32px !important;
+        color: #374151 !important;
+        font-weight: 500 !important;
+        padding-left: 0 !important;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 2px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15) !important;
+        outline: none;
+    }
+
+    .select2-dropdown {
+        border-radius: 1rem !important;
+        border: 2px solid #e5e7eb !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        overflow: hidden;
+        margin-top: 4px !important;
+    }
+
+    .select2-results__option {
+        padding: 0.75rem 1rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease;
+    }
+
+    .select2-results__option--highlighted {
+        background: linear-gradient(to right, #8b5cf6, #6366f1) !important;
+        color: white !important;
+    }
+
+    .select2-results__option--selected {
+        background-color: #ede9fe !important;
+        color: #5b21b6 !important;
+    }
 </style>
 
 <div class="min-h-screen p-4 lg:p-8">
@@ -157,9 +235,8 @@
                         <i class="fas fa-user-tag text-purple-500"></i>
                         Role Pengguna
                     </label>
-                    <select name="role" id="role" required
-                        class="input-modern w-full px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 focus:outline-none focus:border-purple-500 focus:bg-white @error('role') border-red-500 @enderror appearance-none cursor-pointer">
-                        <option value="" disabled selected>Pilih Role Pengguna</option>
+                    <select name="role" id="role-select2" required class="w-full">
+                        <option value="">Pilih Role Pengguna</option>
                         @foreach ($availableRoles as $role)
                         <option value="{{ $role }}" {{ old('role') == $role ? 'selected' : '' }}>
                             {{ ucfirst($role) }}
@@ -188,5 +265,18 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#role-select2').select2({
+            placeholder: "Pilih Role Pengguna",
+            allowClear: false,
+            minimumResultsForSearch: Infinity,
+            width: '100%'
+        });
+    });
+</script>
+@endpush
 
 @endsection

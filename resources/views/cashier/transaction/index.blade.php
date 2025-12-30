@@ -104,6 +104,84 @@
     .product-card:hover .product-image {
         transform: scale(1.05);
     }
+
+    /* Select2 Modern Styling - Cashier Theme */
+    .select2-container--default .select2-selection--single {
+        height: 56px !important;
+        padding: 0.75rem 1rem !important;
+        border: 2px solid #e5e7eb !important;
+        border-radius: 1rem !important;
+        background: #f9fafb !important;
+        transition: all 0.3s ease;
+    }
+
+    .select2-container--default .select2-selection--single:hover {
+        border-color: #d1d5db !important;
+        background: white !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+        border-color: #22c55e !important;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2) !important;
+        background: white !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 54px !important;
+        top: 1px !important;
+        right: 8px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #9ca3af transparent transparent transparent !important;
+        border-width: 6px 5px 0 5px !important;
+    }
+
+    .select2-selection__rendered {
+        line-height: 32px !important;
+        color: #374151 !important;
+        font-weight: 500 !important;
+        padding-left: 0 !important;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 2px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease;
+    }
+
+    .select2-container--default .select2-search--dropdown .select2-search__field:focus {
+        border-color: #22c55e !important;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15) !important;
+        outline: none;
+    }
+
+    .select2-dropdown {
+        border-radius: 1rem !important;
+        border: 2px solid #e5e7eb !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+        overflow: hidden;
+        margin-top: 4px !important;
+    }
+
+    .select2-results__option {
+        padding: 0.75rem 1rem !important;
+        font-weight: 500 !important;
+        transition: all 0.2s ease;
+    }
+
+    .select2-results__option--highlighted {
+        background: linear-gradient(to right, #22c55e, #10b981) !important;
+        color: white !important;
+    }
+
+    .select2-results__option--selected {
+        background-color: #dcfce7 !important;
+        color: #166534 !important;
+    }
 </style>
 
 @php
@@ -179,8 +257,8 @@ $total = $subtotal - $diskon;
                             class="w-full pl-16 pr-4 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 placeholder-gray-400 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all duration-300 focus:bg-white">
                     </div>
 
-                    <select x-model="category"
-                        class="px-5 py-4 bg-gray-50 rounded-2xl border-2 border-gray-100 text-gray-700 focus:border-green-500 focus:ring-4 focus:ring-green-500/20 transition-all duration-300 focus:bg-white">
+                    <select id="category-select2" x-model="category"
+                        class="w-full sm:w-64">
                         <option value="all">Semua Kategori</option>
                         @foreach ($existingCategories as $cat)
                         <option value="{{ $cat }}">{{ ucfirst($cat) }}</option>
@@ -371,7 +449,7 @@ $total = $subtotal - $diskon;
 
 @push('modals')
 {{-- Payment Modal --}}
-<div id="paymentModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden items-center justify-center z-50">
+<div id="paymentModal" class="fixed inset-0 bg-gray-900/60  hidden items-center justify-center z-50">
     <div class="relative glass-card rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
         {{-- Modal Header --}}
         <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-center text-white flex-shrink-0">
@@ -462,6 +540,32 @@ $total = $subtotal - $diskon;
 
                 this.$watch('cart', (val) => {
                     localStorage.setItem('pos_cart', JSON.stringify(val));
+                });
+
+                // Initialize Select2 for category filter
+                const self = this;
+                const $categorySelect = $('#category-select2');
+                
+                $categorySelect.select2({
+                    placeholder: "Pilih Kategori",
+                    allowClear: false,
+                    minimumResultsForSearch: 5,
+                    width: '100%'
+                });
+
+                // Set initial value from Alpine
+                $categorySelect.val(this.category).trigger('change.select2');
+
+                // When Select2 changes, update Alpine model
+                $categorySelect.on('change', function() {
+                    self.category = $(this).val();
+                });
+
+                // Watch Alpine model and update Select2
+                this.$watch('category', (val) => {
+                    if ($categorySelect.val() !== val) {
+                        $categorySelect.val(val).trigger('change.select2');
+                    }
                 });
             },
 

@@ -152,7 +152,7 @@
 <section class="relative pt-20 md:pt-32 pb-24 overflow-hidden">
     <!-- Background image with overlay -->
     <div class="absolute inset-0 -z-20">
-        <img src="{{ asset('img/pharmacy.png') }}" alt="Pharmacy Background" class="w-full h-full object-cover">
+        <img src="{{ asset('img/pharmacy.jpg') }}" alt="Pharmacy Background" class="w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/70"></div>
     </div>
 
@@ -179,7 +179,7 @@
 
                 <!-- CTA Button Epic -->
                 <a href="#katalog" @click.prevent="document.getElementById('katalog').scrollIntoView({ behavior: 'smooth' })" class="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white rounded-2xl text-lg font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 animate-slide-up" style="animation-delay: 0.3s;">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                    <div class="w-12 h-12 bg-white/20  rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -353,7 +353,7 @@
 
                     <!-- Hover Overlay -->
                     <div class="product-overlay absolute inset-0 bg-gradient-to-t from-blue-900/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 flex items-end justify-center pb-4">
-                        <a href="{{ route('show', $item->id) }}" class="px-6 py-2 bg-white/20 backdrop-blur-sm text-white font-bold rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-300">
+                        <a href="{{ route('show', $item->id) }}" class="px-6 py-2 bg-white/20  text-white font-bold rounded-xl hover:bg-white hover:text-blue-600 transition-all duration-300">
                             Lihat Detail
                         </a>
                     </div>

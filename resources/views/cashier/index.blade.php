@@ -203,7 +203,7 @@
 
                     <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                         <div class="text-center md:text-left">
-                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white/90 text-sm font-medium mb-4">
+                            <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/20  rounded-full text-white/90 text-sm font-medium mb-4">
                                 <span class="animate-wave inline-block">👋</span>
                                 {{ $greeting }}
                             </div>
@@ -229,7 +229,7 @@
                 <div class="p-8 space-y-4">
                     <a href="{{ route('cashier.transaction.index') }}" class="block">
                         <button class="btn-epic group cursor-pointer w-full flex items-center justify-center gap-4 px-8 py-5 text-xl font-bold rounded-2xl shadow-xl text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98]">
-                            <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <div class="w-14 h-14 bg-white/20  rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
                                 <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>

@@ -258,7 +258,7 @@
 
     @push('modals')
     {{-- Transaction Detail Modal --}}
-    <div id="transactionDetailModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div id="transactionDetailModal" class="fixed inset-0 bg-gray-900/60  hidden items-center justify-center z-50">
         <div class="relative glass-card rounded-3xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden animate-slide-up">
 
             {{-- Modal Header --}}

@@ -339,7 +339,7 @@
 </div>
 
 {{-- Delete Confirmation Modal --}}
-<div id="deleteConfirmModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+<div id="deleteConfirmModal" class="hidden fixed inset-0 bg-gray-900/60  z-[70] flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
         <div class="text-center">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">

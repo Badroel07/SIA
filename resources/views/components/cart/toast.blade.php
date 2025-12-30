@@ -10,7 +10,7 @@
             x-transition:leave-end="opacity-0 translate-y-4 scale-95"
             class="pointer-events-auto">
 
-            <div class="px-5 py-4 rounded-2xl shadow-2xl text-white font-semibold flex items-center gap-4 min-w-[320px] backdrop-blur-sm"
+            <div class="px-5 py-4 rounded-2xl shadow-2xl text-white font-semibold flex items-center gap-4 min-w-[320px] "
                 :class="{
                     'bg-gradient-to-r from-green-500 to-emerald-600 shadow-green-500/30': toast.type === 'success',
                     'bg-gradient-to-r from-red-500 to-rose-600 shadow-red-500/30': toast.type === 'error',

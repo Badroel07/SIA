@@ -1,5 +1,5 @@
 {{-- Modal Detail Obat - Ultra Modern --}}
-<div id="medicineDetailModal" class="hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 sm:p-6">
+<div id="medicineDetailModal" class="hidden fixed inset-0 bg-gray-900/60  z-[60] flex items-center justify-center p-4 sm:p-6">
 
     <style>
         @keyframes modalSlideIn {
@@ -45,7 +45,7 @@
 
             <div class="flex justify-between items-center relative z-10">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg">
+                    <div class="w-14 h-14 bg-white/20  rounded-2xl flex items-center justify-center shadow-lg">
                         <i class="fas fa-pills text-white text-2xl"></i>
                     </div>
                     <div>
@@ -53,7 +53,7 @@
                         <p class="text-blue-100 text-sm">Informasi lengkap produk</p>
                     </div>
                 </div>
-                <button onclick="closeMedicineDetailModal()" class="w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90 hover:scale-110">
+                <button onclick="closeMedicineDetailModal()" class="w-12 h-12 bg-white/20 hover:bg-white/30  rounded-xl flex items-center justify-center text-white transition-all duration-300 hover:rotate-90 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>

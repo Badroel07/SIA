@@ -16,6 +16,9 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ePharma - Sistem Informasi Apotek Terpercaya</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @vite('resources/css/app.css')
     @include('components.fonts.parkin')
     @include('components.fonts.fontAwesome')
@@ -65,7 +68,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
     <div @keydown.escape.window="sidebarOpen = false">
 
         <!-- Enhanced Navigation with Glass Effect -->
-        <nav class="bg-white/90 backdrop-blur-lg py-3 sticky top-0 z-50 shadow-lg shadow-blue-900/5 border-b border-white/50 w-full">
+        <nav class="bg-white/90  py-3 sticky top-0 z-50 shadow-lg shadow-blue-900/5 border-b border-white/50 w-full">
             <div class="px-4 sm:px-6 lg:px-8 flex justify-between items-center">
 
                 <div class="flex items-center gap-3">
@@ -129,7 +132,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
             x-transition:leave="transition-opacity ease-linear duration-300"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm md:hidden z-[51]" aria-hidden="true"
+            class="fixed inset-0 bg-gray-900/60  md:hidden z-[51]" aria-hidden="true"
             @click="sidebarOpen = false">
         </div>
 
@@ -156,7 +159,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
                 </div>
 
                 <div class="flex items-center gap-3 relative z-10">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
+                    <div class="w-12 h-12 bg-white/20  rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 hover:rotate-6 transition-all duration-300">
                         <i class="fas fa-cash-register text-white text-xl"></i>
                     </div>
                     <div>
@@ -164,7 +167,7 @@ $mobile_inactive = 'flex items-center gap-3 px-4 py-3 rounded-xl text-lg font-me
                         <p class="text-green-100 text-xs font-medium">Cashier Panel</p>
                     </div>
                 </div>
-                <button @click="sidebarOpen = false" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:rotate-90 hover:scale-110">
+                <button @click="sidebarOpen = false" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20  transition-all duration-300 hover:rotate-90 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>

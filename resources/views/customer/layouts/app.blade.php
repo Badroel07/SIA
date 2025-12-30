@@ -114,7 +114,7 @@ $mobile_inactive = 'block px-4 py-3 rounded-xl text-lg font-medium text-gray-700
 
         <!-- Mobile Sidebar Overlay -->
         <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm md:hidden z-[51]" aria-hidden="true" x-cloak
+            class="fixed inset-0 bg-gray-900/60  md:hidden z-[51]" aria-hidden="true" x-cloak
             @click="sidebarOpen = false">
         </div>
 
@@ -145,7 +145,7 @@ $mobile_inactive = 'block px-4 py-3 rounded-xl text-lg font-medium text-gray-700
                         <p class="text-blue-100 text-xs font-medium">Apotek Digital</p>
                     </div>
                 </div>
-                <button @click="sidebarOpen = false" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:rotate-90 hover:scale-110">
+                <button @click="sidebarOpen = false" class="relative z-10 text-white/80 hover:text-white p-2.5 rounded-xl hover:bg-white/20  transition-all duration-300 hover:rotate-90 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>

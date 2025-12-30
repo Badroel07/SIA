@@ -183,9 +183,9 @@ class MedicineSeeder extends Seeder
             // Simulasikan beberapa obat sudah terjual
             $totalSold = rand(0, 200);
 
-            // Beberapa obat mungkin tidak memiliki gambar
-            $hasImage = $faker->boolean(70); // 70% kemungkinan memiliki gambar
-            $image = $hasImage ? 'medicines/placeholder-' . $faker->numberBetween(1, 10) . '.jpg' : null;
+            // Gambar tidak disertakan di seeder
+            // Upload gambar secara manual melalui Admin Panel
+            $image = null;
 
             // Buat deskripsi yang lebih realistis
             $descriptions = [

@@ -183,7 +183,7 @@
 
     <div class="container mx-auto px-4 text-center relative z-10">
         <div class="animate-slide-up">
-            <span class="inline-flex items-center gap-2 px-6 py-2 bg-blue-500/20 backdrop-blur-sm border border-blue-400/30 text-blue-300 font-bold tracking-wider uppercase text-sm mb-6 rounded-full animate-pulse-glow">
+            <span class="inline-flex items-center gap-2 px-6 py-2 bg-blue-500/20  border border-blue-400/30 text-blue-300 font-bold tracking-wider uppercase text-sm mb-6 rounded-full animate-pulse-glow">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
@@ -293,7 +293,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
             <!-- Stat 1 -->
             <div class="text-center group animate-count" style="animation-delay: 0.1s;">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10  rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                     <svg class="w-10 h-10 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -304,7 +304,7 @@
 
             <!-- Stat 2 -->
             <div class="text-center group animate-count" style="animation-delay: 0.2s;">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10  rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                     <svg class="w-10 h-10 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -315,7 +315,7 @@
 
             <!-- Stat 3 -->
             <div class="text-center group animate-count" style="animation-delay: 0.3s;">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10  rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                     <svg class="w-10 h-10 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                     </svg>
@@ -326,7 +326,7 @@
 
             <!-- Stat 4 -->
             <div class="text-center group animate-count" style="animation-delay: 0.4s;">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10  rounded-2xl mb-4 group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                     <svg class="w-10 h-10 text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
@@ -351,7 +351,7 @@
             <div class="h-1.5 w-24 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 rounded-full mx-auto mt-6"></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Team Member 1 -->
             <div class="team-card group glass-card rounded-3xl shadow-xl overflow-hidden hover-lift animate-slide-up" style="animation-delay: 0.1s;">
                 <div class="h-72 overflow-hidden relative">
@@ -360,10 +360,10 @@
                         class="w-full h-full object-cover transition-transform duration-700">
                     <div class="team-overlay absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent opacity-0 transition-opacity duration-500 flex items-end justify-center pb-8">
                         <div class="flex gap-3">
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-twitter"></i>
                             </a>
                         </div>
@@ -383,10 +383,10 @@
                         class="w-full h-full object-cover transition-transform duration-700">
                     <div class="team-overlay absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent opacity-0 transition-opacity duration-500 flex items-end justify-center pb-8">
                         <div class="flex gap-3">
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-twitter"></i>
                             </a>
                         </div>
@@ -406,10 +406,10 @@
                         class="w-full h-full object-cover transition-transform duration-700">
                     <div class="team-overlay absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent opacity-0 transition-opacity duration-500 flex items-end justify-center pb-8">
                         <div class="flex gap-3">
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-twitter"></i>
                             </a>
                         </div>
@@ -421,7 +421,7 @@
                 </div>
             </div>
 
-            <!-- Team Member 4 -->
+            <!-- Team Member 4
             <div class="team-card group glass-card rounded-3xl shadow-xl overflow-hidden hover-lift animate-slide-up" style="animation-delay: 0.4s;">
                 <div class="h-72 overflow-hidden relative">
                     <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=800&auto=format&fit=crop"
@@ -429,10 +429,10 @@
                         class="w-full h-full object-cover transition-transform duration-700">
                     <div class="team-overlay absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/50 to-transparent opacity-0 transition-opacity duration-500 flex items-end justify-center pb-8">
                         <div class="flex gap-3">
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
+                            <a href="#" class="w-10 h-10 bg-white/20  rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-blue-600 transition-all">
                                 <i class="fab fa-twitter"></i>
                             </a>
                         </div>
@@ -442,7 +442,7 @@
                     <h3 class="font-bold text-gray-900 text-xl mb-1">Apt. Rian Hidayat</h3>
                     <p class="text-blue-600 font-medium">Manajer Operasional</p>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </section>
